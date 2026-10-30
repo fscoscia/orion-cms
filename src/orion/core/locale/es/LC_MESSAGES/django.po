@@ -1,0 +1,86 @@
+# Spanish translations for Orion's core app.
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 20:42+0000\n"
+"PO-Revision-Date: 2026-10-30 21:00+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: apps.py:8
+msgid "Orion core"
+msgstr "Núcleo de Orion"
+
+#: blocks.py:97
+msgid "Text"
+msgstr "Texto"
+
+#: blocks.py:100
+msgid "Leave empty to use the page title, email or phone."
+msgstr "Dejar vacío para usar el título de la página, el email o el teléfono."
+
+#: blocks.py:102
+msgid "Page"
+msgstr "Página"
+
+#: blocks.py:103
+msgid "External URL"
+msgstr "URL externa"
+
+#: blocks.py:104
+msgid "Email"
+msgstr "Email"
+
+#: blocks.py:105
+msgid "Phone"
+msgstr "Teléfono"
+
+#: blocks.py:107
+msgid "Open in a new tab"
+msgstr "Abrir en una pestaña nueva"
+
+#: blocks.py:109
+msgid "Only applies to external URLs."
+msgstr "Solo se aplica a URLs externas."
+
+#: blocks.py:126
+msgid "Choose only one destination: a page, a URL, an email or a phone."
+msgstr "Elegir un solo destino: una página, una URL, un email o un teléfono."
+
+#: blocks.py:136
+msgid "Choose a destination: a page, a URL, an email or a phone."
+msgstr "Elegir un destino: una página, una URL, un email o un teléfono."
+
+#: blocks.py:145
+msgid "This address belongs to this site. Choose the page instead."
+msgstr "Esta dirección es de este sitio. Conviene elegir la página."
+
+#: blocks.py:149
+msgid "Enter a phone number using digits, spaces, '+', '-' or parentheses."
+msgstr "Ingresar un teléfono con dígitos, espacios, '+', '-' o paréntesis."
+
+#: blocks.py:157
+msgid "Link"
+msgstr "Enlace"
+
+#: templates/orion/base.html:18
+msgid "Skip to content"
+msgstr "Saltar al contenido"
+
+#: templates/orion/includes/footer.html:25
+msgid "Social networks"
+msgstr "Redes sociales"
+
+#: templates/orion/includes/header.html:11
+msgid "Home"
+msgstr "Inicio"
+
+#: templates/orion/includes/header.html:19
+msgid "Menu"
+msgstr "Menú"

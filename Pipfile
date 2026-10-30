@@ -11,6 +11,7 @@ pytest = "~=9.2"
 pytest-django = "~=4.14"
 ruff = "~=0.17.3"
 pre-commit = "~=4.7"
+django-tailwind-cli = "==4.8.1"
 
 [requires]
 python_version = "3.12"
@@ -22,3 +23,5 @@ test-mysql = "sh -c 'DATABASE_URL=${MYSQL_TEST_URL:-mysql://orion:orion@127.0.0.
 lint = "ruff check ."
 format = "ruff format ."
 manage = "python example/manage.py"
+css-build = "python example/manage.py tailwind build"
+css-watch = "python example/manage.py tailwind watch"

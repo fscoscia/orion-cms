@@ -1,0 +1,27 @@
+{% load i18n wagtailcore_tags wagtailimages_tags orion_localization orion_navigation %}
+{% wagtail_site as current_site %}
+{% with site_data=settings.orion_site_data.SiteSettings %}
+<header class="site-header border-b border-line bg-surface">
+  <div class="site-nav mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-3"
+       x-data="navigation" x-bind:class="stateClass"
+       x-on:keydown.escape.window="close" x-on:click.window="closeOnOutsideClick">
+    <a href="{% if current_site %}{% pageurl current_site.root_page.localized %}{% else %}/{% endif %}" class="site-header__brand flex items-center text-lg font-semibold text-primary-700 no-underline">
+      {% if site_data.logo %}
+        {% image site_data.logo height-80 class="h-10 w-auto" %}
+        <span class="sr-only">{{ current_site.site_name|default:_("Home") }}</span>
+      {% else %}
+        {{ current_site.site_name|default:"Orion" }}
+      {% endif %}
+    </a>
+    <button type="button" class="site-nav__toggle inline-flex items-center gap-2 rounded border border-line px-3 py-2 text-sm md:hidden"
+            x-ref="toggle" x-on:click="toggle" x-bind:aria-expanded="ariaExpanded" aria-controls="site-nav-panel">
+      {% include "orion/includes/icon.html" with name="menu" %}
+      <span>{% translate "Menu" %}</span>
+    </button>
+    <div id="site-nav-panel" class="site-nav__panel w-full md:flex md:w-auto md:items-center md:gap-6">
+      {% site_menu "header" %}
+      {% language_switcher %}
+    </div>
+  </div>
+</header>
+{% endwith %}

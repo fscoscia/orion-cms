@@ -38,9 +38,16 @@ CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
 ORION_APPS = [
     # Listed before Wagtail so Orion's templates take precedence over Wagtail's.
     "orion.core",
+    "orion.localization",
+    "orion.site_data",
+    "orion.navigation",
 ]
 
 WAGTAIL_APPS = [
+    "wagtail_localize",
+    # Replaces wagtail.locales: same language screen, plus syncing new languages.
+    "wagtail_localize.locales",
+    "wagtail.contrib.settings",
     "wagtail.sites",
     "wagtail.users",
     "wagtail.snippets",
@@ -68,8 +75,10 @@ INSTALLED_APPS = ORION_APPS + WAGTAIL_APPS + DJANGO_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    # No LocaleMiddleware until pages have per-language URLs: without them it lets the
-    # visitor's browser change the language the site declares.
+    # With i18n_patterns(prefix_default_language=False) the URL alone decides the
+    # language: unprefixed URLs use LANGUAGE_CODE and the browser is ignored.
+    "django.middleware.locale.LocaleMiddleware",
+    "orion.localization.middleware.LocaleRedirectMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -89,6 +98,8 @@ TEMPLATES = [
                 "django.template.context_processors.i18n",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # Exposes Wagtail settings to templates as settings.<app>.<Model>.
+                "wagtail.contrib.settings.context_processors.settings",
             ],
         },
     },
@@ -138,6 +149,41 @@ LANGUAGE_CODE = env_str("LANGUAGE_CODE", "es")
 TIME_ZONE = env_str("TIME_ZONE", "UTC")
 USE_I18N = True
 USE_TZ = True
+
+# Catalog of languages a site can add from the admin. Names are written in each
+# language so visitors recognise their own. Projects may replace the list; the base
+# language must stay in it (check orion.E002).
+LANGUAGES = [
+    ("ar", "العربية"),
+    ("ca", "Català"),
+    ("cs", "Čeština"),
+    ("da", "Dansk"),
+    ("de", "Deutsch"),
+    ("el", "Ελληνικά"),
+    ("en", "English"),
+    ("es", "Español"),
+    ("eu", "Euskara"),
+    ("fi", "Suomi"),
+    ("fr", "Français"),
+    ("gl", "Galego"),
+    ("he", "עברית"),
+    ("hi", "हिन्दी"),
+    ("it", "Italiano"),
+    ("ja", "日本語"),
+    ("ko", "한국어"),
+    ("nb", "Norsk bokmål"),
+    ("nl", "Nederlands"),
+    ("pl", "Polski"),
+    ("pt", "Português"),
+    ("ro", "Română"),
+    ("ru", "Русский"),
+    ("sv", "Svenska"),
+    ("tr", "Türkçe"),
+    ("uk", "Українська"),
+    ("zh-hans", "简体中文"),
+]
+WAGTAIL_I18N_ENABLED = True
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
 
 # Static and media files (projects set STATIC_ROOT and MEDIA_ROOT)
 

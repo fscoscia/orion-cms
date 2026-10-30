@@ -1,0 +1,27 @@
+{% load i18n %}
+<nav class="site-nav__menu" aria-label="{% translate 'Main' %}">
+  <ul class="flex flex-col gap-1 py-2 md:flex-row md:items-center md:gap-2 md:py-0">
+    {% for item in items %}
+      {% if item.subitems %}
+        <li class="site-nav__submenu relative" x-data="submenu" x-bind:class="stateClass"
+            x-on:keydown.escape="close" x-on:click.window="closeOnOutsideClick">
+          <button type="button" class="flex w-full items-center justify-between gap-1 rounded px-3 py-2 text-left hover:bg-primary-50{% if item.is_current %} font-semibold text-primary-700{% endif %}"
+                  x-ref="toggle" x-on:click="toggle" x-bind:aria-expanded="ariaExpanded">
+            {{ item.text }}
+            {% include "orion/includes/icon.html" with name="chevron-down" %}
+          </button>
+          <ul class="site-nav__submenu-list z-20 min-w-56 py-1 pl-3 md:absolute md:left-0 md:top-full md:rounded md:border md:border-line md:bg-surface md:pl-0 md:shadow-lg">
+            {% if item.link.is_visible %}
+              <li>{% include "orion/includes/link.html" with link=item.link class_name="block px-3 py-2 hover:bg-primary-50" aria_current=item.is_current %}</li>
+            {% endif %}
+            {% for subitem in item.subitems %}
+              <li>{% include "orion/includes/link.html" with link=subitem.link class_name="block px-3 py-2 hover:bg-primary-50" aria_current=subitem.is_current %}</li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% else %}
+        <li>{% include "orion/includes/link.html" with link=item.link class_name="block rounded px-3 py-2 hover:bg-primary-50 aria-[current=page]:font-semibold aria-[current=page]:text-primary-700" aria_current=item.is_current %}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</nav>

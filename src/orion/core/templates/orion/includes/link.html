@@ -1,0 +1,2 @@
+{# Renders a LinkValue. Pass `link`, and optionally `class_name` and `aria_current`. #}
+<a href="{{ link.href }}"{% if class_name %} class="{{ class_name }}"{% endif %}{% if link.opens_in_new_tab %} target="_blank" rel="noopener noreferrer"{% endif %}{% if aria_current %} aria-current="page"{% endif %}>{{ link.text }}</a>

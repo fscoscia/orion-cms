@@ -1,0 +1,38 @@
+# Spanish translations for Orion's localization app.
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 17:14+0000\n"
+"PO-Revision-Date: 2026-10-30 17:20+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: apps.py:8
+msgid "Orion localization"
+msgstr "Idiomas de Orion"
+
+#: models.py:20
+msgid "public languages"
+msgstr "idiomas públicos"
+
+#: models.py:22
+msgid ""
+"Visitors only see content in these languages. The base language is always "
+"public."
+msgstr ""
+"Los visitantes solo ven el contenido en estos idiomas. El idioma base es "
+"siempre público."
+
+#: models.py:32
+msgid "languages"
+msgstr "idiomas"
+
+#: templates/orion/includes/language_switcher.html:2
+msgid "Language"
+msgstr "Idioma"

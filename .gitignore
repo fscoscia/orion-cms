@@ -22,3 +22,6 @@ example/static/
 .idea/
 .vscode/
 .DS_Store
+
+# Tailwind CLI binary downloaded by django-tailwind-cli
+example/.tailwind/

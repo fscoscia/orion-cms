@@ -22,7 +22,17 @@ context: |
   - Calidad: Ruff (formato y lint, línea de 88), pytest + pytest-django.
 
   ## Decisiones ya tomadas (especificación funcional)
-  - Multi-idioma en v1 con Wagtail i18n + wagtail-localize.
+  - Multi-idioma en v1 con Wagtail i18n + wagtail-localize. Idioma base sin prefijo en
+    la URL; los demás con prefijo.
+  - Datos del sitio: lo fijo en ajustes del sitio de Wagtail; lo traducible en un
+    fragmento traducible.
+  - Tailwind 4 desde la Fase 1: cada bloque nace con estilos base. Orion versiona su CSS
+    compilado (colores y fuentes como variables CSS); cada proyecto compila solo sus
+    templates. Se compila con el binario de Tailwind sin Node (django-tailwind-cli).
+  - JavaScript con Alpine.js en su variante CSP (@alpinejs/csp), incluido como archivo
+    estático; componentes registrados con Alpine.data, sin expresiones evaluadas.
+  - Menús de dos niveles.
+  - Especificación funcional y plan de fases: docs/especificacion.md.
   - Entrega dinámica con caché de página completa invalidada al publicar.
   - Flujo de aprobación: el nativo de Wagtail (workflows).
   - Formularios armados por el editor (wagtail.contrib.forms) con antispam,

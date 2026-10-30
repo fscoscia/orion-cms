@@ -1,0 +1,107 @@
+# Spanish translations for Orion's site data app.
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 20:42+0000\n"
+"PO-Revision-Date: 2026-10-30 21:00+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: apps.py:8
+msgid "Site data"
+msgstr "Datos del sitio"
+
+#: models.py:21
+msgid "Network"
+msgstr "Red"
+
+#: models.py:22
+msgid "Profile URL"
+msgstr "URL del perfil"
+
+#: models.py:26
+msgid "Social network"
+msgstr "Red social"
+
+#: models.py:35
+msgid "logo"
+msgstr "logo"
+
+#: models.py:40
+msgid "Without a logo, the header shows the site name."
+msgstr "Sin logo, el encabezado muestra el nombre del sitio."
+
+#: models.py:44
+msgid "footer logo"
+msgstr "logo del pie"
+
+#: models.py:49
+msgid "Usually a light version for the dark footer."
+msgstr "Normalmente una versión clara para el pie oscuro."
+
+#: models.py:51
+msgid "phone"
+msgstr "teléfono"
+
+#: models.py:52
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: models.py:53
+msgid "email"
+msgstr "email"
+
+#: models.py:54
+msgid "address"
+msgstr "dirección"
+
+#: models.py:58
+msgid "social networks"
+msgstr "redes sociales"
+
+#: models.py:64
+msgid "Identity"
+msgstr "Identidad"
+
+#: models.py:73
+msgid "Contact"
+msgstr "Contacto"
+
+#: models.py:75
+msgid "Social networks"
+msgstr "Redes sociales"
+
+#: models.py:80
+msgid "site data"
+msgstr "datos del sitio"
+
+#: models.py:87
+msgid "tagline"
+msgstr "eslogan"
+
+#: models.py:89
+msgid "legal text"
+msgstr "texto legal"
+
+#: models.py:91
+msgid "Shown at the bottom of the footer, for example the copyright."
+msgstr "Se muestra al final del pie, por ejemplo el copyright."
+
+#: models.py:97 models.py:98
+msgid "site texts"
+msgstr "textos del sitio"
+
+#: models.py:104
+msgid "This language already has its site texts. Edit the existing ones."
+msgstr "Este idioma ya tiene sus textos del sitio. Editar los existentes."
+
+#: models.py:110
+#, python-brace-format
+msgid "Site texts ({language})"
+msgstr "Textos del sitio ({language})"

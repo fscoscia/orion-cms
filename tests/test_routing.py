@@ -2,6 +2,7 @@ import importlib
 from contextlib import ExitStack
 
 import pytest
+from django.conf.urls.i18n import is_language_prefix_patterns_used
 from django.test import override_settings
 from django.urls import clear_url_caches
 from wagtail.models import Page, Site
@@ -16,6 +17,8 @@ def _reload_urls():
     importlib.reload(orion.urls)
     importlib.reload(example.urls)
     clear_url_caches()
+    # Django caches whether the root URLconf uses per-language routes.
+    is_language_prefix_patterns_used.cache_clear()
 
 
 @pytest.fixture

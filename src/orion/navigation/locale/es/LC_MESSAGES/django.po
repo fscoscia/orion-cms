@@ -1,0 +1,70 @@
+# Spanish translations for Orion's navigation app.
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-30 20:42+0000\n"
+"PO-Revision-Date: 2026-10-30 21:00+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: apps.py:8
+msgid "Navigation"
+msgstr "Navegación"
+
+#: models.py:13
+msgid "Header"
+msgstr "Encabezado"
+
+#: models.py:14 templates/orion/includes/menu_footer.html:2
+msgid "Footer"
+msgstr "Pie"
+
+#: models.py:22
+msgid "Item"
+msgstr "Ítem"
+
+#: models.py:23
+msgid "Without a destination, the item only titles its subitems."
+msgstr "Sin destino, el ítem solo hace de título de sus subítems."
+
+#: models.py:26
+msgid "Subitem"
+msgstr "Subítem"
+
+#: models.py:27
+msgid "Subitems"
+msgstr "Subítems"
+
+#: models.py:34
+msgid "Menu item"
+msgstr "Ítem del menú"
+
+#: models.py:42
+msgid "location"
+msgstr "ubicación"
+
+#: models.py:47
+msgid "items"
+msgstr "ítems"
+
+#: models.py:53
+msgid "menu"
+msgstr "menú"
+
+#: models.py:54
+msgid "menus"
+msgstr "menús"
+
+#: models.py:60
+msgid "This language already has a menu for this location."
+msgstr "Este idioma ya tiene un menú para esta ubicación."
+
+#: templates/orion/includes/menu_header.html:2
+msgid "Main"
+msgstr "Principal"

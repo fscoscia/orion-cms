@@ -1,0 +1,11 @@
+{% load i18n %}{% if languages %}
+<nav class="language-switcher" aria-label="{% translate 'Language' %}">
+  <ul class="language-switcher__list flex flex-wrap gap-1 py-2 text-sm md:py-0">
+    {% for language in languages %}
+      <li class="language-switcher__item">
+        <a class="block rounded px-2 py-1 hover:bg-primary-50 aria-[current=true]:font-semibold aria-[current=true]:text-primary-700" href="{{ language.url }}" hreflang="{{ language.code }}" lang="{{ language.code }}"{% if language.is_current %} aria-current="true"{% endif %}>{{ language.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}

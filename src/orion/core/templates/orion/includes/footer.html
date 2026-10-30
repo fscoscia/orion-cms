@@ -1,0 +1,45 @@
+{% load i18n wagtailcore_tags wagtailimages_tags orion_core orion_navigation orion_site_data %}
+{% wagtail_site as current_site %}
+{% get_site_texts as site_texts %}
+{% with site_data=settings.orion_site_data.SiteSettings %}
+<footer class="site-footer mt-16 bg-primary-900 text-primary-50">
+  <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+    <div class="space-y-4">
+      {% if site_data.footer_logo %}
+        {% image site_data.footer_logo height-80 class="h-10 w-auto" %}
+      {% elif current_site.site_name %}
+        <p class="text-lg font-semibold text-white">{{ current_site.site_name }}</p>
+      {% endif %}
+      {% if site_texts.tagline %}<p class="text-primary-100">{{ site_texts.tagline }}</p>{% endif %}
+
+      {% if site_data.phone or site_data.whatsapp or site_data.email or site_data.address %}
+        <address class="space-y-1 not-italic">
+          {% if site_data.phone %}<p><a class="hover:underline" href="{{ site_data.phone|tel_url }}">{{ site_data.phone }}</a></p>{% endif %}
+          {% if site_data.whatsapp %}<p><span class="sr-only">WhatsApp: </span><a class="hover:underline" href="{{ site_data.whatsapp|whatsapp_url }}" rel="noopener noreferrer">{{ site_data.whatsapp }}</a></p>{% endif %}
+          {% if site_data.email %}<p><a class="hover:underline" href="mailto:{{ site_data.email }}">{{ site_data.email }}</a></p>{% endif %}
+          {% if site_data.address %}<p>{{ site_data.address|linebreaksbr }}</p>{% endif %}
+        </address>
+      {% endif %}
+
+      {% if site_data.social_links %}
+        <ul class="flex gap-3" aria-label="{% translate 'Social networks' %}">
+          {% for social_link in site_data.social_links %}
+            <li>
+              <a href="{{ social_link.value.url }}" class="inline-flex size-9 items-center justify-center rounded-full bg-white/10 hover:bg-white/20" rel="noopener noreferrer">
+                {% include "orion/includes/icon.html" with name=social_link.value.network %}
+                <span class="sr-only">{{ social_link.value.network|social_network_name }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+    <div>{% site_menu "footer" %}</div>
+  </div>
+  {% if site_texts.legal_text %}
+    <div class="border-t border-white/10">
+      <p class="mx-auto max-w-6xl px-4 py-4 text-sm text-primary-200">{{ site_texts.legal_text|linebreaksbr }}</p>
+    </div>
+  {% endif %}
+</footer>
+{% endwith %}

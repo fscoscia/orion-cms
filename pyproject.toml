@@ -21,6 +21,7 @@ dependencies = [
     "Django>=5.2,<5.3",
     "wagtail>=7.4,<7.5",
     "dj-database-url>=3.1,<4",
+    "wagtail-localize>=1.14,<2",
 ]
 
 [project.optional-dependencies]
@@ -57,6 +58,8 @@ select = [
 # Star imports are how a project extends Orion's base settings, and local defaults
 # must be set before that import reads the environment.
 "example/example/settings.py" = ["E402", "F403", "F405"]
+# Generated migrations keep Django's formatting, including long help texts.
+"**/migrations/*.py" = ["E501"]
 # Assertions are how pytest checks results, and tests pass fake secrets on purpose.
 "tests/**" = ["S101", "S105", "S106"]
 

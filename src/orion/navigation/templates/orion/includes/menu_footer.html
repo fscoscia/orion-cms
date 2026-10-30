@@ -1,0 +1,21 @@
+{% load i18n %}
+<nav class="site-footer__menu" aria-label="{% translate 'Footer' %}">
+  <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {% for item in items %}
+      <li>
+        {% if item.link.is_visible %}
+          {% include "orion/includes/link.html" with link=item.link class_name="font-semibold text-white hover:underline" aria_current=item.is_current %}
+        {% else %}
+          <span class="font-semibold text-white">{{ item.text }}</span>
+        {% endif %}
+        {% if item.subitems %}
+          <ul class="mt-2 space-y-1">
+            {% for subitem in item.subitems %}
+              <li>{% include "orion/includes/link.html" with link=subitem.link class_name="text-primary-100 hover:text-white hover:underline" aria_current=subitem.is_current %}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</nav>

@@ -14,10 +14,10 @@ de OpenSpec (`openspec/changes/`); al archivarse, sus comportamientos pasan a
 
 | Fase | Contenido | Estado |
 | --- | --- | --- |
-| 0. Esqueleto | Paquete instalable, configuración por entorno, chequeo de salud, rutas, proyecto de ejemplo, pruebas en PostgreSQL y MySQL, herramientas | Hecha (`add-project-skeleton`) |
-| 1. Contenido y multi-idioma | Tipos de página, biblioteca de bloques, datos del sitio, menús, taxonomías, colección de artículos y multi-idioma desde el inicio (agregarlo después a modelos con contenido es mucho más difícil) | Pendiente |
+| 0. Esqueleto | Paquete instalable, configuración por entorno, chequeo de salud, rutas, proyecto de ejemplo, pruebas en PostgreSQL y MySQL, herramientas | Hecha y archivada (`add-project-skeleton`, `fix-skeleton-qa-findings`) |
+| 1. Contenido y multi-idioma | Cinco cambios, en este orden: 1) base multi-idioma (idiomas, URLs por idioma, selector, hreflang); 2) datos del sitio, menús y layout base con Tailwind 4; 3) biblioteca de bloques; 4) tipos de página, artículos, taxonomías y RSS; 5) mapas. El multi-idioma va primero porque los modelos de los demás dependen de él | En curso |
 | 2. Experiencia del editor | Panel de inicio, vista previa, traducción completa del admin, roles, 2FA | Pendiente |
-| 3. Medios, rendimiento y SEO | AVIF responsivo, caché de página completa con invalidación al publicar (diseñarla junto con la Fase 1), Tailwind, fuentes propias, sitemap, JSON-LD | Pendiente |
+| 3. Medios, rendimiento y SEO | AVIF responsivo, caché de página completa con invalidación al publicar (diseñarla junto con la Fase 1), fuentes propias, sitemap, JSON-LD | Pendiente |
 | 4. Formularios, buscador, scripts e integraciones | Constructor de formularios con antispam, buscador, scripts desde el admin, pantalla de Integraciones, SMTP | Pendiente |
 | 5. Seguridad y operación | Headers de seguridad (HSTS, CSP), límite de intentos de login, backups, instalador, plantilla de proyecto, guías de deploy, presupuesto de Lighthouse | Pendiente |
 | 6. Validación | Construir el sitio de Intervita sobre Orion como primer sitio real | Pendiente |
@@ -377,7 +377,10 @@ pago es el hosting gestionado.
 - **Base de datos:** PostgreSQL como principal, con MySQL 8 / MariaDB 10.5+ también
   soportado y probado.
 - **Mapas:** entran en la v1, con Leaflet y teselas de OpenStreetMap, como ruweb.
-- **CSS:** Tailwind 4.
+- **CSS:** Tailwind 4, desde la Fase 1 (cada bloque nace con estilos base).
+- **Datos del sitio por idioma:** lo que no cambia por idioma (logos, teléfonos, email,
+  redes, ubicación) en ajustes del sitio; lo traducible (texto legal, eslogan, etiquetas
+  del pie) en un fragmento traducible con wagtail-localize.
 - **Entorno de desarrollo:** pipenv; Docker Compose opcional para las bases.
 
 ## Referencias
