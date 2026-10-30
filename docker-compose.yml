@@ -1,0 +1,54 @@
+# Optional reference databases for local development and tests.
+# Ports differ from the defaults so they can run next to locally installed servers.
+#
+#   docker compose up -d
+#
+# Then point the tests at these ports in .env (`pipenv run` lets .env override the
+# shell, so prefixing the command with the variables has no effect):
+#
+#   POSTGRES_TEST_URL=postgres://orion:orion@127.0.0.1:5433/orion
+#   MYSQL_TEST_URL=mysql://orion:orion@127.0.0.1:3307/orion
+#
+# Or for a single run without .env:
+#
+#   PIPENV_DONT_LOAD_ENV=1 POSTGRES_TEST_URL=postgres://orion:orion@127.0.0.1:5433/orion pipenv run test-postgres
+#
+# The credentials below are for local use only.
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: orion
+      POSTGRES_USER: orion
+      POSTGRES_PASSWORD: orion
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orion -d orion"]
+      interval: 5s
+      retries: 10
+
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: orion
+      MYSQL_USER: orion
+      MYSQL_PASSWORD: orion
+      MYSQL_ROOT_PASSWORD: orion-root
+    command: ["--character-set-server=utf8mb4"]
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uorion", "-porion"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
+  mysql_data:

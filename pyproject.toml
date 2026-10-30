@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling>=1.33,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "orion"
+dynamic = ["version"]
+description = "Reusable CMS base built on Wagtail."
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Framework :: Django",
+    "Framework :: Django :: 5.2",
+    "Framework :: Wagtail",
+    "Framework :: Wagtail :: 7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Private :: Do Not Upload",
+]
+dependencies = [
+    "Django>=5.2,<5.3",
+    "wagtail>=7.4,<7.5",
+    "dj-database-url>=3.1,<4",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.3,<4"]
+mysql = ["mysqlclient>=2.3,<3"]
+
+[tool.hatch.version]
+path = "src/orion/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/orion"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["src", "example", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # import sorting
+    "B",    # likely bugs
+    "UP",   # modern syntax for the target Python version
+    "DJ",   # Django conventions
+    "N",    # naming conventions
+    "S",    # security checks
+    "C4",   # comprehensions
+    "SIM",  # simplifications
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Star imports are how a project extends Orion's base settings, and local defaults
+# must be set before that import reads the environment.
+"example/example/settings.py" = ["E402", "F403", "F405"]
+# Assertions are how pytest checks results, and tests pass fake secrets on purpose.
+"tests/**" = ["S101", "S105", "S106"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["orion", "example"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "example.settings"
+pythonpath = ["example"]
+testpaths = ["tests"]
+addopts = "--strict-markers"

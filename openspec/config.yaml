@@ -1,0 +1,71 @@
+schema: spec-driven
+
+context: |
+  Language: es
+  All artifacts must be written in es.
+  Keep OpenSpec structural headings and SHALL/MUST keywords in English.
+
+  ## Proyecto
+  Orion es un CMS base reutilizable construido sobre Wagtail. Cada sitio de cliente es
+  un proyecto Django propio que instala Orion como paquete desde GitHub (pip con una
+  etiqueta de versión, sin publicar en PyPI) y escribe solo su diseño, sus bloques y su
+  configuración. Orion no contiene contenido ni diseño de ningún cliente.
+
+  ## Stack
+  - Python 3.12, Django 5.2 LTS, Wagtail 7.4 LTS.
+  - Entorno virtual y dependencias de desarrollo: pipenv. Metadatos y dependencias del
+    paquete: pyproject.toml.
+  - Base de datos principal: PostgreSQL. MySQL 8.0.11+ / MariaDB 10.5+ también
+    soportado; la suite de tests corre en ambas.
+  - Front: templates de Django renderizados en el servidor, Tailwind 4, JS sin
+    framework o Alpine.js. Sin SPA.
+  - Calidad: Ruff (formato y lint, línea de 88), pytest + pytest-django.
+
+  ## Decisiones ya tomadas (especificación funcional)
+  - Multi-idioma en v1 con Wagtail i18n + wagtail-localize.
+  - Entrega dinámica con caché de página completa invalidada al publicar.
+  - Flujo de aprobación: el nativo de Wagtail (workflows).
+  - Formularios armados por el editor (wagtail.contrib.forms) con antispam,
+    consentimiento y retención fijados por la base.
+  - Toda integración externa es opcional, viene apagada y el CMS funciona sin ella.
+    Claves públicas en el admin; claves secretas solo en variables de entorno.
+  - Email por SMTP configurable con variables de entorno de Django.
+  - MCP, CDN y servicios externos: a futuro.
+
+  ## Reglas de trabajo
+  - Inspeccionar el proyecto y sus versiones antes de modificar código.
+  - Priorizar funcionalidades nativas de Django y Wagtail; la solución más simple y
+    mantenible; sin sobreingeniería ni refactorizaciones no pedidas.
+  - No agregar dependencias sin justificarlas en el design.md del cambio.
+  - No eliminar datos ni generar migraciones destructivas sin autorización expresa.
+  - Conservar la compatibilidad de StreamField y del contenido editorial existente:
+    renombrar o quitar bloques/campos requiere migración de datos.
+  - Validaciones, permisos y controles de seguridad en todo cambio; nunca exponer
+    secretos ni desactivar controles de seguridad.
+  - Pruebas proporcionales al cambio; nunca afirmar pruebas no ejecutadas.
+  - Ante ambigüedad importante, consultar antes de implementar.
+
+  ## Convenciones de código
+  - Python: snake_case para variables, funciones, métodos, archivos y campos;
+    PascalCase para clases; UPPER_SNAKE_CASE para constantes; _snake_case privado.
+    Sin camelCase en Python salvo integraciones externas.
+  - Booleanos con prefijo is_, has_ o can_.
+  - Wagtail: sufijos Page, IndexPage, Block, Form, Service, Mixin; snippets con el
+    nombre del dominio; campos semánticos (hero_image, body, intro, cta_label, cta_url).
+  - Templates snake_case.html; clases CSS e IDs HTML en kebab-case; JavaScript
+    camelCase y componentes JS en PascalCase; URLs kebab-case; nombres de rutas
+    Django snake_case; variables de entorno UPPER_SNAKE_CASE.
+  - Código, identificadores, comentarios y docstrings en inglés. Textos visibles en
+    inglés marcados para traducción (gettext) con traducción al español.
+  - Comillas dobles, imports agrupados (estándar, terceros, locales), comas finales en
+    estructuras multilínea, docstrings PEP 257 en funciones públicas o complejas.
+  - Los comentarios explican el porqué, no repiten el código.
+
+rules:
+  proposal:
+    - Indicar siempre qué queda fuera del alcance.
+  design:
+    - Justificar cada dependencia nueva.
+    - Señalar migraciones y su impacto sobre contenido existente.
+  tasks:
+    - Cada tarea debe poder verificarse con un test o un comando.
