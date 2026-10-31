@@ -1,4 +1,5 @@
 import pytest
+from django.core.cache import cache
 from wagtail.models import Locale, Page, Site
 
 from orion.localization.models import LanguageSettings
@@ -63,3 +64,21 @@ def _without_second_factor(settings, request):
 def _renditions_in_the_same_thread(settings):
     """Generate image renditions synchronously, inside each test's transaction."""
     settings.ORION_IMAGE_RENDITIONS_IN_BACKGROUND = False
+
+
+@pytest.fixture(autouse=True)
+def _page_cache_off(settings, request, tmp_path):
+    """An empty in-memory cache for each test; the page cache only where a test is
+    marked page_cache."""
+    settings.CACHES = {
+        "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}
+    }
+    settings.ORION_PAGE_CACHE = (
+        request.node.get_closest_marker("page_cache") is not None
+    )
+    # In-memory caches outlive a settings change: start each test empty.
+    cache.clear()
+    # WhiteNoise warns when STATIC_ROOT does not exist; tests never run collectstatic.
+    static_root = tmp_path / "static"
+    static_root.mkdir()
+    settings.STATIC_ROOT = static_root

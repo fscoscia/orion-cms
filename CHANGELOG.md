@@ -123,6 +123,15 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   **Datos del sitio → SEO**, y descripción del sitio por idioma en **Textos del sitio**.
 - Redirecciones de Wagtail para los Administradores (con importación CSV y creación
   automática al cambiar un slug) y monitor de URLs que dan 404 en **Informes**.
+- Caché de página completa para visitas sin sesión (`orion.core.cache`), que se vacía
+  sola al publicar o editar datos del sitio, con `ORION_PAGE_CACHE`,
+  `ORION_PAGE_CACHE_MODELS` y el comando `orion_clear_page_cache`; menús calculados una
+  vez por idioma; `ETag` y `Last-Modified` con respuestas 304.
+- Caché configurable con `CACHE_URL` (archivos por defecto, Redis con `orion[redis]`,
+  memoria), con claves propias de cada proyecto.
+- Archivos estáticos con WhiteNoise: Brotli y gzip, nombres con hash e `immutable`.
+- `ORION_FONT_PRELOAD` precarga las fuentes woff2 del proyecto.
+- Pruebas con un presupuesto de consultas por tipo de página.
 
 ### Changed
 
@@ -142,6 +151,8 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 
 ### Fixed
 
+- Leaflet incluido con sus imágenes y sin la referencia a un mapa de código ausente, que
+  hacía fallar `collectstatic` con nombres con hash.
 - Pruebas de la ruta del admin que dependían del orden de ejecución, y pruebas de ajustes
   que dependían de las variables del `.env` de quien las corre.
 - `.env.example` incluye `DATABASE_CONN_MAX_AGE`; una prueba verifica que lista toda

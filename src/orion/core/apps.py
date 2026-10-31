@@ -12,3 +12,7 @@ class CoreConfig(AppConfig):
         from orion.core import checks, image_library  # noqa: F401
 
         image_library.connect()
+
+        from orion.core.cache import signals
+
+        signals.connect()

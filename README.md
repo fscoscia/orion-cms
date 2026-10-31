@@ -526,8 +526,9 @@ bloque `extra_css` de la plantilla base:
 {% block extra_css %}<link rel="stylesheet" href="{% static 'mi_sitio/css/brand.css' %}">{% endblock %}
 ```
 
-Para usar una tipografía propia, cargarla en la misma hoja (con `@font-face` o el enlace
-del servicio de fuentes) y redefinir `--font-sans`, que usa todo el texto, incluido el de
+Para usar una tipografía propia, servirla desde el sitio en woff2 (solo los pesos que se
+usan, sin servicios de fuentes externos), declararla en la misma hoja con `@font-face` y
+`font-display: swap`, y redefinir `--font-sans`, que usa todo el texto, incluido el de
 los bloques de texto enriquecido, y `--font-display`, que usan los títulos de los bloques
 y los subtítulos del texto enriquecido:
 
@@ -542,6 +543,12 @@ y los subtítulos del texto enriquecido:
   --font-sans: "Mi Fuente", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Mi Fuente", ui-sans-serif, system-ui, sans-serif;
 }
+```
+
+Para que el texto no espere a la fuente, precargarla desde los ajustes:
+
+```python
+ORION_FONT_PRELOAD = ["mi_sitio/fonts/mi-fuente.woff2"]
 ```
 
 Las variables disponibles (escala `--color-primary-50` a `--color-primary-900`,
@@ -571,6 +578,43 @@ La primera vez descarga el binario de Tailwind 4.3.3 (sin Node) en `example/.tai
 Para recompilar mientras se editan templates, `pipenv run css-watch` (deja el CSS sin
 minificar: correr `css-build` antes de versionarlo). La fuente es
 `src/orion/core/static_src/orion.css`.
+
+## Rendimiento y caché
+
+Fuera de `DEBUG`, las visitas sin sesión se sirven desde una caché de página completa: la
+primera arma la página y las siguientes la toman guardada (el header `X-Orion-Cache` dice
+`miss` o `hit`). Quien inició sesión siempre ve la página armada para él. No se guardan
+las vistas previas, el admin, los errores ni las respuestas con cookies o formularios.
+La caché se vacía entera, sola, al publicar, despublicar, mover o borrar una página, al
+aplicarse una publicación programada y al guardar menús, datos y textos del sitio,
+idiomas, categorías, etiquetas, imágenes o redirecciones. Para vaciarla a mano:
+
+```bash
+pipenv run manage orion_clear_page_cache
+```
+
+Un proyecto cuyas páginas muestran datos de modelos propios los agrega para que también
+la vacíen, y puede apagarla con `ORION_PAGE_CACHE=false` en el `.env`:
+
+```python
+ORION_PAGE_CACHE_MODELS = ["eventos.Evento"]
+```
+
+Una página que muestra algo distinto a cada visitante sin cookies (por ejemplo, según la
+hora) no debe guardarse: su vista agrega `Cache-Control: private`.
+
+La caché se configura con `CACHE_URL`: vacía usa archivos en la carpeta temporal del
+sistema (se pierde al reiniciar, sin más efecto que volver a armar las páginas);
+`file:///ruta` usa otra carpeta; `redis://127.0.0.1:6379/1` usa Redis (instalar
+`orion[redis]`); `locmem://` y `dummy://` sirven para desarrollo. Cada proyecto usa sus
+propias claves, así que varios sitios pueden compartir el servidor o el Redis. Los menús
+se calculan una vez por idioma y se guardan en la misma caché.
+
+El HTML lleva `ETag` y `Last-Modified`: al recargar, el navegador recibe un 304 sin
+volver a descargar la página. Los archivos estáticos los sirve WhiteNoise comprimidos con
+Brotli o gzip, con nombres con hash y caché `immutable`; en producción hay que correr
+`pipenv run manage collectstatic` después de cada actualización (los archivos de medios
+los sirve el servidor web).
 
 ## Desarrollo con OpenSpec
 

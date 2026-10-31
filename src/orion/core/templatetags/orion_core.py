@@ -4,7 +4,8 @@ from urllib.parse import urlencode
 from django import template
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.utils.html import format_html
+from django.templatetags.static import static
+from django.utils.html import format_html, format_html_join
 from django.utils.safestring import mark_safe
 from wagtail.images.models import Picture
 from wagtail.rich_text import expand_db_html
@@ -117,4 +118,14 @@ def main_image_preload(page):
         IMAGE_FORMATS[0],
         srcset,
         get_image_size("hero")["sizes"],
+    )
+
+
+@register.simple_tag
+def font_preloads():
+    """Preload the project's fonts listed in ORION_FONT_PRELOAD, for <head>."""
+    return format_html_join(
+        "",
+        '<link rel="preload" href="{}" as="font" type="font/woff2" crossorigin>',
+        ((static(path),) for path in settings.ORION_FONT_PRELOAD),
     )

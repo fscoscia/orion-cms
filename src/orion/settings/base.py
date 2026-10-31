@@ -13,6 +13,7 @@ from pathlib import Path
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 
+from orion.settings.cache import parse_cache_url
 from orion.settings.env import env_bool, env_int, env_list, env_str
 from orion.settings.validators import validate_admin_path
 
@@ -87,6 +88,11 @@ INSTALLED_APPS = ORION_APPS + WAGTAIL_APPS + DJANGO_APPS
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # Visits served from the page cache skip everything below.
+    "orion.core.cache.middleware.PageCacheMiddleware",
+    # ETag on every page, and 304 when the browser already has it.
+    "django.middleware.http.ConditionalGetMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     # With i18n_patterns(prefix_default_language=False) the URL alone decides the
     # language: unprefixed URLs use LANGUAGE_CODE and the browser is ignored.
@@ -122,6 +128,10 @@ TEMPLATES = [
         },
     },
 ]
+
+# Cache: files by default, Redis or memory through CACHE_URL.
+
+CACHES = {"default": parse_cache_url(env_str("CACHE_URL"), SECRET_KEY)}
 
 # Database
 
@@ -245,6 +255,12 @@ ORION_IMAGE_RENDITIONS_IN_BACKGROUND = True
 # Projects add or replace named image sizes here (see orion.core.images).
 ORION_IMAGE_SIZES = {}
 
+# Full-page cache for visitors without a session (orion.core.cache). Projects add
+# models shown on their pages ("app_label.Model") so that saving them empties it.
+ORION_PAGE_CACHE = env_bool("ORION_PAGE_CACHE", not DEBUG)
+ORION_PAGE_CACHE_SECONDS = 60 * 60 * 24
+ORION_PAGE_CACHE_MODELS = []
+
 # Distinct paths that answered 404 kept for the admin's monitor.
 ORION_404_MAX_PATHS = 1000
 
@@ -252,6 +268,25 @@ ORION_404_MAX_PATHS = 1000
 
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
+
+# WhiteNoise serves static files compressed (Brotli and gzip), with hashed names and a
+# one-year immutable cache. Outside DEBUG run collectstatic; in DEBUG files are served
+# as they are.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": (
+            "django.contrib.staticfiles.storage.StaticFilesStorage"
+            if DEBUG
+            else "whitenoise.storage.CompressedManifestStaticFilesStorage"
+        )
+    },
+}
+# A file missing from the manifest falls back to its plain name instead of failing.
+WHITENOISE_MANIFEST_STRICT = False
+
+# Static paths of the project's own woff2 fonts, preloaded on every page.
+ORION_FONT_PRELOAD = []
 
 # Email
 

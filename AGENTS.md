@@ -21,8 +21,9 @@ pipenv run manage <comando>     # manage.py del proyecto de ejemplo
 - `docs/especificacion.md`: especificación funcional completa (qué entra en la v1, qué
   queda a futuro, integraciones, decisiones tomadas) y el plan de fases. Leerla antes de
   proponer una fase o una funcionalidad nueva.
-- Estado: Fases 0 (esqueleto), 1 (contenido y multi-idioma) y 2 (experiencia del editor)
-  hechas; la siguiente es la Fase 3 (medios, rendimiento y SEO).
+- Estado: Fases 0 (esqueleto), 1 (contenido y multi-idioma), 2 (experiencia del editor) y
+  3 (medios, rendimiento y SEO) hechas; la siguiente es la Fase 4 (formularios, buscador,
+  scripts e integraciones).
 - Prototipos de referencia en `../orion-prototipos/`, fuera del repositorio. La opción 1
   (`opcion1-wagtail`) tiene bloques, hooks del admin y templates para reescribir dentro de
   Orion; no se copia tal cual.

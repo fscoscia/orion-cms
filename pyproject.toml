@@ -25,11 +25,13 @@ dependencies = [
     "django-otp>=1.7,<2",
     "segno>=1.6,<2",
     "defusedxml>=0.7,<1",
+    "whitenoise[brotli]>=6.12,<7",
 ]
 
 [project.optional-dependencies]
 postgres = ["psycopg[binary]>=3.3,<4"]
 mysql = ["mysqlclient>=2.3,<3"]
+redis = ["redis>=8.1,<9"]
 
 [tool.hatch.version]
 path = "src/orion/__init__.py"
@@ -77,4 +79,7 @@ DJANGO_SETTINGS_MODULE = "example.settings"
 pythonpath = ["example"]
 testpaths = ["tests"]
 addopts = "--strict-markers"
-markers = ["two_factor: run with the admin's second factor required"]
+markers = [
+    "two_factor: run with the admin's second factor required",
+    "page_cache: run with the full-page cache on",
+]
