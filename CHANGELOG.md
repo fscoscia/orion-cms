@@ -99,6 +99,14 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   pasos" en el menú de la cuenta (regenerar códigos, otro teléfono) y "Restablecer 2FA"
   en la lista de usuarios para los administradores. `ORION_2FA_REQUIRED` lo apaga en
   desarrollo y `orion.W002` avisa si está apagado sin `DEBUG`.
+- Calendario de publicaciones en el admin: publicaciones y bajas programadas del mes, de
+  las páginas que cada usuario puede editar, con lista por día en el celular.
+- Vista previa compartible: enlaces temporales (1, 7 o 30 días, revocables) en
+  `/_preview/<código>/` que muestran el último borrador sin cuenta, sin indexarse ni
+  guardarse en caché (migración `orion_editor.0002_previewlink`).
+- Aviso a los administradores, en el panel y el calendario, cuando una publicación o baja
+  programada lleva más de una hora de atraso (la tarea `publish_scheduled` no corre);
+  el README documenta el cron.
 
 ### Changed
 

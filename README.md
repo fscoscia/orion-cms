@@ -326,6 +326,39 @@ Dentro de la vista previa los enlaces no navegan; "En vivo" abre la página publ
 celular la vista previa no se abre sola: "Vista previa" la muestra a pantalla completa en
 tamaño celular y "Editar" vuelve al formulario.
 
+### Flujo editorial
+
+Casi todo es de Wagtail: los cambios se guardan como borrador sin tocar lo publicado (el
+editor los guarda solo mientras se escribe, con `WAGTAIL_AUTOSAVE_INTERVAL`), cada
+guardado queda en el historial, los editores envían a revisión y los administradores
+aprueban o piden cambios, con comentarios en los campos. Con el servidor de email
+configurado en el `.env` (`EMAIL_HOST` y siguientes, ver `.env.example`), los
+administradores reciben un aviso al llegar algo para revisar y el autor otro al aprobarse o rechazarse; los enlaces usan
+`WAGTAILADMIN_BASE_URL`, que debe ser la dirección pública del sitio.
+
+En la pestaña **Promocionar** de cada página se elige la fecha de publicación y la de
+baja. El **Calendario** del menú lateral muestra, por mes, lo que se publica y lo que
+vence de las páginas que cada usuario puede editar.
+
+La publicación programada necesita una tarea periódica en el servidor, cada 5 minutos:
+
+```cron
+# VPS (crontab -e del usuario que corre el sitio)
+*/5 * * * * cd /ruta/al/proyecto && .venv/bin/python manage.py publish_scheduled
+
+# cPanel (Tareas Cron), con el entorno de "Setup Python App"
+*/5 * * * * cd ~/proyecto && ~/virtualenv/proyecto/3.12/bin/python manage.py publish_scheduled
+```
+
+Sin ella, lo programado no sale. Si una publicación o una baja lleva más de una hora de
+atraso, el panel de inicio y el calendario avisan a los administradores.
+
+**Compartir vista previa** (en el menú de la página) crea un enlace temporal, de 1, 7 o
+30 días, para que alguien sin cuenta vea el último borrador. Cada recarga muestra el
+borrador del momento; el enlace se puede revocar y, vencido o revocado, da 404. Las
+respuestas no se indexan ni se guardan en caché. Los enlaces usan la ruta `/_preview/`,
+que queda reservada.
+
 ### Verificación en dos pasos
 
 Todo usuario con acceso al admin usa un segundo factor. En el primer ingreso tras instalar

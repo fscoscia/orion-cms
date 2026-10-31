@@ -179,3 +179,157 @@
 .orion-two-factor__logout {
   margin-top: 2rem;
 }
+
+/* Scheduled publishing warning */
+.orion-scheduling-warning {
+  margin-block-end: 1.5rem;
+}
+
+/* Publication calendar: a table on wide screens, a list by day on phones */
+.orion-calendar__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block-end: 1rem;
+}
+
+.orion-calendar__nav .button {
+  width: auto;
+}
+
+.orion-calendar__month {
+  margin: 0;
+  min-width: 10rem;
+  text-align: center;
+}
+
+.orion-calendar__grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.orion-calendar__grid th {
+  padding: 0.5rem;
+  font-weight: 600;
+}
+
+.orion-calendar__grid abbr {
+  text-decoration: none;
+}
+
+.orion-calendar__grid td {
+  height: 7rem;
+  padding: 0.35rem;
+  vertical-align: top;
+  border: 1px solid var(--w-color-border-furniture);
+}
+
+.orion-calendar__today {
+  background: var(--w-color-surface-menu-item-active);
+}
+
+.orion-calendar__day {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--w-color-text-meta);
+}
+
+.orion-calendar__today .orion-calendar__day {
+  font-weight: 700;
+  color: var(--w-color-text-label);
+}
+
+.orion-calendar__entries {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.orion-calendar__entry a {
+  display: block;
+  margin-block-start: 0.25rem;
+  padding: 0.25rem 0.4rem;
+  border-inline-start: 3px solid var(--w-color-positive-100);
+  border-radius: 0.2rem;
+  background: var(--w-color-surface-field-inactive);
+  color: inherit;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.orion-calendar__entry--expire a {
+  border-inline-start-color: var(--w-color-warning-100);
+}
+
+.orion-calendar__entry--overdue a {
+  border-inline-start-color: var(--w-color-critical-200);
+}
+
+.orion-calendar__time,
+.orion-calendar__kind {
+  color: var(--w-color-text-meta);
+}
+
+.orion-calendar__title {
+  display: block;
+  font-weight: 600;
+}
+
+.orion-calendar__list {
+  display: none;
+}
+
+@media (max-width: 50em) {
+  .orion-calendar__grid {
+    display: none;
+  }
+
+  .orion-calendar__list {
+    display: block;
+  }
+
+  .orion-calendar__list h3 {
+    margin-block: 1.25rem 0.25rem;
+  }
+
+  .orion-calendar__entry a {
+    font-size: 0.95rem;
+  }
+}
+
+/* Preview links of a page */
+.orion-preview-links__list {
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.orion-preview-links__item {
+  padding-block: 1rem;
+  border-block-end: 1px solid var(--w-color-border-furniture);
+}
+
+.orion-preview-links__copy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.orion-preview-links__copy input {
+  flex: 1 1 20rem;
+  min-width: 0;
+}
+
+.orion-preview-links__meta {
+  margin-block: 0.5rem;
+  color: var(--w-color-text-meta);
+}
+
+.orion-preview-links__new {
+  max-width: 30rem;
+}

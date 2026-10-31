@@ -1,0 +1,8 @@
+{% load i18n wagtailadmin_tags %}
+<li class="orion-calendar__entry orion-calendar__entry--{{ entry.kind }}{% if entry.is_overdue %} orion-calendar__entry--overdue{% endif %}">
+  <a href="{% url 'wagtailadmin_pages:edit' entry.page.pk %}">
+    <span class="orion-calendar__time">{{ entry.at|time:"TIME_FORMAT" }}</span>
+    <span class="orion-calendar__kind">{% if entry.kind == "publish" %}{% translate "Publication" %}{% else %}{% translate "Expiry" %}{% endif %}{% if entry.is_overdue %} · {% translate "Late" %}{% endif %}</span>
+    <span class="orion-calendar__title">{{ entry.page.get_admin_display_title }}</span>
+  </a>
+</li>

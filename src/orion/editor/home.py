@@ -6,6 +6,9 @@ from wagtail.admin.ui.components import Component
 from wagtail.models import Locale, Site
 from wagtail.permission_policies.pages import PagePermissionPolicy
 
+from orion.editor.roles import is_site_administrator
+from orion.editor.scheduling import overdue_count
+
 UNPUBLISHED_CHANGES_LIMIT = 8
 
 
@@ -118,4 +121,18 @@ class WelcomePanel(Component):
         context["user"] = user
         context["actions"] = get_actions(user)
         context["unpublished_pages"] = get_unpublished_changes(user)
+        return context
+
+
+class SchedulingWarningPanel(Component):
+    """Tells administrators that scheduled publishing is not running."""
+
+    name = "orion_scheduling_warning"
+    template_name = "orion/editor/scheduling_warning.html"
+    order = 5
+
+    def get_context_data(self, parent_context):
+        context = super().get_context_data(parent_context)
+        user = parent_context["request"].user
+        context["overdue_count"] = overdue_count() if is_site_administrator(user) else 0
         return context

@@ -4,13 +4,18 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
+from wagtail.admin.ui.menus.pages import PageMenuItem
 from wagtail.admin.userbar import BaseItem
 from wagtail.admin.widgets.button import ListingButton
 from wagtail.models import Locale
 
-from orion.editor import two_factor, views
+from orion.editor import preview_links, two_factor, views
 from orion.editor.colors import get_admin_colors
-from orion.editor.home import WelcomePanel, get_article_listings
+from orion.editor.home import (
+    SchedulingWarningPanel,
+    WelcomePanel,
+    get_article_listings,
+)
 from orion.editor.roles import is_site_administrator
 
 # Wagtail's menu items that only administrators use.
@@ -19,7 +24,7 @@ ADMIN_ONLY_MENU_ITEMS = {"reports", "help"}
 
 @hooks.register("construct_homepage_panels")
 def add_welcome_panel(request, panels):
-    panels.insert(0, WelcomePanel())
+    panels[:0] = [SchedulingWarningPanel(), WelcomePanel()]
 
 
 # Runs last: Wagtail's image and document apps add their counters after Orion's apps.
@@ -46,6 +51,16 @@ def register_editor_urls():
             two_factor.reset,
             name="orion_2fa_reset",
         ),
+        path(
+            "orion/calendar/",
+            views.publication_calendar,
+            name="orion_publication_calendar",
+        ),
+        path(
+            "orion/pages/<int:page_id>/preview-links/",
+            preview_links.manage,
+            name="orion_preview_links",
+        ),
     ]
 
 
@@ -66,6 +81,20 @@ def two_factor_reset_button(user, request_user):
             reverse("orion_2fa_reset", args=[user.pk]),
             priority=100,
         )
+
+
+class SharePreviewButton(PageMenuItem):
+    label = _("Share the preview")
+    icon_name = "link"
+    url_name = "orion_preview_links"
+
+    def is_shown(self, user):
+        return preview_links.can_share(user, self.page)
+
+
+@hooks.register("register_page_header_buttons")
+def share_preview_button(page, user, view_name, next_url=None):
+    yield SharePreviewButton(page=page, priority=66)
 
 
 @hooks.register("insert_global_admin_css")
@@ -101,6 +130,18 @@ def new_article_menu_item():
         name="orion_new_article",
         icon_name="plus",
         order=1,
+    )
+
+
+@hooks.register("register_admin_menu_item")
+def calendar_menu_item():
+    # Right after Wagtail's Pages (order 100).
+    return MenuItem(
+        _("Calendar"),
+        reverse("orion_publication_calendar"),
+        name="orion_calendar",
+        icon_name="calendar",
+        order=101,
     )
 
 

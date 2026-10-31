@@ -18,6 +18,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from orion.core.views import health_check
+from orion.editor.preview_links import shared_preview
 from orion.editor.views import admin_colors
 
 urlpatterns = [
@@ -30,6 +31,8 @@ urlpatterns = [
     ),
     path(settings.ORION_ADMIN_PATH, include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
+    # Before the pages, which match any path; the underscore keeps it off real slugs.
+    path("_preview/<str:token>/", shared_preview, name="orion_shared_preview"),
 ]
 
 # Pages of the base language have no prefix; other languages use their code.

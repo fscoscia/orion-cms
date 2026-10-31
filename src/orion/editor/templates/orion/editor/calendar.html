@@ -1,0 +1,53 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Calendar" %}{% endblock %}
+{% block content %}
+  {% translate "Calendar" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="calendar" %}
+  <div class="nice-padding orion-calendar">
+    {% include "orion/editor/scheduling_warning.html" %}
+
+    <nav class="orion-calendar__nav" aria-label="{% translate 'Months' %}">
+      <a class="button button-small button-secondary" href="?month={{ previous_month }}">{% translate "Previous month" %}</a>
+      <h2 class="orion-calendar__month">{{ month|date:"F Y"|capfirst }}</h2>
+      <a class="button button-small button-secondary" href="?month={{ next_month }}">{% translate "Next month" %}</a>
+      {% if not is_current_month %}<a class="button button-small button-secondary" href="?">{% translate "Today" %}</a>{% endif %}
+    </nav>
+
+    <table class="orion-calendar__grid">
+      <caption class="w-sr-only">{% blocktranslate with month=month|date:"F Y" %}Scheduled publications and expiries of {{ month }}{% endblocktranslate %}</caption>
+      <thead>
+        <tr>{% for weekday in weekdays %}<th scope="col"><abbr title="{{ weekday|date:'l'|capfirst }}">{{ weekday|date:"D"|capfirst }}</abbr></th>{% endfor %}</tr>
+      </thead>
+      <tbody>
+        {% for week in weeks %}
+          <tr>
+            {% for day in week %}
+              <td{% if day.date == today %} class="orion-calendar__today" aria-current="date"{% endif %}>
+                {% if day.date %}
+                  <span class="orion-calendar__day">{{ day.date.day }}</span>
+                  {% if day.entries %}
+                    <ul class="orion-calendar__entries">
+                      {% for entry in day.entries %}{% include "orion/editor/calendar_entry.html" %}{% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endif %}
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="orion-calendar__list">
+      {% for date, entries in days_with_entries %}
+        <h3{% if date == today %} aria-current="date"{% endif %}>{{ date|date:"l j"|capfirst }}</h3>
+        <ul class="orion-calendar__entries">
+          {% for entry in entries %}{% include "orion/editor/calendar_entry.html" %}{% endfor %}
+        </ul>
+      {% empty %}
+        <p>{% translate "Nothing is scheduled this month." %}</p>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% blocktranslate trimmed with title=page.get_admin_display_title %}Share the preview of "{{ title }}"{% endblocktranslate %}{% endblock %}
+{% block content %}
+  {% translate "Share the preview" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title subtitle=page.get_admin_display_title icon="link" %}
+  <div class="nice-padding orion-preview-links">
+    <p>{% translate "Anyone with the link sees the latest draft of this page, without an account, until the link expires or is revoked. Send it only to the people who must review the page." %}</p>
+
+    {% if links %}
+      <h2>{% translate "Active links" %}</h2>
+      <ul class="orion-preview-links__list">
+        {% for item in links %}
+          <li class="orion-preview-links__item">
+            <div class="orion-preview-links__copy" data-controller="w-clipboard w-clone" data-w-clone-auto-clear-value="5_000" data-action="w-clipboard:copy->w-clone#clear w-clipboard:copied->w-clone#add w-clipboard:error->w-clone#add">
+              <label class="w-sr-only" for="preview-link-{{ item.link.pk }}">{% translate "Link" %}</label>
+              <input type="text" id="preview-link-{{ item.link.pk }}" value="{{ item.url }}" readonly data-controller="w-action" data-action="focus->w-action#select" data-w-clipboard-target="value">
+              <button type="button" class="button button-secondary button-small" data-action="w-clipboard#copy">{% translate "Copy" %}</button>
+              <span data-w-clone-target="container" aria-atomic="true" aria-live="polite"></span>
+              <template data-w-clone-target="template" data-type="success"><span class="orion-preview-links__copied">{% translate "Copied" %}</span></template>
+              <template data-w-clone-target="template" data-type="error"><span class="orion-preview-links__copied">{% translate "Select the link and copy it" %}</span></template>
+            </div>
+            <p class="orion-preview-links__meta">
+              {% if item.link.created_by %}
+                {% blocktranslate trimmed with user=item.link.created_by.get_full_name|default:item.link.created_by.get_username expires=item.link.expires_at|date:"DATETIME_FORMAT" %}Created by {{ user }}. Expires on {{ expires }}.{% endblocktranslate %}
+              {% else %}
+                {% blocktranslate trimmed with expires=item.link.expires_at|date:"DATETIME_FORMAT" %}Expires on {{ expires }}.{% endblocktranslate %}
+              {% endif %}
+            </p>
+            <form method="post">
+              {% csrf_token %}
+              <button type="submit" name="revoke" value="{{ item.link.pk }}" class="button button-small button-secondary no">{% translate "Revoke" %}</button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <h2>{% translate "New link" %}</h2>
+    <form method="post" novalidate class="orion-preview-links__new">
+      {% csrf_token %}
+      {% formattedfield form.days %}
+      <button type="submit" class="button">{% translate "Create link" %}</button>
+    </form>
+  </div>
+{% endblock %}

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 14:07-0300\n"
+"POT-Creation-Date: 2026-10-31 14:34-0300\n"
 "PO-Revision-Date: 2026-10-31 03:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -25,53 +25,147 @@ msgstr "Contraseña"
 msgid "Remember me"
 msgstr "Recordarme"
 
-#: home.py:44
+#: home.py:47
 msgid "Create a page"
 msgstr "Crear una página"
 
-#: home.py:45
+#: home.py:48
 msgid "A new page for the site, with blocks."
 msgstr "Una página nueva del sitio, con bloques."
 
-#: home.py:53
+#: home.py:56
 msgid "Write an article"
 msgstr "Escribir un artículo"
 
-#: home.py:54
+#: home.py:57
 msgid "News or a blog post."
 msgstr "Una novedad o una entrada de blog."
 
-#: home.py:62
+#: home.py:65
 msgid "Edit the home page"
 msgstr "Editar la portada"
 
-#: home.py:63
+#: home.py:66
 msgid "Texts, photos and buttons of the home page."
 msgstr "Textos, fotos y botones de la portada."
 
-#: home.py:71
+#: home.py:74
 msgid "Upload images"
 msgstr "Subir imágenes"
 
-#: home.py:72
+#: home.py:75
 msgid "Drag several at once."
 msgstr "Se pueden arrastrar varias a la vez."
 
-#: home.py:80
+#: home.py:83
 msgid "Menus"
 msgstr "Menús"
 
-#: home.py:81
+#: home.py:84
 msgid "The header and footer menus."
 msgstr "Los menús del encabezado y del pie."
 
-#: home.py:92
+#: home.py:95
 msgid "Site data"
 msgstr "Datos del sitio"
 
-#: home.py:93
+#: home.py:96
 msgid "Logo, contact details and social networks."
 msgstr "Logo, datos de contacto y redes sociales."
+
+#: models.py:26
+msgid "page"
+msgstr "página"
+
+#: models.py:30
+msgid "token"
+msgstr "código"
+
+#: models.py:38
+msgid "created by"
+msgstr "creado por"
+
+#: models.py:40
+msgid "created at"
+msgstr "Crear una página"
+
+#: models.py:41
+msgid "expires at"
+msgstr "vence el"
+
+#: models.py:47
+msgid "preview link"
+msgstr "Vista previa"
+
+#: models.py:48
+msgid "preview links"
+msgstr "Vista previa"
+
+#: preview_links.py:25
+msgid "Expires in"
+msgstr "Vence en"
+
+#: preview_links.py:27
+msgid "1 day"
+msgstr "1 día"
+
+#: preview_links.py:28
+msgid "7 days"
+msgstr "7 días"
+
+#: preview_links.py:29
+msgid "30 days"
+msgstr "30 días"
+
+#: preview_links.py:73
+msgid "The link was revoked."
+msgstr "El enlace se revocó."
+
+#: preview_links.py:81
+msgid "The link is ready to copy."
+msgstr "El enlace está listo para copiar."
+
+#: templates/orion/editor/calendar.html:3
+#: templates/orion/editor/calendar.html:5 wagtail_hooks.py:140
+msgid "Calendar"
+msgstr "Calendario"
+
+#: templates/orion/editor/calendar.html:10
+msgid "Months"
+msgstr "Meses"
+
+#: templates/orion/editor/calendar.html:11
+msgid "Previous month"
+msgstr "Mes anterior"
+
+#: templates/orion/editor/calendar.html:13
+msgid "Next month"
+msgstr "Mes siguiente"
+
+#: templates/orion/editor/calendar.html:14
+msgid "Today"
+msgstr "Hoy"
+
+#: templates/orion/editor/calendar.html:18
+#, python-format
+msgid "Scheduled publications and expiries of %(month)s"
+msgstr "Publicaciones y bajas programadas de %(month)s"
+
+#: templates/orion/editor/calendar.html:49
+msgid "Nothing is scheduled this month."
+msgstr "No hay nada programado este mes."
+
+#: templates/orion/editor/calendar_entry.html:5
+msgid "Publication"
+msgstr "Publicación"
+
+#: templates/orion/editor/calendar_entry.html:5
+msgid "Expiry"
+msgstr "Baja"
+
+#: templates/orion/editor/calendar_entry.html:5
+msgid "Late"
+msgstr "Atrasada"
 
 #: templates/orion/editor/home/welcome_panel.html:3
 #, python-format
@@ -96,13 +190,95 @@ msgid "%(time)s ago"
 msgstr "hace %(time)s"
 
 #: templates/orion/editor/new_article.html:3
-#: templates/orion/editor/new_article.html:5 wagtail_hooks.py:99
+#: templates/orion/editor/new_article.html:5 wagtail_hooks.py:128
 msgid "New article"
 msgstr "Nuevo artículo"
 
 #: templates/orion/editor/new_article.html:8
 msgid "Choose the listing for the new article:"
 msgstr "Elegir el listado del artículo nuevo:"
+
+#: templates/orion/editor/preview_links.html:3
+#, python-format
+msgid "Share the preview of \"%(title)s\""
+msgstr "Compartir la vista previa de «%(title)s»"
+
+#: templates/orion/editor/preview_links.html:5 wagtail_hooks.py:87
+msgid "Share the preview"
+msgstr "Compartir vista previa"
+
+#: templates/orion/editor/preview_links.html:8
+msgid ""
+"Anyone with the link sees the latest draft of this page, without an account, "
+"until the link expires or is revoked. Send it only to the people who must "
+"review the page."
+msgstr ""
+"Cualquier persona con el enlace ve el último borrador de esta página, sin "
+"cuenta, hasta que el enlace vence o se revoca. Enviarlo solo a quienes deben "
+"revisar la página."
+
+#: templates/orion/editor/preview_links.html:11
+msgid "Active links"
+msgstr "Enlaces vigentes"
+
+#: templates/orion/editor/preview_links.html:16
+msgid "Link"
+msgstr "Enlace"
+
+#: templates/orion/editor/preview_links.html:18
+msgid "Copy"
+msgstr "Copiar"
+
+#: templates/orion/editor/preview_links.html:20
+msgid "Copied"
+msgstr "Copiado"
+
+#: templates/orion/editor/preview_links.html:21
+msgid "Select the link and copy it"
+msgstr "Seleccionar el enlace y copiarlo"
+
+#: templates/orion/editor/preview_links.html:25
+#, python-format
+msgid "Created by %(user)s. Expires on %(expires)s."
+msgstr "Creado por %(user)s. Vence el %(expires)s."
+
+#: templates/orion/editor/preview_links.html:27
+#, python-format
+msgid "Expires on %(expires)s."
+msgstr "Vence el %(expires)s."
+
+#: templates/orion/editor/preview_links.html:32
+msgid "Revoke"
+msgstr "Revocar"
+
+#: templates/orion/editor/preview_links.html:39
+msgid "New link"
+msgstr "Nuevo enlace"
+
+#: templates/orion/editor/preview_links.html:43
+msgid "Create link"
+msgstr "Crear enlace"
+
+#: templates/orion/editor/scheduling_warning.html:6
+#, python-format
+msgid ""
+"Scheduled publishing is not running: %(counter)s scheduled publication or "
+"expiry is more than an hour late."
+msgid_plural ""
+"Scheduled publishing is not running: %(counter)s scheduled publications or "
+"expiries are more than an hour late."
+msgstr[0] ""
+"La publicación programada no está funcionando: %(counter)s publicación o "
+"baja programada tiene más de una hora de atraso."
+msgstr[1] ""
+"La publicación programada no está funcionando: %(counter)s publicaciones o "
+"bajas programadas tienen más de una hora de atraso."
+
+#: templates/orion/editor/scheduling_warning.html:11
+msgid "Ask the site's developer to set up the periodic publish_scheduled task."
+msgstr ""
+"Pedir al desarrollador del sitio que configure la tarea periódica "
+"publish_scheduled."
 
 #: templates/orion/editor/two_factor/_page.html:19
 msgid "Sign out"
@@ -131,7 +307,7 @@ msgstr "Ya los guardé, continuar"
 
 #: templates/orion/editor/two_factor/manage.html:3
 #: templates/orion/editor/two_factor/manage.html:5
-#: templates/orion/editor/two_factor/verify.html:3 wagtail_hooks.py:56
+#: templates/orion/editor/two_factor/verify.html:3 wagtail_hooks.py:71
 msgid "Two-factor authentication"
 msgstr "Verificación en dos pasos"
 
@@ -311,34 +487,34 @@ msgstr ""
 "%(user)s volverá a configurar la verificación en dos pasos en su próximo "
 "ingreso."
 
-#: wagtail_hooks.py:57
+#: wagtail_hooks.py:72
 msgid "Backup codes and the authenticator app on your phone."
 msgstr "Códigos de respaldo y la app autenticadora del teléfono."
 
-#: wagtail_hooks.py:65
+#: wagtail_hooks.py:80
 msgid "Reset 2FA"
 msgstr "Restablecer 2FA"
 
-#: wagtail_hooks.py:86
+#: wagtail_hooks.py:115
 msgid "Preview"
 msgstr "Vista previa"
 
-#: wagtail_hooks.py:87
+#: wagtail_hooks.py:116
 msgid "Edit"
 msgstr "Editar"
 
-#: wagtail_hooks.py:110
+#: wagtail_hooks.py:151
 msgid "View the site"
 msgstr "Ver el sitio"
 
-#: wagtail_hooks.py:164
+#: wagtail_hooks.py:205
 msgid "Header"
 msgstr "Encabezado"
 
-#: wagtail_hooks.py:165
+#: wagtail_hooks.py:206
 msgid "Footer"
 msgstr "Pie"
 
-#: wagtail_hooks.py:173
+#: wagtail_hooks.py:214
 msgid "Footer texts"
 msgstr "Textos del pie"

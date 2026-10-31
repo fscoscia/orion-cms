@@ -1,0 +1,14 @@
+{% load i18n wagtailadmin_tags %}
+{% if overdue_count %}
+  <div class="help-block help-critical orion-scheduling-warning" role="alert">
+    {% icon name="warning" %}
+    <p>
+      {% blocktranslate trimmed count counter=overdue_count %}
+        Scheduled publishing is not running: {{ counter }} scheduled publication or expiry is more than an hour late.
+      {% plural %}
+        Scheduled publishing is not running: {{ counter }} scheduled publications or expiries are more than an hour late.
+      {% endblocktranslate %}
+      {% translate "Ask the site's developer to set up the periodic publish_scheduled task." %}
+    </p>
+  </div>
+{% endif %}

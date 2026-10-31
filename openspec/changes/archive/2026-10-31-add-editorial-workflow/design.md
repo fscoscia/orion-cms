@@ -50,8 +50,10 @@ Botón "Compartir vista previa" en la cabecera de la página (hook
 `orion/pages/<id>/preview-links/` (vista de `register_admin_urls`): lista los enlaces
 vigentes (URL completa con `w-clipboard` para copiar, autor, vencimiento, "Revocar" por
 POST) y un formulario con el vencimiento (1, 7 o 30 días; 7 por defecto). Toda acción
-verifica `can_edit` (`PermissionDenied` si no). La URL absoluta usa el sitio de la página
-(`page.get_site().root_url`) para que sirva fuera del dominio del admin.
+verifica `can_edit` (`PermissionDenied` si no). La URL absoluta usa el dominio del admin
+(`request.build_absolute_uri`): en Orion el admin y el sitio comparten dominio, y
+`Site.root_url` da un puerto equivocado en desarrollo (`localhost:80`). El botón vive en
+el menú desplegable de la cabecera de la página.
 
 ### Calendario
 Vista `orion/calendar/` con `?month=AAAA-MM` (inválido o ausente → mes actual), ítem
@@ -62,7 +64,8 @@ Páginas). Páginas editables por el usuario:
   páginas (una por página: la revisión programada vigente).
 - Baja: páginas `live` con `expire_at` en el mes.
 Fechas en la zona horaria del sitio. La grilla usa `calendar.Calendar` con el primer día
-de la semana de `FIRST_DAY_OF_WEEK` del idioma activo; CSS grid en escritorio y lista por
+de la semana de `FIRST_DAY_OF_WEEK` del idioma activo (meses fuera de 1900–9000 en la
+dirección se tratan como inválidos, para no desbordar el mes anterior o siguiente); CSS grid en escritorio y lista por
 día (solo días con entradas) bajo un ancho chico. Cada entrada: título, hora, tipo
 (Publicación / Baja), "Atrasada" si venció, enlace a editar.
 
@@ -77,7 +80,9 @@ que hay que pedir al desarrollador que configure la tarea periódica.
 
 ### Lo nativo
 - Autoguardado: no se toca el ajuste; una prueba confirma que el editor de páginas lo
-  activa y que el autoguardado no publica.
+  activa y que el guardado automático (el mismo POST pidiendo JSON) no publica. Wagtail
+  toma el estado inicial del formulario 2 s después de cargar; lo escrito antes no cuenta
+  como cambio (relevante para pruebas en el navegador).
 - Emails del flujo: una prueba con el backend en memoria confirma el email al enviar a
   revisión (a los Administradores) y al rechazar (al autor), con enlaces en
   `WAGTAILADMIN_BASE_URL`.
