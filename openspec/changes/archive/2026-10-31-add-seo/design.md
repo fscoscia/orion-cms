@@ -44,6 +44,8 @@ Migraciones con valores por defecto; no tocan datos.
 ### Etiqueta `{% seo_tags page %}`
 Reemplaza en `orion/base.html` el `<title>` y la descripción actuales; emite título,
 descripción, canónica, robots, Open Graph, Twitter Card, verificación y favicon.
+- Descripción: `get_meta_description()` del mixin (la descripción SEO; en `ArticlePage`,
+  su resumen si falta) o la del sitio.
 - Título: `seo_title` tal cual; si no, `título | nombre del sitio` (`Site.site_name`, o
   `WAGTAIL_SITE_NAME`), sin repetir si coinciden. `orion/base.html` mantiene el bloque
   `title` para que una plantilla lo reemplace.
@@ -93,6 +95,17 @@ Informes, solo `is_site_administrator`): tabla paginada por visitas; "Redirigir"
 formulario con el `RedirectForm` de Wagtail con `old_path` fijo y al guardar borra la
 fila; "Descartar" (POST) la borra. Las rutas que ya tienen redirección se borran al
 crearla también desde Redirecciones (señal `post_save` de `Redirect`).
+
+### Hallazgos al implementar
+- El sitemap de Wagtail itera un queryset (`.iterator()`), así que las páginas sin
+  indexar se excluyen por id con una consulta por modelo que tiene el campo.
+- `django.contrib.sitemaps` va en las apps por su plantilla `sitemap.xml`.
+- Wagtail guarda `old_path` sin la barra final; la señal que limpia el monitor compara
+  ambas formas. La redirección automática al cambiar un slug se crea al confirmar la
+  transacción (`on_commit`).
+- El JSON-LD es un bloque de datos: el navegador no lo ejecuta, así que convive con la
+  regla de scripts externos y con una CSP estricta (la prueba de scripts lo excluye).
+- La prueba del CSS compilado excluye toda plantilla que extiende una del admin.
 
 ## Risks / Trade-offs
 

@@ -1,0 +1,17 @@
+<title>{{ title }}</title>
+{% if description %}<meta name="description" content="{{ description }}">{% endif %}
+<link rel="canonical" href="{{ canonical_url }}">
+{% if robots %}<meta name="robots" content="{{ robots }}">{% endif %}
+{% if google_site_verification %}<meta name="google-site-verification" content="{{ google_site_verification }}">{% endif %}
+<meta property="og:type" content="{{ og_type }}">
+<meta property="og:title" content="{{ og_title }}">
+{% if description %}<meta property="og:description" content="{{ description }}">{% endif %}
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:site_name" content="{{ site_name }}">
+<meta property="og:locale" content="{{ og_locale }}">
+{% if social_image_url %}<meta property="og:image" content="{{ social_image_url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">{% endif %}
+<meta name="twitter:card" content="{% if social_image_url %}summary_large_image{% else %}summary{% endif %}">
+{% for rel, type, sizes, url in favicons %}<link rel="{{ rel }}"{% if type %} type="{{ type }}"{% endif %} sizes="{{ sizes }}" href="{{ url }}">
+{% endfor %}

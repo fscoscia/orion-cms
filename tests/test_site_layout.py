@@ -134,9 +134,11 @@ class TestStyles:
 
     def test_scripts_are_external_and_deferred(self, client, home_page):
         scripts = re.findall(r"<script\b[^>]*>", _home_html(client))
+        # JSON-LD is data: browsers do not run it, so a strict CSP allows it inline.
+        code = [tag for tag in scripts if "application/ld+json" not in tag]
 
-        assert scripts
-        assert all("src=" in tag and "defer" in tag for tag in scripts)
+        assert code
+        assert all("src=" in tag and "defer" in tag for tag in code)
 
     def test_theme_is_exposed_as_css_variables(self):
         css = COMPILED_CSS.read_text()
@@ -149,10 +151,16 @@ class TestStyles:
         css = COMPILED_CSS.read_text()
         classes = set()
         for template in ORION_DIR.glob("*/templates/**/*.html"):
+            source = template.read_text()
             # Admin templates use Wagtail's admin styles, not Orion's stylesheet.
-            if template.parent.name == "widgets" or "editor" in template.parts:
+            is_admin = (
+                template.parent.name == "widgets"
+                or "editor" in template.parts
+                or '{% extends "wagtailadmin/' in source
+            )
+            if is_admin:
                 continue
-            for attribute in CLASS_ATTRIBUTE.findall(template.read_text()):
+            for attribute in CLASS_ATTRIBUTE.findall(source):
                 classes.update(TEMPLATE_TAG.sub(" ", attribute).split())
         # Hooks, components and state classes are Orion's own, not Tailwind utilities.
         own_prefixes = ("site-", "is-", "language-", "orion-", "block-")

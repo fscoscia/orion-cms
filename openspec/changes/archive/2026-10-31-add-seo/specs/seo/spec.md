@@ -10,8 +10,9 @@ del sitio para buscadores (sitemap, robots.txt, favicon) y dónde los edita cada
 ### Requirement: Every page has a title and a description with fallbacks
 El `<title>` de una página SHALL ser su título SEO si lo tiene; si no, su título seguido de
 " | " y el nombre del sitio (sin repetir el nombre si el título ya es igual a él). La
-descripción SHALL ser la de la página o, si falta, la descripción del sitio en el idioma de
-la página; sin ninguna de las dos, la página MUST NOT tener etiqueta de descripción.
+descripción SHALL ser la de la página (en un artículo sin descripción, su resumen) o, si
+falta, la descripción del sitio en el idioma de la página; sin ninguna, la página MUST NOT
+tener etiqueta de descripción.
 
 #### Scenario: Page without SEO fields
 - **WHEN** la página "Servicios" de "Clínica Ejemplo" no tiene título ni descripción SEO

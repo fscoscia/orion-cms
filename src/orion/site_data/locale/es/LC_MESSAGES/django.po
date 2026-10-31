@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 01:44+0000\n"
+"POT-Creation-Date: 2026-10-31 18:52-0300\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -17,107 +17,163 @@ msgstr ""
 msgid "Site data"
 msgstr "Datos del sitio"
 
-#: models.py:27
+#: models.py:31
 msgid "Network"
 msgstr "Red"
 
-#: models.py:28
+#: models.py:32
 msgid "Profile URL"
 msgstr "URL del perfil"
 
-#: models.py:32
+#: models.py:36
 msgid "Social network"
 msgstr "Red social"
 
-#: models.py:41
+#: models.py:45
 msgid "logo"
 msgstr "logo"
 
-#: models.py:46
+#: models.py:50
 msgid "Without a logo, the header shows the site name."
 msgstr "Sin logo, el encabezado muestra el nombre del sitio."
 
-#: models.py:50
+#: models.py:54
 msgid "footer logo"
 msgstr "logo del pie"
 
-#: models.py:55
+#: models.py:59
 msgid "Usually a light version for the dark footer."
 msgstr "Normalmente una versión clara para el pie oscuro."
 
-#: models.py:57
+#: models.py:61
 msgid "phone"
 msgstr "teléfono"
 
-#: models.py:58
+#: models.py:62
 msgid "WhatsApp"
 msgstr "WhatsApp"
 
-#: models.py:59
+#: models.py:63
 msgid "email"
 msgstr "email"
 
-#: models.py:60
+#: models.py:64
 msgid "address"
 msgstr "dirección"
 
-#: models.py:62
+#: models.py:66
 msgid "location on the map"
 msgstr "ubicación en el mapa"
 
-#: models.py:65
+#: models.py:69
 msgid "Shown on the contact page and in map blocks."
 msgstr "Se muestra en la página de contacto y en los bloques de mapa."
 
-#: models.py:68
+#: models.py:72
 msgid "map zoom"
 msgstr "zoom del mapa"
 
-#: models.py:71
+#: models.py:75
 msgid "From 1 (the whole world) to 19 (a single building)."
 msgstr "De 1 (el mundo entero) a 19 (un edificio)."
 
-#: models.py:76
+#: models.py:80
 msgid "social networks"
 msgstr "redes sociales"
 
-#: models.py:82
+#: models.py:84
+msgid "favicon"
+msgstr "favicon"
+
+#: models.py:89
+msgid "The browser tab icon. A square image of at least 512 × 512 px."
+msgstr ""
+"El ícono de la pestaña del navegador. Una imagen cuadrada de al menos 512 × "
+"512 px."
+
+#: models.py:93
+msgid "default social image"
+msgstr "imagen para redes por defecto"
+
+#: models.py:99
+msgid ""
+"Shown when a page without its own image is shared. 1200 × 630 px works best."
+msgstr ""
+"Se muestra al compartir una página sin imagen propia. Lo ideal es 1200 × 630 "
+"px."
+
+#: models.py:104
+msgid "robots.txt"
+msgstr "robots.txt"
+
+#: models.py:107
+msgid ""
+"Leave empty to let search engines read the whole site except the admin. The "
+"sitemap line is added automatically."
+msgstr ""
+"Dejar vacío para que los buscadores lean todo el sitio salvo el admin. La "
+"línea del sitemap se agrega sola."
+
+#: models.py:112
+msgid "Google Search Console verification code"
+msgstr "código de verificación de Google Search Console"
+
+#: models.py:119
+msgid ""
+"Paste only the code: the value of content=\"...\" in the verification tag."
+msgstr ""
+"Pegar solo el código: el valor de content=\"...\" de la etiqueta de "
+"verificación."
+
+#: models.py:129
 msgid "Identity"
 msgstr "Identidad"
 
-#: models.py:93
+#: models.py:140
 msgid "Contact"
 msgstr "Contacto"
 
-#: models.py:95
+#: models.py:142
 msgid "Social networks"
 msgstr "Redes sociales"
 
-#: models.py:100
+#: models.py:150
+msgid "SEO"
+msgstr "SEO"
+
+#: models.py:156
 msgid "site data"
 msgstr "datos del sitio"
 
-#: models.py:124
+#: models.py:180
 msgid "tagline"
 msgstr "eslogan"
 
-#: models.py:126
+#: models.py:182
+msgid "site description"
+msgstr "descripción del sitio"
+
+#: models.py:185
+msgid "Shown by search engines for pages without their own description."
+msgstr "La muestran los buscadores en las páginas sin descripción propia."
+
+#: models.py:188
 msgid "legal text"
 msgstr "texto legal"
 
-#: models.py:128
+#: models.py:190
 msgid "Shown at the bottom of the footer, for example the copyright."
 msgstr "Se muestra al final del pie, por ejemplo el copyright."
 
-#: models.py:134 models.py:135
+#: models.py:200 models.py:201
 msgid "site texts"
 msgstr "textos del sitio"
 
-#: models.py:141
+#: models.py:207
 msgid "This language already has its site texts. Edit the existing ones."
 msgstr "Este idioma ya tiene sus textos del sitio. Editar los existentes."
 
-#: models.py:147
+#: models.py:213
 #, python-brace-format
 msgid "Site texts ({language})"
 msgstr "Textos del sitio ({language})"

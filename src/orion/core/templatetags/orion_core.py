@@ -13,6 +13,7 @@ from orion.core.blocks import normalize_phone
 from orion.core.images import (
     IMAGE_FORMATS,
     get_image_size,
+    get_leading_hero_image,
     size_filter_specs,
     svg_filter_spec,
 )
@@ -100,22 +101,10 @@ def responsive_image(
     return Picture(_size_renditions(image, size), attrs).__html__()
 
 
-def _main_hero_image(page):
-    """The image of the page's first block when it is a hero, if any."""
-    body = getattr(page, "body", None)
-    first = body[0] if body else None
-    if first is None or first.block_type != "hero":
-        return None
-    image = first.value.get("image")
-    if not image or getattr(image, "is_sample", False) or image.is_svg():
-        return None
-    return image
-
-
 @register.simple_tag
 def main_image_preload(page):
     """Preload the hero image of a page that starts with one, for <head>."""
-    image = _main_hero_image(page) if page else None
+    image = get_leading_hero_image(page) if page else None
     if image is None:
         return ""
     renditions = image.get_renditions(*size_filter_specs("hero", IMAGE_FORMATS[0]))

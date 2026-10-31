@@ -1,0 +1,133 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 18:52-0300\n"
+"PO-Revision-Date: 2026-10-30 21:00+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: admin_views.py:47
+#, python-format
+msgid "%(path)s now redirects."
+msgstr "%(path)s ahora redirige."
+
+#: apps.py:8
+msgid "SEO"
+msgstr "SEO"
+
+#: models.py:16
+msgid "social image"
+msgstr "imagen para redes"
+
+#: models.py:21
+msgid "Shown when the page is shared. 1200 × 630 px works best."
+msgstr "Se muestra al compartir la página. Lo ideal es 1200 × 630 px."
+
+#: models.py:24
+msgid "do not index"
+msgstr "no indexar"
+
+#: models.py:26
+msgid "Search engines will not show this page."
+msgstr "Los buscadores no mostrarán esta página."
+
+#: models.py:29
+msgid "do not follow links"
+msgstr "no seguir los enlaces"
+
+#: models.py:31
+msgid "Search engines will not follow the links of this page."
+msgstr "Los buscadores no seguirán los enlaces de esta página."
+
+#: models.py:42
+msgid "Search engines and social networks"
+msgstr "Buscadores y redes sociales"
+
+#: models.py:62
+msgid "site"
+msgstr "sitio"
+
+#: models.py:64
+msgid "path"
+msgstr "ruta"
+
+#: models.py:65
+msgid "visits"
+msgstr "visitas"
+
+#: models.py:66
+msgid "first visit"
+msgstr "primera visita"
+
+#: models.py:67
+msgid "last visit"
+msgstr "última visita"
+
+#: models.py:70
+msgid "URL not found"
+msgstr "URL no encontrada"
+
+#: models.py:71 templates/orion/seo/not_found_index.html:3
+#: templates/orion/seo/not_found_index.html:5 wagtail_hooks.py:35
+msgid "URLs not found"
+msgstr "URLs no encontradas"
+
+#: templates/orion/seo/not_found_index.html:8
+msgid ""
+"Addresses of the site that visitors asked for and do not exist, with the "
+"most visited first. Redirect the ones that should lead to a page; discard "
+"the rest."
+msgstr ""
+"Direcciones del sitio que pidieron los visitantes y no existen, primero las "
+"más visitadas. Redirigir las que deberían llevar a una página y descartar el "
+"resto."
+
+#: templates/orion/seo/not_found_index.html:14
+msgid "Address"
+msgstr "Dirección"
+
+#: templates/orion/seo/not_found_index.html:15
+msgid "Visits"
+msgstr "Visitas"
+
+#: templates/orion/seo/not_found_index.html:16
+msgid "Last visit"
+msgstr "Última visita"
+
+#: templates/orion/seo/not_found_index.html:17
+msgid "Actions"
+msgstr "Acciones"
+
+#: templates/orion/seo/not_found_index.html:27
+#: templates/orion/seo/not_found_redirect.html:3
+#: templates/orion/seo/not_found_redirect.html:7
+msgid "Redirect"
+msgstr "Redirigir"
+
+#: templates/orion/seo/not_found_index.html:30
+msgid "Discard"
+msgstr "Descartar"
+
+#: templates/orion/seo/not_found_index.html:40
+msgid "No URL gave an error."
+msgstr "Ninguna URL dio error."
+
+#: templates/orion/seo/not_found_redirect.html:13
+msgid "Save redirect"
+msgstr "Guardar redirección"
+
+#: templates/orion/seo/not_found_redirect.html:14
+msgid "Cancel"
+msgstr "Cancelar"

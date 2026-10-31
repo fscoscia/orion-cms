@@ -1,0 +1,43 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "URLs not found" %}{% endblock %}
+{% block content %}
+  {% translate "URLs not found" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="warning" %}
+  <div class="nice-padding">
+    <p>{% translate "Addresses of the site that visitors asked for and do not exist, with the most visited first. Redirect the ones that should lead to a page; discard the rest." %}</p>
+    {% if paths %}
+      <div class="orion-not-found">
+        <table class="listing">
+          <thead>
+            <tr>
+              <th>{% translate "Address" %}</th>
+              <th>{% translate "Visits" %}</th>
+              <th>{% translate "Last visit" %}</th>
+              <th><span class="w-sr-only">{% translate "Actions" %}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for not_found in paths %}
+              <tr>
+                <td class="orion-not-found__path"><code>{{ not_found.path }}</code></td>
+                <td>{{ not_found.hits }}</td>
+                <td>{{ not_found.last_seen|date:"SHORT_DATETIME_FORMAT" }}</td>
+                <td class="orion-not-found__actions">
+                  <a class="button button-small" href="{% url 'orion_not_found_redirect' not_found.pk %}">{% translate "Redirect" %}</a>
+                  <form method="post" action="{% url 'orion_not_found_discard' not_found.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="button button-small button-secondary">{% translate "Discard" %}</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% include "wagtailadmin/shared/pagination_nav.html" with items=paths %}
+    {% else %}
+      <p>{% translate "No URL gave an error." %}</p>
+    {% endif %}
+  </div>
+{% endblock %}

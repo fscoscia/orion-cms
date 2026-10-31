@@ -44,6 +44,7 @@ ORION_APPS = [
     "orion.site_data",
     "orion.navigation",
     "orion.pages",
+    "orion.seo",
     "orion.editor",
 ]
 
@@ -53,6 +54,8 @@ WAGTAIL_APPS = [
     "wagtail_localize.locales",
     "wagtail.contrib.settings",
     "wagtail.contrib.routable_page",
+    "wagtail.contrib.redirects",
+    "wagtail.contrib.sitemaps",
     "wagtail.sites",
     "wagtail.users",
     "wagtail.snippets",
@@ -77,6 +80,7 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sitemaps",
 ]
 
 INSTALLED_APPS = ORION_APPS + WAGTAIL_APPS + DJANGO_APPS
@@ -95,6 +99,9 @@ MIDDLEWARE = [
     "orion.editor.middleware.TwoFactorMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Before the redirects: it sees the response after them, so only real 404s count.
+    "orion.seo.middleware.NotFoundMiddleware",
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
 TEMPLATES = [
@@ -237,6 +244,9 @@ ORION_IMAGE_MAX_DIMENSION = 2048
 ORION_IMAGE_RENDITIONS_IN_BACKGROUND = True
 # Projects add or replace named image sizes here (see orion.core.images).
 ORION_IMAGE_SIZES = {}
+
+# Distinct paths that answered 404 kept for the admin's monitor.
+ORION_404_MAX_PATHS = 1000
 
 # Static and media files (projects set STATIC_ROOT and MEDIA_ROOT)
 

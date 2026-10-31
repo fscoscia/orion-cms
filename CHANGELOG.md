@@ -116,6 +116,13 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   (`ORION_IMAGE_MAX_UPLOAD_MB`), comandos `orion_generate_renditions` y
   `orion_unused_images`; los ajustes del sitio entran al índice de referencias (el uso
   de los logos se ve en el admin).
+- SEO (`orion.seo`): título con el nombre del sitio, descripción con respaldos, canónica,
+  Open Graph, Twitter Card, JSON-LD (sitio, organización, migas de pan, artículo),
+  "No indexar" y "No seguir los enlaces" por página (`SeoMixin`), `/sitemap.xml` con los
+  idiomas públicos, `/robots.txt` editable, favicon y verificación de Search Console en
+  **Datos del sitio → SEO**, y descripción del sitio por idioma en **Textos del sitio**.
+- Redirecciones de Wagtail para los Administradores (con importación CSV y creación
+  automática al cambiar un slug) y monitor de URLs que dan 404 en **Informes**.
 
 ### Changed
 

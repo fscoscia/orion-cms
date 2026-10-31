@@ -15,11 +15,14 @@ from django.conf.urls.i18n import i18n_patterns
 from django.urls import include, path
 from wagtail import urls as wagtail_urls
 from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.contrib.sitemaps.views import sitemap
 from wagtail.documents import urls as wagtaildocs_urls
 
 from orion.core.views import health_check
 from orion.editor.preview_links import shared_preview
 from orion.editor.views import admin_colors
+from orion.seo.sitemap import Sitemap
+from orion.seo.views import favicon, robots_txt
 
 urlpatterns = [
     path("health/", health_check, name="health_check"),
@@ -33,6 +36,14 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     # Before the pages, which match any path; the underscore keeps it off real slugs.
     path("_preview/<str:token>/", shared_preview, name="orion_shared_preview"),
+    path("robots.txt", robots_txt, name="orion_robots_txt"),
+    path("favicon.ico", favicon, name="orion_favicon"),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": {"pages": Sitemap}},
+        name="orion_sitemap",
+    ),
 ]
 
 # Pages of the base language have no prefix; other languages use their code.

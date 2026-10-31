@@ -10,7 +10,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
 
 #: apps.py:8
 msgid "Orion core"
@@ -90,8 +91,8 @@ msgstr "Hero"
 
 #: blocks/content.py:247
 msgid ""
-"The large opening section of a page, with a title, a short text, buttons and"
-" an optional image."
+"The large opening section of a page, with a title, a short text, buttons and "
+"an optional image."
 msgstr ""
 "La sección grande del comienzo de una página, con título, un texto corto, "
 "botones y una imagen opcional."
@@ -466,8 +467,7 @@ msgid "Open in OpenStreetMap"
 msgstr "Abrir en OpenStreetMap"
 
 #: templates/orion/widgets/location_widget.html:11
-msgid ""
-"Click on the map or drag the marker. You can also type the coordinates."
+msgid "Click on the map or drag the marker. You can also type the coordinates."
 msgstr ""
 "Hacer clic en el mapa o arrastrar el marcador. También se pueden escribir "
 "las coordenadas."

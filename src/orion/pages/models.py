@@ -35,6 +35,8 @@ from wagtail_localize.fields import SynchronizedField
 
 from orion.core.blocks import ContentStreamBlock
 from orion.core.blocks.content import is_visible
+from orion.core.images import get_leading_hero_image
+from orion.seo.models import SeoMixin
 
 DEFAULT_ARTICLES_PER_PAGE = 12
 DEFAULT_FEED_ITEMS = 20
@@ -55,7 +57,7 @@ class DesktopPreviewMixin:
         return "desktop"
 
 
-class BodyPage(DesktopPreviewMixin, Page):
+class BodyPage(SeoMixin, DesktopPreviewMixin, Page):
     """A page whose content is a body of Orion's content blocks."""
 
     body = StreamField(ContentStreamBlock(), blank=True, verbose_name=_("body"))
@@ -64,6 +66,9 @@ class BodyPage(DesktopPreviewMixin, Page):
 
     class Meta:
         abstract = True
+
+    def get_social_image(self):
+        return super().get_social_image() or get_leading_hero_image(self)
 
     @property
     def starts_with_hero(self):
@@ -240,7 +245,7 @@ class ArticleTag(TaxonomyMixin):
         return self.name
 
 
-class ArticleIndexPage(DesktopPreviewMixin, RoutablePageMixin, Page):
+class ArticleIndexPage(SeoMixin, DesktopPreviewMixin, RoutablePageMixin, Page):
     intro = models.TextField(_("introduction"), blank=True, max_length=500)
 
     content_panels = [*Page.content_panels, FieldPanel("intro")]
@@ -325,7 +330,7 @@ class ArticlePageForm(WagtailAdminPageForm):
             )
 
 
-class ArticlePage(DesktopPreviewMixin, Page):
+class ArticlePage(SeoMixin, DesktopPreviewMixin, Page):
     date = models.DateField(_("date"), default=timezone.localdate)
     summary = models.TextField(
         _("summary"),
@@ -383,6 +388,7 @@ class ArticlePage(DesktopPreviewMixin, Page):
     parent_page_types = ["orion_pages.ArticleIndexPage"]
     subpage_types = []
     template = "orion/pages/article_page.html"
+    og_type = "article"
 
     class Meta:
         verbose_name = _("article")
@@ -399,6 +405,12 @@ class ArticlePage(DesktopPreviewMixin, Page):
                     )
                 }
             )
+
+    def get_meta_description(self):
+        return super().get_meta_description() or self.summary
+
+    def get_social_image(self):
+        return super().get_social_image() or self.image
 
     @property
     def image_alt_text(self):

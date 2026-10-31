@@ -71,3 +71,16 @@ def all_filter_specs(image):
         for image_format in IMAGE_FORMATS
         for spec in size_filter_specs(name, image_format)
     ]
+
+
+def get_leading_hero_image(page):
+    """The image of the page's first block when it is a hero, if any (not a sample
+    or SVG image)."""
+    body = getattr(page, "body", None)
+    first = body[0] if body else None
+    if first is None or first.block_type != "hero":
+        return None
+    image = first.value.get("image")
+    if not image or getattr(image, "is_sample", False) or image.is_svg():
+        return None
+    return image

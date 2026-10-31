@@ -78,7 +78,7 @@ class TestPageServing:
 
         assert response.status_code == 200
         assert '<html lang="es"' in html
-        assert "<title>Página de prueba</title>" in html
+        assert "<title>Página de prueba | " in html
         assert 'name="viewport"' in html
         assert 'id="main-content"' in html
 

@@ -333,3 +333,19 @@
 .orion-preview-links__new {
   max-width: 30rem;
 }
+
+/* URLs not found (orion.seo) */
+.orion-not-found {
+  overflow-x: auto;
+}
+
+.orion-not-found__path code {
+  overflow-wrap: anywhere;
+}
+
+.orion-not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}

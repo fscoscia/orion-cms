@@ -273,6 +273,45 @@ Si el índice de referencias de Wagtail puede estar desactualizado (por ejemplo,
 sitio existente al instalar esta versión), correr antes
 `pipenv run manage rebuild_references_index`.
 
+## SEO y redirecciones
+
+Cada página arma sola su título ("Título | Nombre del sitio", o el título SEO tal cual),
+la descripción (la de la página, el resumen en un artículo o la descripción del sitio en
+**Textos del sitio**), la URL canónica, las etiquetas para redes (Open Graph y Twitter
+Card) y los datos estructurados (sitio, organización, migas de pan y artículo). La imagen
+para redes es, en orden, la de la pestaña **Promocionar**, la del artículo, la del Hero que
+abre la página o la de **Datos del sitio → SEO**. En **Promocionar** también se marca "No
+indexar" o "No seguir los enlaces".
+
+**Datos del sitio → SEO** tiene el favicon (un cuadrado de al menos 512 px; también SVG),
+la imagen para redes por defecto, el código de verificación de Search Console (solo el
+código) y el robots.txt (vacío permite todo salvo el admin; la línea del sitemap se agrega
+sola). El sitio sirve `/sitemap.xml` (páginas publicadas de los idiomas públicos, sin las
+marcadas para no indexar), `/robots.txt` y `/favicon.ico`.
+
+La plantilla base de un proyecto que no extiende `orion/base.html` incluye lo mismo con:
+
+```django
+{% load orion_seo %}
+{% seo_tags page %}{% structured_data page %}
+```
+
+Los tipos de página de un proyecto suman los campos de Promocionar con el mixin:
+
+```python
+from orion.seo.models import SeoMixin
+
+
+class EventPage(SeoMixin, Page): ...
+```
+
+Los Administradores gestionan **Propiedades → Redirecciones** (301 o 302, hacia una
+página o una URL, e importación desde CSV). Al cambiar el slug de una página publicada o
+moverla, la redirección desde la URL vieja se crea sola. **Informes → URLs no
+encontradas** lista las direcciones que dieron error, primero las más visitadas, para
+redirigirlas o descartarlas; guarda hasta `ORION_404_MAX_PATHS` rutas distintas (1000) y
+no registra el admin, los archivos estáticos ni los de medios.
+
 ## Bloques de contenido
 
 Orion trae quince bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y
