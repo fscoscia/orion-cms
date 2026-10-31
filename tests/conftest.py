@@ -49,3 +49,11 @@ def services_page(home_page):
     page = home_page.add_child(instance=Page(title="Servicios", slug="servicios"))
     page.save_revision().publish()
     return page
+
+
+@pytest.fixture(autouse=True)
+def _without_second_factor(settings, request):
+    """Most tests use the admin without the second factor; tests/test_two_factor.py
+    turns it on."""
+    if request.node.get_closest_marker("two_factor") is None:
+        settings.ORION_2FA_REQUIRED = False

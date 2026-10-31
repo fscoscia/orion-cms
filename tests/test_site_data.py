@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 
 def _login_editor(client, django_user_model):
     editor = django_user_model.objects.create_user("editor", password="x")
-    editor.groups.add(Group.objects.get(name="Editors"))
+    editor.groups.add(Group.objects.get(name="Editores"))
     client.force_login(editor)
     return editor
 

@@ -8,6 +8,8 @@ Every value that differs between environments, or that is secret, is read from
 environment variables. See ``.env.example`` for the full list.
 """
 
+from pathlib import Path
+
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
 
@@ -62,6 +64,10 @@ WAGTAIL_APPS = [
     "modelcluster",
     "taggit",
     "django_filters",
+    # Second factor for the admin: authenticator apps and backup codes.
+    "django_otp",
+    "django_otp.plugins.otp_totp",
+    "django_otp.plugins.otp_static",
 ]
 
 DJANGO_APPS = [
@@ -85,6 +91,8 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # Requires the second factor on admin pages (ORION_2FA_REQUIRED).
+    "orion.editor.middleware.TwoFactorMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -185,10 +193,20 @@ LANGUAGES = [
     ("uk", "Українська"),
     ("zh-hans", "简体中文"),
 ]
+# Spanish for the admin phrases Wagtail leaves untranslated. Highest priority, so it
+# also reaches the admin's JavaScript catalog; projects add their own with +=.
+LOCALE_PATHS = [Path(__file__).resolve().parent.parent / "editor" / "wagtail_locale"]
 WAGTAIL_I18N_ENABLED = True
 # Slugs in ASCII ("articulo", not "artículo"), so URLs read the same when shared.
 WAGTAIL_ALLOW_UNICODE_SLUGS = False
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
+
+# Every admin user signs in with a second factor (authenticator app or backup code).
+# Turn it off only for local development (check orion.W002).
+ORION_2FA_REQUIRED = env_bool("ORION_2FA_REQUIRED", True)
+
+# Wagtail's login form with translated labels.
+WAGTAILADMIN_USER_LOGIN_FORM = "orion.editor.forms.LoginForm"
 
 # No check for new Wagtail versions: the admin makes no external requests.
 WAGTAIL_ENABLE_UPDATE_CHECK = False
@@ -251,6 +269,8 @@ X_FRAME_OPTIONS = "SAMEORIGIN"
 # Wagtail
 
 WAGTAIL_SITE_NAME = env_str("WAGTAIL_SITE_NAME", "Orion")
+# The name authenticator apps show for the admin's second factor.
+OTP_TOTP_ISSUER = WAGTAIL_SITE_NAME
 WAGTAILADMIN_BASE_URL = env_str("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
 WAGTAILSEARCH_BACKENDS = {
     "default": {"BACKEND": "wagtail.search.backends.database"},

@@ -13,7 +13,7 @@ def editor_client(client, django_user_model):
     editor = django_user_model.objects.create_user(
         "editora", password="x", first_name="Ana"
     )
-    editor.groups.add(Group.objects.get(name="Editors"))
+    editor.groups.add(Group.objects.get(name="Editores"))
     client.force_login(editor)
     return client
 
@@ -117,6 +117,18 @@ class TestMenu:
         assert '"orion_view_site"' in html
         assert '"reports"' not in html
         assert '"help"' not in html
+
+    def test_administrators_group_sees_reports_and_help(
+        self, client, django_user_model, home_page
+    ):
+        administrator = django_user_model.objects.create_user("jefa", password="x")
+        administrator.groups.add(Group.objects.get(name="Administradores"))
+        client.force_login(administrator)
+
+        html = _dashboard(client)
+
+        assert '"reports"' in html
+        assert '"help"' in html
 
     def test_superuser_keeps_reports_and_help(self, admin_client, home_page):
         html = _dashboard(admin_client)

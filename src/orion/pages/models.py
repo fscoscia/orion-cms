@@ -47,7 +47,15 @@ class ArticleStreamBlock(ContentStreamBlock):
     latest_articles = None
 
 
-class BodyPage(Page):
+class DesktopPreviewMixin:
+    """Opens the editor's preview at desktop size, as sites are mostly built for it."""
+
+    @property
+    def default_preview_size(self):
+        return "desktop"
+
+
+class BodyPage(DesktopPreviewMixin, Page):
     """A page whose content is a body of Orion's content blocks."""
 
     body = StreamField(ContentStreamBlock(), blank=True, verbose_name=_("body"))
@@ -232,7 +240,7 @@ class ArticleTag(TaxonomyMixin):
         return self.name
 
 
-class ArticleIndexPage(RoutablePageMixin, Page):
+class ArticleIndexPage(DesktopPreviewMixin, RoutablePageMixin, Page):
     intro = models.TextField(_("introduction"), blank=True, max_length=500)
 
     content_panels = [*Page.content_panels, FieldPanel("intro")]
@@ -317,7 +325,7 @@ class ArticlePageForm(WagtailAdminPageForm):
             )
 
 
-class ArticlePage(Page):
+class ArticlePage(DesktopPreviewMixin, Page):
     date = models.DateField(_("date"), default=timezone.localdate)
     summary = models.TextField(
         _("summary"),

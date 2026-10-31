@@ -1,0 +1,24 @@
+{% extends "orion/editor/two_factor/_page.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Set up two-factor authentication" %}{% endblock %}
+{% block heading %}{% translate "Set up two-factor authentication" %}{% endblock %}
+{% block body %}
+  <ol class="orion-two-factor__steps">
+    <li>{% translate "Install an authenticator app on your phone, such as Google Authenticator, Microsoft Authenticator or 2FAS." %}</li>
+    <li>
+      {% translate "Scan this QR code with the app:" %}
+      <div class="orion-two-factor__qr">{{ qr_code }}</div>
+      <p>{% translate "If you cannot scan it, enter this key in the app:" %}</p>
+      <p><code class="orion-two-factor__secret">{{ secret }}</code></p>
+    </li>
+    <li>{% translate "Enter the 6-digit code that the app shows:" %}</li>
+  </ol>
+  <form class="login-form" method="post" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    {% formattedfield form.code %}
+    <footer class="form-actions">
+      <button type="submit" class="button">{% translate "Confirm" %}</button>
+    </footer>
+  </form>
+{% endblock %}

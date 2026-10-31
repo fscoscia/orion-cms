@@ -1,0 +1,22 @@
+{% extends "wagtailadmin/admin_base.html" %}
+{% load i18n %}
+{# The sign-in look of Wagtail, for the steps between the password and the admin. #}
+{% block bodyclass %}login{% endblock %}
+{% block furniture %}
+  <main class="content-wrapper orion-two-factor" id="main">
+    <h1>{% block heading %}{% endblock %}</h1>
+    {# The sign-in styles hide field errors, so they go here, as in Wagtail's login. #}
+    <div class="messages" role="status">
+      {% if form.errors %}
+        <ul>
+          {% for error in form.code.errors %}<li class="error">{{ error }}</li>{% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+    {% block body %}{% endblock %}
+    <form action="{% url 'wagtailadmin_logout' %}" method="post" class="orion-two-factor__logout">
+      {% csrf_token %}
+      <button type="submit" class="button button-small button-secondary">{% translate "Sign out" %}</button>
+    </form>
+  </main>
+{% endblock %}

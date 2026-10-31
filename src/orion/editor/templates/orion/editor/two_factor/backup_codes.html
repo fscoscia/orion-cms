@@ -1,0 +1,11 @@
+{% extends "orion/editor/two_factor/_page.html" %}
+{% load i18n %}
+{% block titletag %}{% translate "Backup codes" %}{% endblock %}
+{% block heading %}{% translate "Save your backup codes" %}{% endblock %}
+{% block body %}
+  <p>{% translate "Each code lets you sign in once if you do not have your phone. They are shown only now: write them down or save them somewhere safe." %}</p>
+  <ul class="orion-two-factor__codes">
+    {% for code in codes %}<li><code>{{ code }}</code></li>{% endfor %}
+  </ul>
+  <p><a class="button" href="{{ next }}">{% translate "I saved them, continue" %}</a></p>
+{% endblock %}

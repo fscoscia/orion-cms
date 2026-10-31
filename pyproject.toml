@@ -22,6 +22,8 @@ dependencies = [
     "wagtail>=7.4,<7.5",
     "dj-database-url>=3.1,<4",
     "wagtail-localize>=1.14,<2",
+    "django-otp>=1.7,<2",
+    "segno>=1.6,<2",
 ]
 
 [project.optional-dependencies]
@@ -74,3 +76,4 @@ DJANGO_SETTINGS_MODULE = "example.settings"
 pythonpath = ["example"]
 testpaths = ["tests"]
 addopts = "--strict-markers"
+markers = ["two_factor: run with the admin's second factor required"]

@@ -1,5 +1,6 @@
 """System checks for the admin colors."""
 
+from django.conf import settings
 from django.core.checks import Error, Tags, Warning, register
 
 from orion.editor.colors import (
@@ -12,6 +13,7 @@ from orion.editor.colors import (
 
 INVALID_ADMIN_COLOR_ERROR_ID = "orion.E004"
 LOW_CONTRAST_ADMIN_COLOR_WARNING_ID = "orion.W001"
+TWO_FACTOR_DISABLED_WARNING_ID = "orion.W002"
 
 
 @register(Tags.compatibility)
@@ -41,3 +43,17 @@ def check_admin_colors(app_configs, **kwargs):
                 )
             )
     return messages
+
+
+@register(Tags.security)
+def check_two_factor(app_configs, **kwargs):
+    """Warn when the admin's second factor is off outside local development."""
+    if not settings.DEBUG and not getattr(settings, "ORION_2FA_REQUIRED", True):
+        return [
+            Warning(
+                "ORION_2FA_REQUIRED is off: the admin accepts a password alone.",
+                hint="Turn it off only for local development.",
+                id=TWO_FACTOR_DISABLED_WARNING_ID,
+            )
+        ]
+    return []

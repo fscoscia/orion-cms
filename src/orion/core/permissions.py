@@ -2,19 +2,27 @@
 
 from django.contrib.auth.management import create_permissions
 
-EDITOR_GROUP_NAMES = ("Editors", "Moderators")
+# Orion's role groups, and Wagtail's names for them before orion_editor renames them.
+EDITOR_GROUP_NAMES = ("Editores", "Administradores", "Editors", "Moderators")
 
 
-def grant_to_editor_groups(apps, app_label, codenames):
-    """Give the editor and moderator groups the given permissions of ``app_label``.
+def ensure_permissions(apps, app_label):
+    """Create the permissions of ``app_label`` during migrations.
 
-    Permissions are normally created after all migrations run, so they are created
-    here first. Groups that do not exist are skipped.
+    Django normally creates them after all migrations run.
     """
     app_config = apps.get_app_config(app_label)
     app_config.models_module = True
     create_permissions(app_config, apps=apps, verbosity=0)
     app_config.models_module = None
+
+
+def grant_to_editor_groups(apps, app_label, codenames):
+    """Give the editor and moderator groups the given permissions of ``app_label``.
+
+    Groups that do not exist are skipped.
+    """
+    ensure_permissions(apps, app_label)
 
     group_model = apps.get_model("auth", "Group")
     permission_model = apps.get_model("auth", "Permission")

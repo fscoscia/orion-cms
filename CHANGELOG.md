@@ -84,6 +84,21 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   del cliente en el admin y colores con `ORION_ADMIN_COLORS` (chequeos `orion.E004` y
   `orion.W001`).
 - `WAGTAIL_ENABLE_UPDATE_CHECK = False`: el admin no consulta nuevas versiones de Wagtail.
+- Vista previa del editor: abierta por defecto a media pantalla en pantallas anchas, en
+  tamaño escritorio para las páginas de Orion, botón con su nombre, enlaces que no navegan
+  dentro de ella y modo "Vista previa / Editar" en celular.
+- Roles: los grupos de Wagtail pasan a "Editores" y "Administradores" (migración
+  `orion_editor.0001_roles`, conserva usuarios y permisos); Administradores publica, borra
+  y administra datos del sitio, idiomas y usuarios, sin acceso a sitios, colecciones,
+  flujos ni grupos; el flujo de aprobación pasa a "Aprobación de administradores".
+- Admin completo en español: catálogo con las frases que Wagtail y wagtail-localize no
+  traducen (`LOCALE_PATHS`), etiquetas del login y columna de uso de las regiones; prueba
+  y script para detectar frases nuevas sin traducir.
+- Verificación en dos pasos obligatoria en el admin (django-otp y segno): alta con código
+  QR en el primer ingreso, 10 códigos de respaldo de un solo uso, "Verificación en dos
+  pasos" en el menú de la cuenta (regenerar códigos, otro teléfono) y "Restablecer 2FA"
+  en la lista de usuarios para los administradores. `ORION_2FA_REQUIRED` lo apaga en
+  desarrollo y `orion.W002` avisa si está apagado sin `DEBUG`.
 
 ### Changed
 

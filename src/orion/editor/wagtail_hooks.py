@@ -5,13 +5,15 @@ from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.admin.userbar import BaseItem
+from wagtail.admin.widgets.button import ListingButton
 from wagtail.models import Locale
 
-from orion.editor import views
+from orion.editor import two_factor, views
 from orion.editor.colors import get_admin_colors
 from orion.editor.home import WelcomePanel, get_article_listings
+from orion.editor.roles import is_site_administrator
 
-# Wagtail's menu items that only administrators use (roles arrive in change 3).
+# Wagtail's menu items that only administrators use.
 ADMIN_ONLY_MENU_ITEMS = {"reports", "help"}
 
 
@@ -30,8 +32,40 @@ def remove_summary_counters(request, items):
 @hooks.register("register_admin_urls")
 def register_editor_urls():
     return [
-        path("orion/new-article/", views.new_article, name="orion_editor_new_article")
+        path("orion/new-article/", views.new_article, name="orion_editor_new_article"),
+        path("orion/2fa/verify/", two_factor.verify, name="orion_2fa_verify"),
+        path("orion/2fa/setup/", two_factor.setup, name="orion_2fa_setup"),
+        path(
+            "orion/2fa/backup-codes/",
+            two_factor.backup_codes,
+            name="orion_2fa_backup_codes",
+        ),
+        path("orion/2fa/", two_factor.manage, name="orion_2fa_manage"),
+        path(
+            "orion/2fa/reset/<int:user_id>/",
+            two_factor.reset,
+            name="orion_2fa_reset",
+        ),
     ]
+
+
+@hooks.register("register_account_menu_item")
+def two_factor_account_item(request):
+    return {
+        "url": reverse("orion_2fa_manage"),
+        "label": _("Two-factor authentication"),
+        "help_text": _("Backup codes and the authenticator app on your phone."),
+    }
+
+
+@hooks.register("register_user_listing_buttons")
+def two_factor_reset_button(user, request_user):
+    if two_factor.can_reset(request_user, user):
+        yield ListingButton(
+            _("Reset 2FA"),
+            reverse("orion_2fa_reset", args=[user.pk]),
+            priority=100,
+        )
 
 
 @hooks.register("insert_global_admin_css")
@@ -41,6 +75,16 @@ def editor_css():
         links.append(reverse("orion_admin_colors"))
     return format_html(
         "".join('<link rel="stylesheet" href="{}">' for _link in links), *links
+    )
+
+
+@hooks.register("insert_editor_js")
+def editor_js():
+    return format_html(
+        '<script src="{}" data-preview-label="{}" data-edit-label="{}"></script>',
+        static("orion/editor/editor.js"),
+        _("Preview"),
+        _("Edit"),
     )
 
 
@@ -74,7 +118,7 @@ def view_site_menu_item():
 
 @hooks.register("construct_main_menu")
 def hide_admin_only_items(request, menu_items):
-    if not request.user.is_superuser:
+    if not is_site_administrator(request.user):
         menu_items[:] = [
             item for item in menu_items if item.name not in ADMIN_ONLY_MENU_ITEMS
         ]

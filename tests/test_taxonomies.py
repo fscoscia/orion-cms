@@ -63,7 +63,7 @@ class TestCategories:
 class TestEditingRights:
     def test_editors_can_create_tags_and_categories(self, client, django_user_model):
         editor = django_user_model.objects.create_user("editor", password="x")
-        editor.groups.add(Group.objects.get(name="Editors"))
+        editor.groups.add(Group.objects.get(name="Editores"))
         client.force_login(editor)
 
         for model_name in ("articletag", "articlecategory"):

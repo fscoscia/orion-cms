@@ -52,7 +52,7 @@ class TestCreateTranslation:
         self, client, django_user_model, services_page, english_locale
     ):
         editor = django_user_model.objects.create_user("editor", password="x")
-        editor.groups.add(Group.objects.get(name="Editors"))
+        editor.groups.add(Group.objects.get(name="Editores"))
         client.force_login(editor)
 
         response = client.get(

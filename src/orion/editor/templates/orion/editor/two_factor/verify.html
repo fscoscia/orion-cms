@@ -1,0 +1,15 @@
+{% extends "orion/editor/two_factor/_page.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Two-factor authentication" %}{% endblock %}
+{% block heading %}{% translate "Enter your code" %}{% endblock %}
+{% block body %}
+  <p>{% translate "Open your authenticator app and enter the 6-digit code, or enter one of your backup codes." %}</p>
+  <form class="login-form" method="post" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    {% formattedfield form.code %}
+    <footer class="form-actions">
+      <button type="submit" class="button">{% translate "Continue" %}</button>
+    </footer>
+  </form>
+{% endblock %}

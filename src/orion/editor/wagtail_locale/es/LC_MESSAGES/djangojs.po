@@ -1,0 +1,89 @@
+# Spanish for the Wagtail and wagtail-localize phrases that their own catalogs leave
+# untranslated. Loaded through LOCALE_PATHS, so it also reaches the admin's JavaScript
+# catalog. scripts/missing_wagtail_translations.py lists new ones after an upgrade.
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: wagtail/admin
+msgid "%(num)s error"
+msgid_plural "%(num)s errors"
+msgstr[0] "%(num)s error"
+msgstr[1] "%(num)s errores"
+msgstr[2] "%(num)s errores"
+
+#: wagtail/admin
+msgid "%(num)s min"
+msgid_plural "%(num)s mins"
+msgstr[0] "%(num)s min"
+msgstr[1] "%(num)s min"
+msgstr[2] "%(num)s min"
+
+#: wagtail/admin
+msgid "%(num)s pixel"
+msgid_plural "%(num)s pixels"
+msgstr[0] "%(num)s píxel"
+msgstr[1] "%(num)s píxeles"
+msgstr[2] "%(num)s píxeles"
+
+#: wagtail/admin
+msgid "%(time_zone_option)s: %(localized_time_zone_label)s"
+msgstr "%(time_zone_option)s: %(localized_time_zone_label)s"
+
+#: wagtail/admin
+msgid "A network error occurred."
+msgstr "Ocurrió un error de red."
+
+#: wagtail/admin
+msgid "A server error occurred."
+msgstr "Ocurrió un error en el servidor."
+
+#: wagtail/admin
+msgid "Autosave in progress…"
+msgstr "Autoguardando…"
+
+#: wagtail/admin
+msgid "Changes have been autosaved."
+msgstr "Los cambios se guardaron automáticamente."
+
+#: wagtail/admin
+msgid "Complex"
+msgstr "Compleja"
+
+#: wagtail/admin
+msgid "Fair"
+msgstr "Aceptable"
+
+#: wagtail/admin
+msgid "Good"
+msgstr "Buena"
+
+#: wagtail/admin
+msgid "Pin toolbar"
+msgstr "Fijar la barra de herramientas"
+
+#: wagtail/admin
+msgid "Search options…"
+msgstr "Buscar opciones…"
+
+#: wagtail/admin
+msgid "Unpin toolbar"
+msgstr "Soltar la barra de herramientas"
+
+#: wagtail_localize
+msgid "Applying editor lock"
+msgstr "Bloqueando la edición"
+
+#: wagtail_localize
+msgid "Removing editor lock"
+msgstr "Desbloqueando la edición"
+
+#: wagtail_localize
+msgid "Stopping Synced translation"
+msgstr "Deteniendo la traducción sincronizada"

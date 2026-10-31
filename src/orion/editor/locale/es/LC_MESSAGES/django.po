@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 02:43+0000\n"
+"POT-Creation-Date: 2026-10-31 14:07-0300\n"
 "PO-Revision-Date: 2026-10-31 03:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -16,6 +16,14 @@ msgstr ""
 #: apps.py:8
 msgid "Editor experience"
 msgstr "Experiencia del editor"
+
+#: forms.py:14
+msgid "Password"
+msgstr "Contraseña"
+
+#: forms.py:15
+msgid "Remember me"
+msgstr "Recordarme"
 
 #: home.py:44
 msgid "Create a page"
@@ -88,13 +96,154 @@ msgid "%(time)s ago"
 msgstr "hace %(time)s"
 
 #: templates/orion/editor/new_article.html:3
-#: templates/orion/editor/new_article.html:5 wagtail_hooks.py:55
+#: templates/orion/editor/new_article.html:5 wagtail_hooks.py:99
 msgid "New article"
 msgstr "Nuevo artículo"
 
 #: templates/orion/editor/new_article.html:8
 msgid "Choose the listing for the new article:"
 msgstr "Elegir el listado del artículo nuevo:"
+
+#: templates/orion/editor/two_factor/_page.html:19
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
+#: templates/orion/editor/two_factor/backup_codes.html:3
+#: templates/orion/editor/two_factor/manage.html:12
+msgid "Backup codes"
+msgstr "Códigos de respaldo"
+
+#: templates/orion/editor/two_factor/backup_codes.html:4
+msgid "Save your backup codes"
+msgstr "Guardar los códigos de respaldo"
+
+#: templates/orion/editor/two_factor/backup_codes.html:6
+msgid ""
+"Each code lets you sign in once if you do not have your phone. They are "
+"shown only now: write them down or save them somewhere safe."
+msgstr ""
+"Cada código permite ingresar una vez si no se tiene el teléfono a mano. Se "
+"muestran solo ahora: anotarlos o guardarlos en un lugar seguro."
+
+#: templates/orion/editor/two_factor/backup_codes.html:10
+msgid "I saved them, continue"
+msgstr "Ya los guardé, continuar"
+
+#: templates/orion/editor/two_factor/manage.html:3
+#: templates/orion/editor/two_factor/manage.html:5
+#: templates/orion/editor/two_factor/verify.html:3 wagtail_hooks.py:56
+msgid "Two-factor authentication"
+msgstr "Verificación en dos pasos"
+
+#: templates/orion/editor/two_factor/manage.html:8
+msgid "Your account is protected with an authenticator app."
+msgstr "La cuenta está protegida con una app autenticadora."
+
+#: templates/orion/editor/two_factor/manage.html:8
+msgid "Your account does not have an authenticator app yet."
+msgstr "La cuenta todavía no tiene una app autenticadora."
+
+#: templates/orion/editor/two_factor/manage.html:9
+#, python-format
+msgid "You have %(counter)s backup code left."
+msgid_plural "You have %(counter)s backup codes left."
+msgstr[0] "Queda %(counter)s código de respaldo."
+msgstr[1] "Quedan %(counter)s códigos de respaldo."
+msgstr[2] "Quedan %(counter)s códigos de respaldo."
+
+#: templates/orion/editor/two_factor/manage.html:13
+msgid "New codes replace the previous ones, which stop working."
+msgstr ""
+"Los códigos nuevos reemplazan a los anteriores, que dejan de funcionar."
+
+#: templates/orion/editor/two_factor/manage.html:14
+msgid "Generate new backup codes"
+msgstr "Generar códigos de respaldo nuevos"
+
+#: templates/orion/editor/two_factor/manage.html:15
+msgid "New phone"
+msgstr "Teléfono nuevo"
+
+#: templates/orion/editor/two_factor/manage.html:16
+msgid ""
+"Pair another authenticator app. The current one and the backup codes stop "
+"working."
+msgstr ""
+"Vincular otra app autenticadora. La actual y los códigos de respaldo dejan "
+"de funcionar."
+
+#: templates/orion/editor/two_factor/manage.html:17
+msgid "Set up another phone"
+msgstr "Configurar otro teléfono"
+
+#: templates/orion/editor/two_factor/reset.html:3
+#: templates/orion/editor/two_factor/reset.html:5
+msgid "Reset two-factor authentication"
+msgstr "Restablecer la verificación en dos pasos"
+
+#: templates/orion/editor/two_factor/reset.html:8
+#, python-format
+msgid ""
+"%(user)s will no longer be able to use their authenticator app or backup "
+"codes, and will set up the two-factor authentication again at next sign-in. "
+"Do this only if they lost access to their phone."
+msgstr ""
+"%(user)s ya no podrá usar su app autenticadora ni sus códigos de respaldo y "
+"volverá a configurar la verificación en dos pasos en su próximo ingreso. "
+"Hacerlo solo si perdió el acceso a su teléfono."
+
+#: templates/orion/editor/two_factor/reset.html:11
+msgid "Reset"
+msgstr "Restablecer"
+
+#: templates/orion/editor/two_factor/reset.html:12
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: templates/orion/editor/two_factor/setup.html:3
+#: templates/orion/editor/two_factor/setup.html:4
+msgid "Set up two-factor authentication"
+msgstr "Configurar la verificación en dos pasos"
+
+#: templates/orion/editor/two_factor/setup.html:7
+msgid ""
+"Install an authenticator app on your phone, such as Google Authenticator, "
+"Microsoft Authenticator or 2FAS."
+msgstr ""
+"Instalar en el teléfono una app autenticadora, como Google Authenticator, "
+"Microsoft Authenticator o 2FAS."
+
+#: templates/orion/editor/two_factor/setup.html:9
+msgid "Scan this QR code with the app:"
+msgstr "Escanear este código QR con la app:"
+
+#: templates/orion/editor/two_factor/setup.html:11
+msgid "If you cannot scan it, enter this key in the app:"
+msgstr "Si no se puede escanear, escribir esta clave en la app:"
+
+#: templates/orion/editor/two_factor/setup.html:14
+msgid "Enter the 6-digit code that the app shows:"
+msgstr "Escribir el código de 6 dígitos que muestra la app:"
+
+#: templates/orion/editor/two_factor/setup.html:21
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: templates/orion/editor/two_factor/verify.html:4
+msgid "Enter your code"
+msgstr "Código de verificación"
+
+#: templates/orion/editor/two_factor/verify.html:6
+msgid ""
+"Open your authenticator app and enter the 6-digit code, or enter one of your "
+"backup codes."
+msgstr ""
+"Abrir la app autenticadora y escribir el código de 6 dígitos, o escribir uno "
+"de los códigos de respaldo."
+
+#: templates/orion/editor/two_factor/verify.html:12
+msgid "Continue"
+msgstr "Continuar"
 
 #: templates/wagtailadmin/home.html:3
 #, python-format
@@ -106,18 +255,90 @@ msgstr "Panel de %(site_name)s"
 msgid "Sign in to %(site_name)s"
 msgstr "Ingresar a %(site_name)s"
 
-#: wagtail_hooks.py:66
+#: templates/wagtaillocales/index.html:13
+#: templates/wagtaillocales/index.html:17
+msgid "Language"
+msgstr "Idioma"
+
+#: templates/wagtaillocales/index.html:21
+msgid "Usage"
+msgstr "Uso"
+
+#: templates/wagtaillocales/index.html:31
+msgid "This locale's language code is not supported"
+msgstr "El código de idioma de esta región no está admitido"
+
+#: templates/wagtaillocales/index.html:37
+#, python-format
+msgid "%(counter)s page"
+msgid_plural "%(counter)s pages"
+msgstr[0] "%(counter)s página"
+msgstr[1] "%(counter)s páginas"
+msgstr[2] "%(counter)s páginas"
+
+#: templates/wagtaillocales/index.html:38
+#, python-format
+msgid "+ %(counter)s other object"
+msgid_plural "+ %(counter)s other objects"
+msgstr[0] "+ %(counter)s objeto más"
+msgstr[1] "+ %(counter)s objetos más"
+msgstr[2] "+ %(counter)s objetos más"
+
+#: two_factor.py:34
+msgid "Code"
+msgstr "Código"
+
+#: two_factor.py:86
+msgid ""
+"The code is not valid or has expired. After several wrong codes, wait a "
+"moment before trying again."
+msgstr ""
+"El código no es válido o venció. Después de varios códigos incorrectos, "
+"esperar un momento antes de volver a intentar."
+
+#: two_factor.py:119
+msgid "The code is not valid. Check the time on the phone."
+msgstr "El código no es válido. Revisar que la hora del teléfono sea correcta."
+
+#: two_factor.py:123
+msgid "QR code for the authenticator app"
+msgstr "Código QR para la app autenticadora"
+
+#: two_factor.py:193
+#, python-format
+msgid "%(user)s will set up the two-factor authentication again at next login."
+msgstr ""
+"%(user)s volverá a configurar la verificación en dos pasos en su próximo "
+"ingreso."
+
+#: wagtail_hooks.py:57
+msgid "Backup codes and the authenticator app on your phone."
+msgstr "Códigos de respaldo y la app autenticadora del teléfono."
+
+#: wagtail_hooks.py:65
+msgid "Reset 2FA"
+msgstr "Restablecer 2FA"
+
+#: wagtail_hooks.py:86
+msgid "Preview"
+msgstr "Vista previa"
+
+#: wagtail_hooks.py:87
+msgid "Edit"
+msgstr "Editar"
+
+#: wagtail_hooks.py:110
 msgid "View the site"
 msgstr "Ver el sitio"
 
-#: wagtail_hooks.py:120
+#: wagtail_hooks.py:164
 msgid "Header"
 msgstr "Encabezado"
 
-#: wagtail_hooks.py:121
+#: wagtail_hooks.py:165
 msgid "Footer"
 msgstr "Pie"
 
-#: wagtail_hooks.py:129
+#: wagtail_hooks.py:173
 msgid "Footer texts"
 msgstr "Textos del pie"

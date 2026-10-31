@@ -1,0 +1,15 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Reset two-factor authentication" %}{% endblock %}
+{% block content %}
+  {% translate "Reset two-factor authentication" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="lock" %}
+  <div class="nice-padding">
+    <p>{% blocktranslate with user=target.get_full_name|default:target.get_username %}{{ user }} will no longer be able to use their authenticator app or backup codes, and will set up the two-factor authentication again at next sign-in. Do this only if they lost access to their phone.{% endblocktranslate %}</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="button serious">{% translate "Reset" %}</button>
+      <a href="{% url 'wagtailusers_users:index' %}" class="button button-secondary">{% translate "Cancel" %}</a>
+    </form>
+  </div>
+{% endblock %}

@@ -125,7 +125,7 @@ reemplazando `LANGUAGES` y `WAGTAIL_CONTENT_LANGUAGES` en sus ajustes.
 
 Para sumar un idioma:
 
-1. **Propiedades → Regiones → Add a locale** (*Settings → Locales*): elegir el idioma.
+1. **Propiedades → Regiones → Agregar una región** (*Settings → Locales*): elegir el idioma.
    Conviene activar la sincronización desde el idioma base para que se cree la página de
    inicio traducida. Desde ese momento los editores pueden traducir páginas (acción
    "Traducir esta página").
@@ -318,6 +318,58 @@ lateral suma "Nuevo artículo" (con un listado abre directo el formulario; con v
 elegir) y "Ver el sitio", y muestra Informes y Ayuda solo a los administradores. En el
 sitio, la barra flotante de Wagtail suma accesos al menú del encabezado, al del pie y a los
 textos del pie del idioma que se está mirando.
+
+Al editar una página en una pantalla ancha, la vista previa se abre sola la primera vez, a
+media pantalla y en tamaño escritorio (los tipos de página de un proyecto lo heredan con
+`orion.pages.models.DesktopPreviewMixin`); después se respeta lo que cada editor elija.
+Dentro de la vista previa los enlaces no navegan; "En vivo" abre la página publicada. En el
+celular la vista previa no se abre sola: "Vista previa" la muestra a pantalla completa en
+tamaño celular y "Editar" vuelve al formulario.
+
+### Verificación en dos pasos
+
+Todo usuario con acceso al admin usa un segundo factor. En el primer ingreso tras instalar
+Orion (o tras crear el usuario), después de la contraseña el admin pide escanear un código
+QR con una app autenticadora (Google Authenticator, Microsoft Authenticator, 2FAS, etc.),
+confirmar con un código y guardar 10 códigos de respaldo de un solo uso. Desde entonces,
+cada ingreso pide el código de la app o uno de respaldo. Avisar al cliente antes de
+instalarlo: todos los usuarios lo configuran en su próximo ingreso.
+
+Recuperación:
+
+- Con un código de respaldo, el usuario entra y desde el menú de su cuenta
+  (**Verificación en dos pasos**) genera códigos nuevos o configura otro teléfono.
+- Sin teléfono ni códigos, un administrador usa **Restablecer 2FA** en la lista de
+  usuarios y el usuario lo vuelve a configurar al ingresar. El 2FA de un superusuario
+  solo lo restablece otro superusuario.
+- Si no queda nadie que pueda hacerlo, desde el servidor:
+
+  ```bash
+  pipenv run manage shell -c "from django_otp import devices_for_user; from django.contrib.auth import get_user_model; [d.delete() for d in devices_for_user(get_user_model().objects.get(username='USUARIO'), confirmed=None)]"
+  ```
+
+En desarrollo se puede apagar con `ORION_2FA_REQUIRED=false` en el `.env`; `manage.py
+check` avisa (`orion.W002`) si queda apagado con `DEBUG` desactivado.
+
+### Roles
+
+Orion convierte los grupos que crea Wagtail en sus dos roles:
+
+- **Editores** crean y modifican páginas, imágenes, documentos, menús, textos del sitio,
+  categorías y etiquetas, y preparan traducciones. No publican: envían a revisión.
+- **Administradores** aprueban lo que envían los editores (flujo "Aprobación de
+  administradores") y además publican, borran y bloquean páginas, editan los datos y los
+  idiomas del sitio y administran usuarios. No acceden a lo técnico (sitios, colecciones,
+  flujos y grupos), que queda para los superusuarios.
+
+Para limitar a alguien a una sección (por ejemplo, solo Novedades), un superusuario crea un
+grupo en **Propiedades → Grupos** con permisos de páginas sobre esa sección y lo asigna al
+usuario.
+
+El admin en español no tiene frases en inglés: `orion/editor/wagtail_locale` traduce las
+que Wagtail no trae. Después de actualizar Wagtail, una prueba falla si aparecen frases
+nuevas sin traducir, y `pipenv run manage shell < scripts/missing_wagtail_translations.py`
+las lista para agregarlas.
 
 El admin muestra la marca del cliente: el logo del pie (la versión clara) en el menú
 lateral, el logo en el login y el nombre del sitio (**Propiedades → Sitios**) en el login,

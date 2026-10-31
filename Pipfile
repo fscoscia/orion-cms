@@ -12,6 +12,8 @@ pytest-django = "~=4.14"
 ruff = "~=0.17.3"
 pre-commit = "~=4.7"
 django-tailwind-cli = "==4.8.1"
+# Pulled in by pre-commit's virtualenv; pinned because newer releases are days old.
+python-discovery = "==1.6.3"
 
 [requires]
 python_version = "3.12"

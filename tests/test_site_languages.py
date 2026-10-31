@@ -55,7 +55,7 @@ class TestPublicLanguages:
 class TestPermissions:
     def test_editor_cannot_change_public_languages(self, client, django_user_model):
         editor = django_user_model.objects.create_user("editor", password="x")
-        editor.groups.add(Group.objects.get(name="Editors"))
+        editor.groups.add(Group.objects.get(name="Editores"))
         client.force_login(editor)
 
         response = client.get(_language_settings_url())

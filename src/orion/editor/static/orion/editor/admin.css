@@ -106,3 +106,76 @@
   max-width: 12rem;
   height: auto;
 }
+
+/* The preview toggle shows its name, not only an icon. */
+.w-side-panel-toggle[data-side-panel-toggle="preview"] {
+  gap: 0.4rem;
+  width: auto;
+  padding-inline: 0.75rem;
+  border-radius: 999px;
+}
+
+.orion-preview-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* "Edit" closes the full-screen preview on phones; wider screens show both. */
+.orion-edit-label {
+  display: none;
+  margin-inline-start: 0.4rem;
+  font-weight: 600;
+}
+
+@media (width < 50rem) {
+  .orion-edit-label {
+    display: inline;
+  }
+
+  [data-form-side-close-button] {
+    width: auto;
+    padding-inline: 0.75rem;
+  }
+}
+
+/* Two-factor authentication pages, which use Wagtail's sign-in layout. */
+.orion-two-factor__qr svg {
+  display: block;
+  width: 12rem;
+  height: auto;
+  margin-block: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.orion-two-factor__secret {
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  /* Break only between the groups of four, so the key is easy to copy by hand. */
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.orion-two-factor a.button {
+  justify-content: center;
+  text-align: center;
+}
+
+.orion-two-factor__steps {
+  padding-inline-start: 1.25rem;
+}
+
+.orion-two-factor__codes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1.5rem;
+  margin-block: 1.5rem;
+  padding: 0;
+  list-style: none;
+  font-size: 1.15rem;
+}
+
+.orion-two-factor__logout {
+  margin-top: 2rem;
+}

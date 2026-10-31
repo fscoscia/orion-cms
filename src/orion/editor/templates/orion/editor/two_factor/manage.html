@@ -1,0 +1,20 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Two-factor authentication" %}{% endblock %}
+{% block content %}
+  {% translate "Two-factor authentication" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="lock" %}
+  <div class="nice-padding orion-two-factor-manage">
+    <p>{% if has_authenticator %}{% translate "Your account is protected with an authenticator app." %}{% else %}{% translate "Your account does not have an authenticator app yet." %}{% endif %}</p>
+    <p>{% blocktranslate count counter=backup_codes_left %}You have {{ counter }} backup code left.{% plural %}You have {{ counter }} backup codes left.{% endblocktranslate %}</p>
+    <form method="post">
+      {% csrf_token %}
+      <h2>{% translate "Backup codes" %}</h2>
+      <p>{% translate "New codes replace the previous ones, which stop working." %}</p>
+      <button type="submit" name="action" value="regenerate" class="button button-secondary">{% translate "Generate new backup codes" %}</button>
+      <h2>{% translate "New phone" %}</h2>
+      <p>{% translate "Pair another authenticator app. The current one and the backup codes stop working." %}</p>
+      <button type="submit" name="action" value="replace" class="button button-secondary">{% translate "Set up another phone" %}</button>
+    </form>
+  </div>
+{% endblock %}
