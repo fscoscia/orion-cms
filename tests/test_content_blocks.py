@@ -286,9 +286,12 @@ class TestImages:
     def test_gallery_images_are_responsive_and_lazy(self, render, image_value):
         html = render(("gallery", {"images": [{"image": image_value}] * 2}))
 
+        assert html.count("<picture>") == 2
+        sources = _tags(html, "source")
+        assert len(sources) == 2
+        assert all('type="image/avif"' in tag and "sizes=" in tag for tag in sources)
         for tag in _tags(html, "img"):
-            assert "srcset=" in tag
-            assert ".webp" in tag
+            assert ".webp " in tag.split('srcset="', 1)[1]
             assert 'width="' in tag
             assert 'height="' in tag
             assert 'loading="lazy"' in tag
@@ -297,6 +300,31 @@ class TestImages:
         html = render(("hero", {"title": "<p>T</p>", "image": image_value}))
 
         assert 'loading="lazy"' not in _tags(html, "img")[0]
+        assert 'fetchpriority="high"' in _tags(html, "img")[0]
+
+    def test_page_starting_with_a_hero_preloads_its_image(
+        self, client, publish, image_value
+    ):
+        page = publish(("hero", {"title": "<p>T</p>", "image": image_value}))
+
+        html = client.get(page.url).content.decode()
+
+        head = html.split("</head>", 1)[0]
+        preload = next(tag for tag in _tags(head, "link") if 'rel="preload"' in tag)
+        avif_source = next(tag for tag in _tags(html, "source") if "image/avif" in tag)
+        srcset = avif_source.split('srcset="', 1)[1].split('"', 1)[0]
+        assert 'type="image/avif"' in preload
+        assert f'imagesrcset="{srcset}"' in preload
+        assert 'fetchpriority="high"' in preload
+
+    def test_page_without_a_leading_hero_does_not_preload(
+        self, client, publish, image_value
+    ):
+        page = publish(("image", {"image": image_value}))
+
+        head = client.get(page.url).content.decode().split("</head>", 1)[0]
+
+        assert 'rel="preload"' not in head
 
     def test_headings_keep_a_valid_outline(self, render):
         html = render(

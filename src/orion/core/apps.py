@@ -9,4 +9,6 @@ class CoreConfig(AppConfig):
 
     def ready(self):
         # Importing the module registers its system checks with Django.
-        from orion.core import checks  # noqa: F401
+        from orion.core import checks, image_library  # noqa: F401
+
+        image_library.connect()

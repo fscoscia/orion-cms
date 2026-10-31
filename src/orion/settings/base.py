@@ -228,6 +228,16 @@ ORION_MAP_TILES = {
 # Where the admin's location picker starts when no location is set: (lat, lng, zoom).
 ORION_MAP_DEFAULT_CENTER = (-25.2637, -57.5759, 12)
 
+# Images: formats and weight accepted by the library, originals reduced to
+# ORION_IMAGE_MAX_DIMENSION px, and renditions generated after each upload.
+WAGTAILIMAGES_EXTENSIONS = ["avif", "gif", "jpg", "jpeg", "png", "svg", "webp"]
+WAGTAILIMAGES_MAX_UPLOAD_SIZE = env_int("ORION_IMAGE_MAX_UPLOAD_MB", 10) * 1024 * 1024
+WAGTAILIMAGES_IMAGE_FORM_BASE = "orion.core.image_forms.ImageForm"
+ORION_IMAGE_MAX_DIMENSION = 2048
+ORION_IMAGE_RENDITIONS_IN_BACKGROUND = True
+# Projects add or replace named image sizes here (see orion.core.images).
+ORION_IMAGE_SIZES = {}
+
 # Static and media files (projects set STATIC_ROOT and MEDIA_ROOT)
 
 STATIC_URL = "static/"

@@ -3,298 +3,297 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 01:44+0000\n"
+"POT-Creation-Date: 2026-10-31 17:51-0300\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
-"1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: apps.py:8
 msgid "Orion core"
 msgstr "Núcleo de Orion"
 
-#: blocks/content.py:36
+#: blocks/content.py:83
 msgid "Standard"
 msgstr "Estándar"
 
-#: blocks/content.py:88
+#: blocks/content.py:135
 msgid "Style"
 msgstr "Estilo"
 
-#: blocks/content.py:93
+#: blocks/content.py:140
 msgid "Visible"
 msgstr "Visible"
 
-#: blocks/content.py:94
+#: blocks/content.py:141
 msgid "Turn off to hide the block without deleting it."
 msgstr "Desactivar para ocultar el bloque sin borrarlo."
 
-#: blocks/content.py:138 blocks/content.py:284 blocks/content.py:363
+#: blocks/content.py:185 blocks/content.py:355 blocks/content.py:440
 msgid "Title"
 msgstr "Título"
 
-#: blocks/content.py:139
+#: blocks/content.py:186
 msgid "Make words bold to highlight them."
 msgstr "Poner en negrita las palabras que se quieren resaltar."
 
-#: blocks/content.py:145
+#: blocks/content.py:192
 msgid "A title must be a single paragraph."
 msgstr "Un título tiene que ser un solo párrafo."
 
-#: blocks/content.py:153 blocks/content.py:215 blocks/content.py:285
-#: blocks/content.py:334 blocks/content.py:436 blocks/content.py:486
+#: blocks/content.py:200 blocks/content.py:265 blocks/content.py:356
+#: blocks/content.py:411 blocks/content.py:513 blocks/content.py:578
 #: blocks/links.py:97
 msgid "Text"
 msgstr "Texto"
 
-#: blocks/content.py:161
+#: blocks/content.py:208
 msgid "Button style"
 msgstr "Estilo del botón"
 
-#: blocks/content.py:162
+#: blocks/content.py:209
 msgid "Primary"
 msgstr "Principal"
 
-#: blocks/content.py:162
+#: blocks/content.py:209
 msgid "Secondary"
 msgstr "Secundario"
 
-#: blocks/content.py:168
+#: blocks/content.py:215
 msgid "Button"
 msgstr "Botón"
 
-#: blocks/content.py:174 blocks/content.py:545
+#: blocks/content.py:221 blocks/content.py:637
 msgid "Buttons"
 msgstr "Botones"
 
-#: blocks/content.py:185
+#: blocks/content.py:232
 msgid "Supporting text"
 msgstr "Texto de apoyo"
 
-#: blocks/content.py:188 blocks/content.py:228 blocks/content.py:233
-#: blocks/content.py:239 blocks/content.py:244 blocks/content.py:265
-#: blocks/content.py:283
+#: blocks/content.py:235 blocks/content.py:278 blocks/content.py:286
+#: blocks/content.py:293 blocks/content.py:298 blocks/content.py:328
+#: blocks/content.py:354
 msgid "Image"
 msgstr "Imagen"
 
-#: blocks/content.py:190
+#: blocks/content.py:237
 msgid "Shown behind the text. Use a wide photo."
 msgstr "Se muestra detrás del texto. Usar una foto apaisada."
 
-#: blocks/content.py:195
+#: blocks/content.py:245
 msgid "Hero"
 msgstr "Hero"
 
-#: blocks/content.py:197
+#: blocks/content.py:247
 msgid ""
-"The large opening section of a page, with a title, a short text, buttons and "
-"an optional image."
+"The large opening section of a page, with a title, a short text, buttons and"
+" an optional image."
 msgstr ""
 "La sección grande del comienzo de una página, con título, un texto corto, "
 "botones y una imagen opcional."
 
-#: blocks/content.py:216
+#: blocks/content.py:266
 msgid "Paragraphs with bold, italics, links, lists and subtitles."
 msgstr "Párrafos con negrita, itálica, enlaces, listas y subtítulos."
 
-#: blocks/content.py:229 blocks/content.py:240
+#: blocks/content.py:279 blocks/content.py:294
 msgid "Caption"
 msgstr "Epígrafe"
 
-#: blocks/content.py:234
+#: blocks/content.py:287
 msgid "A photo with an optional caption."
 msgstr "Una foto con epígrafe opcional."
 
-#: blocks/content.py:252
+#: blocks/content.py:306
 msgid "Images"
 msgstr "Imágenes"
 
-#: blocks/content.py:257
+#: blocks/content.py:317
 msgid "Gallery"
 msgstr "Galería"
 
-#: blocks/content.py:258
+#: blocks/content.py:318
 msgid "A grid of photos with optional captions."
 msgstr "Una grilla de fotos con epígrafes opcionales."
 
-#: blocks/content.py:270
+#: blocks/content.py:333
 msgid "Image position"
 msgstr "Lado de la imagen"
 
-#: blocks/content.py:271 blocks/content.py:539
+#: blocks/content.py:334 blocks/content.py:631
 msgid "Left"
 msgstr "Izquierda"
 
-#: blocks/content.py:271 blocks/content.py:539
+#: blocks/content.py:334 blocks/content.py:631
 msgid "Right"
 msgstr "Derecha"
 
-#: blocks/content.py:277
+#: blocks/content.py:343
 msgid "Image and text"
 msgstr "Imagen y texto"
 
-#: blocks/content.py:278
+#: blocks/content.py:344
 msgid "A photo next to a title, a text and buttons."
 msgstr "Una foto al lado de un título, un texto y botones."
 
-#: blocks/content.py:287 blocks/links.py:157
+#: blocks/content.py:358 blocks/links.py:157
 msgid "Link"
 msgstr "Enlace"
 
-#: blocks/content.py:289
+#: blocks/content.py:360
 msgid "Optional. The text defaults to the page title."
 msgstr "Opcional. Si no se escribe un texto, se usa el título de la página."
 
-#: blocks/content.py:294
+#: blocks/content.py:365
 msgid "Card"
 msgstr "Tarjeta"
 
-#: blocks/content.py:302
+#: blocks/content.py:373
 msgid "Columns"
 msgstr "Columnas"
 
-#: blocks/content.py:306 blocks/content.py:310
+#: blocks/content.py:377 blocks/content.py:387
 msgid "Cards"
 msgstr "Tarjetas"
 
-#: blocks/content.py:312
+#: blocks/content.py:389
 msgid "A grid of cards, each with an optional image, a text and a link."
 msgstr ""
 "Una grilla de tarjetas, cada una con imagen opcional, un texto y un enlace."
 
-#: blocks/content.py:327
+#: blocks/content.py:404
 msgid "Number"
 msgstr "Número"
 
-#: blocks/content.py:329
+#: blocks/content.py:406
 msgid "Before the number"
 msgstr "Antes del número"
 
-#: blocks/content.py:332
+#: blocks/content.py:409
 msgid "After the number"
 msgstr "Después del número"
 
-#: blocks/content.py:338
+#: blocks/content.py:415
 msgid "Figure"
 msgstr "Cifra"
 
-#: blocks/content.py:345 blocks/content.py:349
+#: blocks/content.py:422 blocks/content.py:426
 msgid "Figures"
 msgstr "Cifras"
 
-#: blocks/content.py:350
+#: blocks/content.py:427
 msgid "Large numbers that count up when they appear on screen."
 msgstr "Números grandes que se cuentan al aparecer en pantalla."
 
-#: blocks/content.py:370
+#: blocks/content.py:447
 msgid "Tab"
 msgstr "Pestaña"
 
-#: blocks/content.py:374 blocks/content.py:379
+#: blocks/content.py:451 blocks/content.py:456
 msgid "Question"
 msgstr "Pregunta"
 
-#: blocks/content.py:375
+#: blocks/content.py:452
 msgid "Answer"
 msgstr "Respuesta"
 
-#: blocks/content.py:393 blocks/content.py:401
+#: blocks/content.py:470 blocks/content.py:478
 msgid "Tabs"
 msgstr "Pestañas"
 
-#: blocks/content.py:402
+#: blocks/content.py:479
 msgid "Content split into tabs; only one tab is shown at a time."
 msgstr "Contenido dividido en pestañas; se muestra una pestaña a la vez."
 
-#: blocks/content.py:416
+#: blocks/content.py:493
 msgid "Questions"
 msgstr "Preguntas"
 
-#: blocks/content.py:420
+#: blocks/content.py:497
 msgid "Accordion"
 msgstr "Acordeón"
 
-#: blocks/content.py:421
+#: blocks/content.py:498
 msgid "Questions that open to show their answer, such as an FAQ."
 msgstr ""
 "Preguntas que se abren para mostrar su respuesta, como unas preguntas "
 "frecuentes."
 
-#: blocks/content.py:441
+#: blocks/content.py:518
 msgid "Call to action"
 msgstr "Llamada a la acción"
 
-#: blocks/content.py:443
+#: blocks/content.py:520
 msgid "A highlighted box that invites visitors to take the next step."
 msgstr "Un recuadro destacado que invita a dar el siguiente paso."
 
-#: blocks/content.py:454 blocks/content.py:464
+#: blocks/content.py:531 blocks/content.py:541
 msgid "Logo"
 msgstr "Logo"
 
-#: blocks/content.py:456 blocks/content.py:613
+#: blocks/content.py:533 blocks/content.py:741
 msgid "Name"
 msgstr "Nombre"
 
-#: blocks/content.py:458
+#: blocks/content.py:535
 msgid "Read by screen readers and shown if the image fails to load."
 msgstr "Lo leen los lectores de pantalla y se muestra si la imagen no carga."
 
-#: blocks/content.py:460
+#: blocks/content.py:537
 msgid "Website"
 msgstr "Sitio web"
 
-#: blocks/content.py:471 blocks/content.py:475
+#: blocks/content.py:548 blocks/content.py:558
 msgid "Logos"
 msgstr "Logos"
 
-#: blocks/content.py:477
+#: blocks/content.py:560
 msgid "A row of logos, such as partners or clients, with optional links."
 msgstr "Una fila de logos, como convenios o clientes, con enlaces opcionales."
 
-#: blocks/content.py:484
+#: blocks/content.py:576
 msgid "Label"
 msgstr "Etiqueta"
 
-#: blocks/content.py:484
+#: blocks/content.py:576
 msgid "Opening hours"
 msgstr "Horario"
 
-#: blocks/content.py:490
+#: blocks/content.py:582
 msgid "Extra item"
 msgstr "Dato extra"
 
-#: blocks/content.py:497 blocks/links.py:105
+#: blocks/content.py:589 blocks/links.py:105
 #: templates/orion/includes/contact_details.html:8
 msgid "Phone"
 msgstr "Teléfono"
 
-#: blocks/content.py:499
+#: blocks/content.py:591
 msgid "WhatsApp"
 msgstr "WhatsApp"
 
-#: blocks/content.py:501 blocks/links.py:104
+#: blocks/content.py:593 blocks/links.py:104
 #: templates/orion/includes/contact_details.html:8
 msgid "Email"
 msgstr "Email"
 
-#: blocks/content.py:502 templates/orion/includes/contact_details.html:8
+#: blocks/content.py:594 templates/orion/includes/contact_details.html:8
 msgid "Address"
 msgstr "Dirección"
 
-#: blocks/content.py:504
+#: blocks/content.py:596
 msgid "Extra items"
 msgstr "Datos extra"
 
-#: blocks/content.py:519
+#: blocks/content.py:611
 msgid "Contact details"
 msgstr "Datos de contacto"
 
-#: blocks/content.py:521
+#: blocks/content.py:613
 msgid ""
 "The site's phone, WhatsApp, email and address from Site data, plus extra "
 "items such as opening hours."
@@ -302,85 +301,87 @@ msgstr ""
 "El teléfono, el WhatsApp, el email y la dirección de Datos del sitio, más "
 "datos extra como el horario."
 
-#: blocks/content.py:538
+#: blocks/content.py:630
 msgid "Alignment"
 msgstr "Alineación"
 
-#: blocks/content.py:539
+#: blocks/content.py:631
 msgid "Center"
 msgstr "Centro"
 
-#: blocks/content.py:546
+#: blocks/content.py:638
 msgid "One to three buttons in a row."
 msgstr "De uno a tres botones en fila."
 
-#: blocks/content.py:565
+#: blocks/content.py:674
 msgid "How many"
 msgstr "Cantidad"
 
-#: blocks/content.py:569
+#: blocks/content.py:678
 msgid "Listing"
 msgstr "Listado"
 
-#: blocks/content.py:571
+#: blocks/content.py:680
 msgid "Optional. Without a listing, shows articles from all of them."
 msgstr "Opcional. Sin un listado, muestra artículos de todos."
 
-#: blocks/content.py:591
+#: blocks/content.py:709
 msgid "Latest articles"
 msgstr "Últimas novedades"
 
-#: blocks/content.py:592
+#: blocks/content.py:710
 msgid "The most recent articles, from every listing or from one."
 msgstr "Los artículos más recientes, de todos los listados o de uno."
 
-#: blocks/content.py:612
+#: blocks/content.py:740
 msgid "Location"
 msgstr "Ubicación"
 
-#: blocks/content.py:615
+#: blocks/content.py:743
 msgid "Description"
 msgstr "Descripción"
 
-#: blocks/content.py:618
+#: blocks/content.py:746
 msgid "For example, the address or the opening hours."
 msgstr "Por ejemplo, la dirección o el horario."
 
-#: blocks/content.py:623
+#: blocks/content.py:751
 msgid "Point"
 msgstr "Punto"
 
-#: blocks/content.py:631
+#: blocks/content.py:759
 msgid "Include the site location"
 msgstr "Incluir la ubicación del sitio"
 
-#: blocks/content.py:634
+#: blocks/content.py:762
 msgid "The location set in Site data."
 msgstr "La ubicación cargada en Datos del sitio."
 
-#: blocks/content.py:636
+#: blocks/content.py:764
 msgid "Points"
 msgstr "Puntos"
 
-#: blocks/content.py:638
+#: blocks/content.py:766
 msgid "Zoom"
 msgstr "Zoom"
 
-#: blocks/content.py:642
+#: blocks/content.py:770
 msgid "Used with a single point; several points are all shown."
 msgstr "Se usa con un solo punto; con varios, se muestran todos."
 
-#: blocks/content.py:676 templates/orion/includes/map.html:11
+#: blocks/content.py:804 templates/orion/includes/map.html:11
 msgid "Map"
 msgstr "Mapa"
 
-#: blocks/content.py:678
+#: blocks/content.py:806
 msgid ""
 "A map with the site location and other points, loaded when the visitor asks "
 "for it."
-msgstr "Un mapa con la ubicación del sitio y otros puntos, que se carga cuando el visitante lo pide."
+msgstr ""
+"Un mapa con la ubicación del sitio y otros puntos, que se carga cuando el "
+"visitante lo pide."
 
-#: blocks/content.py:722
+#: blocks/content.py:850
 msgid "The hero must be the first block."
 msgstr "El Hero tiene que ser el primer bloque."
 
@@ -432,7 +433,11 @@ msgstr "La latitud tiene que estar entre -90 y 90."
 msgid "The longitude must be between -180 and 180."
 msgstr "La longitud tiene que estar entre -180 y 180."
 
-#: templates/orion/base.html:18
+#: image_forms.py:19
+msgid "The file is not a valid SVG image."
+msgstr "El archivo no es una imagen SVG válida."
+
+#: templates/orion/base.html:20
 msgid "Skip to content"
 msgstr "Saltar al contenido"
 
@@ -461,8 +466,11 @@ msgid "Open in OpenStreetMap"
 msgstr "Abrir en OpenStreetMap"
 
 #: templates/orion/widgets/location_widget.html:11
-msgid "Click on the map or drag the marker. You can also type the coordinates."
-msgstr "Hacer clic en el mapa o arrastrar el marcador. También se pueden escribir las coordenadas."
+msgid ""
+"Click on the map or drag the marker. You can also type the coordinates."
+msgstr ""
+"Hacer clic en el mapa o arrastrar el marcador. También se pueden escribir "
+"las coordenadas."
 
 #: templates/orion/widgets/location_widget.html:13
 msgid "Latitude"

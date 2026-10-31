@@ -1,5 +1,5 @@
 {% extends "orion/base.html" %}
-{% load i18n wagtailcore_tags wagtailimages_tags %}
+{% load i18n orion_core wagtailcore_tags %}
 
 {% block content %}
   {% with index=page.get_parent %}
@@ -22,7 +22,7 @@
       {% if page.image %}
         <div class="mx-auto max-w-4xl px-4 pt-8">
           {# The article's main image, so it is not lazy-loaded. #}
-          {% srcset_image page.image format-webp width-{480,800,1200,1600} sizes="(min-width: 56rem) 54rem, 100vw" alt=page.image_alt_text class="h-auto w-full rounded-lg" %}
+          {% responsive_image page.image "article" alt=page.image_alt_text class_name="h-auto w-full rounded-lg" is_main=True %}
         </div>
       {% endif %}
 

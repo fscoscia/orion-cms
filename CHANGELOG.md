@@ -107,6 +107,15 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 - Aviso a los administradores, en el panel y el calendario, cuando una publicación o baja
   programada lleva más de una hora de atraso (la tarea `publish_scheduled` no corre);
   el README documenta el cron.
+- Imágenes en AVIF con WebP de respaldo (`<picture>`), con medidas con nombre
+  (`orion.core.images`, `ORION_IMAGE_SIZES`) y la etiqueta `{% responsive_image %}`; la
+  imagen del Hero y la del artículo se piden primero y el Hero inicial se precarga
+  (`{% main_image_preload %}`).
+- Biblioteca de imágenes: recortes generados en segundo plano al subir, originales
+  reducidos a 2048 px, SVG aceptados y limpiados, límite de peso configurable
+  (`ORION_IMAGE_MAX_UPLOAD_MB`), comandos `orion_generate_renditions` y
+  `orion_unused_images`; los ajustes del sitio entran al índice de referencias (el uso
+  de los logos se ve en el admin).
 
 ### Changed
 

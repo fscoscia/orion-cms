@@ -1,4 +1,4 @@
-{% load i18n wagtailcore_tags wagtailimages_tags orion_core orion_navigation orion_site_data %}
+{% load i18n wagtailcore_tags orion_core orion_navigation orion_site_data %}
 {% wagtail_site as current_site %}
 {% get_site_texts as site_texts %}
 {% with site_data=settings.orion_site_data.SiteSettings %}
@@ -6,7 +6,7 @@
   <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
     <div class="space-y-4">
       {% if site_data.footer_logo %}
-        {% image site_data.footer_logo height-80 class="h-10 w-auto" %}
+        {% responsive_image site_data.footer_logo "site_logo" alt=current_site.site_name class_name="h-10 w-auto" %}
       {% elif current_site.site_name %}
         <p class="text-lg font-semibold text-white">{{ current_site.site_name }}</p>
       {% endif %}

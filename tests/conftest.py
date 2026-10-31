@@ -57,3 +57,9 @@ def _without_second_factor(settings, request):
     turns it on."""
     if request.node.get_closest_marker("two_factor") is None:
         settings.ORION_2FA_REQUIRED = False
+
+
+@pytest.fixture(autouse=True)
+def _renditions_in_the_same_thread(settings):
+    """Generate image renditions synchronously, inside each test's transaction."""
+    settings.ORION_IMAGE_RENDITIONS_IN_BACKGROUND = False

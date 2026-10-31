@@ -24,6 +24,7 @@ dependencies = [
     "wagtail-localize>=1.14,<2",
     "django-otp>=1.7,<2",
     "segno>=1.6,<2",
+    "defusedxml>=0.7,<1",
 ]
 
 [project.optional-dependencies]

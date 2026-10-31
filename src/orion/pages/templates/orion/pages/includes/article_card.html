@@ -1,7 +1,7 @@
-{% load i18n wagtailcore_tags wagtailimages_tags %}{# An article in a list. Pass `article` and `heading` ("h2" or "h3"). #}
+{% load orion_core i18n wagtailcore_tags %}{# An article in a list. Pass `article` and `heading` ("h2" or "h3"). #}
 <article class="relative flex w-full flex-col overflow-hidden rounded-lg border border-line bg-surface">
   {% if article.image %}
-    {% if article.image.is_sample %}{% include "orion/blocks/includes/sample_image.html" with image=article.image alt=article.image_alt_text class_name="aspect-8/5 h-auto w-full object-cover" %}{% else %}{% srcset_image article.image format-webp fill-{480x300,800x500} sizes="(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw" alt=article.image_alt_text loading="lazy" decoding="async" class="aspect-8/5 h-auto w-full object-cover" %}{% endif %}
+    {% responsive_image article.image "card" alt=article.image_alt_text class_name="aspect-8/5 h-auto w-full object-cover" %}
   {% endif %}
   <div class="flex flex-1 flex-col gap-2 p-6">
     <p class="text-sm text-ink-muted"><time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"DATE_FORMAT" }}</time></p>

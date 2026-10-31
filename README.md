@@ -225,6 +225,54 @@ ORION_MAP_DEFAULT_CENTER = (-34.6037, -58.3816, 12)  # donde arranca el mapa del
 Una política de seguridad de contenido (CSP) tiene que permitir las imágenes del proveedor:
 con OpenStreetMap, `img-src 'self' data: https://tile.openstreetmap.org`.
 
+## Imágenes
+
+La biblioteca acepta JPG, PNG, WebP, AVIF, GIF y SVG de hasta `ORION_IMAGE_MAX_UPLOAD_MB`
+(10 por defecto). Un original de más de 2048 px de lado se reduce a 2048 px al subirlo
+(salvo los GIF animados), y los SVG se limpian: se quitan scripts, eventos, enlaces
+`javascript:` y referencias externas; quedan el dibujo y sus estilos.
+
+Las plantillas muestran las imágenes con medidas con nombre (`hero`, `image`,
+`image_text`, `gallery`, `card`, `logo`, `article`, `site_logo`, definidas en
+`orion/core/images.py`). Cada imagen sale como `<picture>`: AVIF en varias anchuras, con
+WebP de respaldo, ancho y alto, y carga diferida salvo la principal. Los SVG se muestran
+como SVG. Un proyecto usa la misma etiqueta en sus plantillas y suma o cambia medidas en
+sus ajustes:
+
+```python
+ORION_IMAGE_SIZES = {
+    "team": {
+        "filters": "fill-{300x300,600x600}",
+        "sizes": "(min-width: 48rem) 25vw, 50vw",
+    },
+}
+```
+
+```django
+{% load orion_core %}
+{% responsive_image member.photo "team" alt=member.name class_name="rounded-full" %}
+{# The page's main image: not lazy, fetched first. #}
+{% responsive_image page.cover "hero" alt=page.title is_main=True %}
+{# Above the fold but not the main one: not lazy. #}
+{% responsive_image site_data.logo "site_logo" is_lazy=False %}
+```
+
+`orion/base.html` precarga la imagen del Hero cuando es el primer bloque de la página
+(`{% main_image_preload page %}`, también disponible para otras plantillas base).
+
+Al subir una imagen o cambiar su punto focal, sus recortes de todas las medidas se crean
+en segundo plano, así ningún visitante espera a que se generen. Después de actualizar
+Orion o de importar imágenes:
+
+```bash
+pipenv run manage orion_generate_renditions   # crea los recortes que falten
+pipenv run manage orion_unused_images         # lista las imágenes que no se usan (no borra)
+```
+
+Si el índice de referencias de Wagtail puede estar desactualizado (por ejemplo, en un
+sitio existente al instalar esta versión), correr antes
+`pipenv run manage rebuild_references_index`.
+
 ## Bloques de contenido
 
 Orion trae quince bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y

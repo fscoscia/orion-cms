@@ -263,3 +263,24 @@ class TestLatestArticles:
         html = client.get("/").content.decode()
 
         assert "block-latest_articles" not in html
+
+
+class TestArticleImages:
+    def test_article_image_is_main_and_card_image_is_lazy(
+        self, settings, tmp_path, client, index, add_article
+    ):
+        settings.MEDIA_ROOT = tmp_path
+        image = Image.objects.create(
+            title="Foto", file=get_test_image_file(size=(1600, 900))
+        )
+        article = add_article("Uno", image=image, image_alt="Una foto")
+
+        article_html = client.get(article.url).content.decode()
+        listing_html = client.get(index.url).content.decode()
+
+        article_img = article_html.split("<picture>", 1)[1].split("<img", 1)[1]
+        card_img = listing_html.split("<picture>", 1)[1].split("<img", 1)[1]
+        assert 'fetchpriority="high"' in article_img.split(">", 1)[0]
+        assert 'alt="Una foto"' in article_img.split(">", 1)[0]
+        assert 'loading="lazy"' in card_img.split(">", 1)[0]
+        assert 'type="image/avif"' in listing_html

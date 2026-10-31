@@ -1,8 +1,8 @@
-{% load wagtailimages_tags %}
+{% load orion_core %}
 <section class="orion-block block-image_text--{{ value.style }} mx-auto max-w-6xl px-4 py-12 md:py-16">
   <div class="grid items-center gap-10 md:grid-cols-2">
     <div{% if value.image_position == "right" %} class="md:order-last"{% endif %}>
-      {% if value.image.is_sample %}{% include "orion/blocks/includes/sample_image.html" with image=value.image alt=value.image.contextual_alt_text class_name="h-auto w-full rounded-lg" %}{% else %}{% srcset_image value.image format-webp width-{480,800,1200} sizes="(min-width: 48rem) 50vw, 100vw" alt=value.image.contextual_alt_text loading="lazy" decoding="async" class="h-auto w-full rounded-lg" %}{% endif %}
+      {% responsive_image value.image "image_text" alt=value.image.contextual_alt_text class_name="h-auto w-full rounded-lg" %}
     </div>
     <div class="space-y-6">
       {% include "orion/blocks/includes/title.html" with title=value.title %}

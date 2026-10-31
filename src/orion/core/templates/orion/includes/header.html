@@ -1,4 +1,4 @@
-{% load i18n wagtailcore_tags wagtailimages_tags orion_localization orion_navigation %}
+{% load i18n wagtailcore_tags orion_core orion_localization orion_navigation %}
 {% wagtail_site as current_site %}
 {% with site_data=settings.orion_site_data.SiteSettings %}
 <header class="site-header border-b border-line bg-surface">
@@ -7,7 +7,7 @@
        x-on:keydown.escape.window="close" x-on:click.window="closeOnOutsideClick">
     <a href="{% if current_site %}{% pageurl current_site.root_page.localized %}{% else %}/{% endif %}" class="site-header__brand flex items-center text-lg font-semibold text-primary-700 no-underline">
       {% if site_data.logo %}
-        {% image site_data.logo height-80 class="h-10 w-auto" %}
+        {% responsive_image site_data.logo "site_logo" class_name="h-10 w-auto" is_lazy=False %}
         <span class="sr-only">{{ current_site.site_name|default:_("Home") }}</span>
       {% else %}
         {{ current_site.site_name|default:"Orion" }}
