@@ -579,6 +579,48 @@ Para recompilar mientras se editan templates, `pipenv run css-watch` (deja el CS
 minificar: correr `css-build` antes de versionarlo). La fuente es
 `src/orion/core/static_src/orion.css`.
 
+## Formularios
+
+Los formularios son páginas de tipo **Formulario**: el editor agrega campos (texto, área
+de texto, email, teléfono, número, lista, opciones, casillas, fecha y archivo), marca los
+obligatorios y escribe ayudas. En la pestaña **Después de enviar** elige un texto de
+agradecimiento o una página a la que ir, y en **Email**, los destinatarios, el asunto y el
+nombre y la dirección del remitente; responder el aviso le escribe a quien envió. El botón
+**Enviar un email de prueba** (en el menú de la página) comprueba el aviso. El bloque
+**Formulario** inserta un formulario ya creado en cualquier página; el envío llega a ese
+formulario.
+
+Lo que el editor no puede cambiar: todo formulario termina con la casilla de aceptación
+de la política de privacidad (la página se elige en **Datos del sitio → Identidad**) y
+guarda cuándo se aceptó, y rechaza envíos con el campo trampa completado, enviados en
+menos de 3 segundos o más de 5 cada 10 minutos desde la misma IP. Los archivos adjuntos se
+guardan en `ORION_FORMS_PRIVATE_ROOT` (por defecto, la carpeta `private` junto a
+`MEDIA_ROOT`), nunca en la carpeta pública: se descargan solo desde los envíos en el admin
+y el email avisa con un enlace, sin adjuntarlos. `manage.py check` no deja arrancar
+(`orion.E005`) si esa carpeta queda dentro de `MEDIA_ROOT`.
+
+Ajustes por proyecto:
+
+```python
+ORION_FORMS_UPLOAD_EXTENSIONS = ["pdf", "doc", "docx", "odt", "jpg", "jpeg", "png"]
+ORION_FORMS_UPLOAD_MAX_MB = 5
+ORION_FORMS_MIN_SECONDS = 3
+ORION_FORMS_RATE_LIMIT = (5, 600)  # envíos por IP y formulario, en segundos
+ORION_FORMS_FIELD_TYPES = None  # o una lista, por ejemplo ["singleline", "email"]
+ORION_FORMS_MAX_FIELDS = 30
+```
+
+Para crear los formularios de ejemplo (Contacto y Trabajá con nosotros, con CV), que no
+se duplican si ya existen:
+
+```bash
+pipenv run manage orion_create_example_forms
+```
+
+Los errores de un formulario insertado con el bloque se muestran en la página del
+formulario. Las páginas con un formulario no se guardan en la caché de página (llevan un
+token CSRF por visitante).
+
 ## Rendimiento y caché
 
 Fuera de `DEBUG`, las visitas sin sesión se sirven desde una caché de página completa: la

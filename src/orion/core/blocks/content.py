@@ -711,6 +711,48 @@ class LatestArticlesBlock(BaseContentBlock):
         template = "orion/blocks/latest_articles.html"
 
 
+class FormBlock(BaseContentBlock):
+    style_key = "form"
+
+    title = HighlightedTitleBlock(required=False)
+    form_page = blocks.PageChooserBlock(
+        page_type="orion_forms.FormPage",
+        label=_("Form"),
+        help_text=_("Submissions arrive at the form's page, as if sent from there."),
+    )
+
+    def get_preview_context(self, value, parent_context=None):
+        context = super().get_preview_context(value, parent_context)
+        context["is_block_preview"] = True
+        return context
+
+    def get_context(self, value, parent_context=None):
+        # Imported here: the forms app imports these blocks through the page models.
+        from orion.forms.models import sample_form
+
+        context = super().get_context(value, parent_context)
+        parent_context = parent_context or {}
+        if parent_context.get("is_block_preview"):
+            context["form"], context["action"] = sample_form(), "#"
+            return context
+        form_page = value.get("form_page")
+        form_page = form_page.localized.specific if form_page is not None else None
+        if form_page is None or not form_page.live:
+            return context
+        request = parent_context.get("request")
+        context["form"] = form_page.get_form(
+            page=form_page, user=getattr(request, "user", None)
+        )
+        context["action"] = form_page.url
+        return context
+
+    class Meta:
+        icon = "form"
+        label = _("Form")
+        description = _("A form created in Pages, to fill in from this page.")
+        template = "orion/blocks/form.html"
+
+
 class LocationBlock(blocks.FieldBlock):
     """A point on the map, as ``{"lat": float, "lng": float}``."""
 
@@ -842,6 +884,7 @@ class ContentStreamBlock(blocks.StreamBlock):
     buttons = ButtonsBlock()
     latest_articles = LatestArticlesBlock()
     map = MapBlock()
+    form = FormBlock()
 
     def clean(self, value):
         # The hero holds the page's h1, so it can only open the body.

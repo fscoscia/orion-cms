@@ -1,0 +1,272 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 19:54-0300\n"
+"PO-Revision-Date: 2026-10-30 21:00+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: admin_views.py:44
+msgid "Add at least one recipient first."
+msgstr "Agregar primero al menos un destinatario."
+
+#: admin_views.py:47
+#, python-format
+msgid "[Test] %(subject)s"
+msgstr "[Prueba] %(subject)s"
+
+#: admin_views.py:50
+#, python-format
+msgid ""
+"This is a test of the email notice of the form \"%(form)s\". Submissions "
+"will arrive like this."
+msgstr ""
+"Esta es una prueba del aviso por email del formulario «%(form)s». Los envíos"
+" van a llegar así."
+
+#: admin_views.py:62
+#, python-format
+msgid "The test email could not be sent: %(error)s"
+msgstr "No se pudo enviar el email de prueba: %(error)s"
+
+#: admin_views.py:67
+#, python-format
+msgid "Test email sent to %(recipients)s."
+msgstr "Email de prueba enviado a %(recipients)s."
+
+#: apps.py:8
+msgid "Forms"
+msgstr "Formularios"
+
+#: builder.py:24
+msgid "Enter a valid phone number."
+msgstr "Escribir un teléfono válido."
+
+#: builder.py:26
+msgid "The form could not be sent. Wait a few seconds and try again."
+msgstr ""
+"No se pudo enviar el formulario. Esperar unos segundos y volver a intentar."
+
+#: builder.py:34
+#, python-format
+msgid "Files of this type are not accepted. Allowed: %(types)s."
+msgstr "No se aceptan archivos de este tipo. Permitidos: %(types)s."
+
+#: builder.py:39
+#, python-format
+msgid "The file is too large. The maximum is %(size)s."
+msgstr "El archivo es demasiado grande. El máximo es %(size)s."
+
+#: builder.py:52
+msgid "Leave this field empty"
+msgstr "Dejar este campo vacío"
+
+#: builder.py:65
+msgid "I accept the privacy policy."
+msgstr "Acepto la política de privacidad."
+
+#: builder.py:66
+msgid "Accept the privacy policy to send."
+msgstr "Aceptar la política de privacidad para enviar."
+
+#: models.py:50
+msgid "Single line text"
+msgstr "Texto de una línea"
+
+#: models.py:51
+msgid "Multi-line text"
+msgstr "Texto de varias líneas"
+
+#: models.py:52 models.py:173 models.py:327
+msgid "Email"
+msgstr "Email"
+
+#: models.py:53
+msgid "Phone"
+msgstr "Teléfono"
+
+#: models.py:54
+msgid "Number"
+msgstr "Número"
+
+#: models.py:55
+msgid "Drop down"
+msgstr "Lista desplegable"
+
+#: models.py:56
+msgid "Radio buttons"
+msgstr "Opciones"
+
+#: models.py:57
+msgid "Checkboxes"
+msgstr "Casillas"
+
+#: models.py:58
+msgid "Checkbox"
+msgstr "Casilla"
+
+#: models.py:59
+msgid "Date"
+msgstr "Fecha"
+
+#: models.py:60
+msgid "File"
+msgstr "Archivo"
+
+#: models.py:69
+msgid "field type"
+msgstr "tipo de campo"
+
+#: models.py:78
+msgid "consent given at"
+msgstr "consentimiento dado el"
+
+#: models.py:107
+#, python-format
+msgid "A form can have at most %(maximum)s fields."
+msgstr "Un formulario puede tener como máximo %(maximum)s campos."
+
+#: models.py:113
+msgid "This field type is not allowed."
+msgstr "Este tipo de campo no está permitido."
+
+#: models.py:119
+msgid "introduction"
+msgstr "introducción"
+
+#: models.py:122
+msgid "thank-you text"
+msgstr "texto de agradecimiento"
+
+#: models.py:125
+msgid "Shown after sending, unless a page is chosen below."
+msgstr "Se muestra después de enviar, salvo que se elija una página abajo."
+
+#: models.py:129
+msgid "page after sending"
+msgstr "página después de enviar"
+
+#: models.py:134
+msgid "Optional: visitors go to this page after sending."
+msgstr "Opcional: después de enviar, los visitantes van a esta página."
+
+#: models.py:137
+msgid "sender name"
+msgstr "nombre del remitente"
+
+#: models.py:140
+msgid "For example, the site name."
+msgstr "Por ejemplo, el nombre del sitio."
+
+#: models.py:153
+msgid "Fields"
+msgstr "Campos"
+
+#: models.py:166
+msgid "Email notice"
+msgstr "Aviso por email"
+
+#: models.py:171
+msgid "Content"
+msgstr "Contenido"
+
+#: models.py:172
+msgid "After sending"
+msgstr "Después de enviar"
+
+#: models.py:174
+msgid "Promote"
+msgstr "Promocionar"
+
+#: models.py:175
+msgid "Settings"
+msgstr "Propiedades"
+
+#: models.py:180
+msgid "form"
+msgstr "formulario"
+
+#: models.py:181
+msgid "forms"
+msgstr "formularios"
+
+#: models.py:198
+msgid "Too many submissions. Wait a few minutes and try again."
+msgstr "Demasiados envíos. Esperar unos minutos y volver a intentar."
+
+#: models.py:275
+#, python-format
+msgid "%(name)s (download it from %(url)s)"
+msgstr "%(name)s (se descarga desde %(url)s)"
+
+#: models.py:326
+msgid "Name"
+msgstr "Nombre"
+
+#: models.py:328
+msgid "Message"
+msgstr "Mensaje"
+
+#: templates/orion/forms/admin/test_email.html:3
+#: templates/orion/forms/admin/test_email.html:5 wagtail_hooks.py:27
+msgid "Send a test email"
+msgstr "Enviar un email de prueba"
+
+#: templates/orion/forms/admin/test_email.html:9
+#, python-format
+msgid ""
+"A test email will be sent to %(recipients)s, with the form's sender and "
+"subject."
+msgstr ""
+"Se va a enviar un email de prueba a %(recipients)s, con el remitente y el "
+"asunto del formulario."
+
+#: templates/orion/forms/admin/test_email.html:12
+msgid "Send test email"
+msgstr "Enviar email de prueba"
+
+#: templates/orion/forms/admin/test_email.html:13
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: templates/orion/forms/admin/test_email.html:16
+msgid "This form has no recipients. Add them in the Email tab and save first."
+msgstr ""
+"Este formulario no tiene destinatarios. Agregarlos en la pestaña Email y "
+"guardar primero."
+
+#: templates/orion/forms/admin/test_email.html:17
+msgid "Back to the form"
+msgstr "Volver al formulario"
+
+#: templates/orion/forms/form_page_landing.html:10
+msgid "Thank you. We received your message."
+msgstr "Gracias. Recibimos tu mensaje."
+
+#: templates/orion/forms/includes/form.html:42
+#, python-format
+msgid ""
+"I accept the <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\">privacy "
+"policy</a>."
+msgstr ""
+"Acepto la <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\">política de"
+" privacidad</a>."
+
+#: templates/orion/forms/includes/form.html:51
+msgid "Fields marked with * are required."
+msgstr "Los campos marcados con * son obligatorios."
+
+#: templates/orion/forms/includes/form.html:52
+msgid "Send"
+msgstr "Enviar"

@@ -132,6 +132,13 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 - Archivos estáticos con WhiteNoise: Brotli y gzip, nombres con hash e `immutable`.
 - `ORION_FONT_PRELOAD` precarga las fuentes woff2 del proyecto.
 - Pruebas con un presupuesto de consultas por tipo de página.
+- Formularios (`orion.forms`): página Formulario con el constructor de Wagtail más
+  teléfono y archivo adjunto (guardado en privado y descargable solo desde el admin),
+  texto de agradecimiento o redirección, bloque Formulario, antispam siempre activo
+  (CSRF, campo trampa, tiempo mínimo y límite por IP), consentimiento con enlace a la
+  política de privacidad (**Datos del sitio**), límites de campos por proyecto, aviso por
+  email con remitente, respuesta a quien envió y prueba desde el admin, y el comando
+  `orion_create_example_forms`.
 
 ### Changed
 

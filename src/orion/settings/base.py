@@ -46,6 +46,7 @@ ORION_APPS = [
     "orion.navigation",
     "orion.pages",
     "orion.seo",
+    "orion.forms",
     "orion.editor",
 ]
 
@@ -56,6 +57,7 @@ WAGTAIL_APPS = [
     "wagtail.contrib.settings",
     "wagtail.contrib.routable_page",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.forms",
     "wagtail.contrib.sitemaps",
     "wagtail.sites",
     "wagtail.users",
@@ -260,6 +262,18 @@ ORION_IMAGE_SIZES = {}
 ORION_PAGE_CACHE = env_bool("ORION_PAGE_CACHE", not DEBUG)
 ORION_PAGE_CACHE_SECONDS = 60 * 60 * 24
 ORION_PAGE_CACHE_MODELS = []
+
+# Forms (orion.forms). Attachments go to ORION_FORMS_PRIVATE_ROOT, never under
+# MEDIA_ROOT; empty means a "private" folder next to MEDIA_ROOT.
+ORION_FORMS_PRIVATE_ROOT = env_str("ORION_FORMS_PRIVATE_ROOT")
+ORION_FORMS_UPLOAD_EXTENSIONS = ["pdf", "doc", "docx", "odt", "jpg", "jpeg", "png"]
+ORION_FORMS_UPLOAD_MAX_MB = 5
+ORION_FORMS_MIN_SECONDS = 3
+# Submissions per visitor address and form: (count, seconds).
+ORION_FORMS_RATE_LIMIT = (5, 600)
+# None allows every field type; projects can list the ones editors may use.
+ORION_FORMS_FIELD_TYPES = None
+ORION_FORMS_MAX_FIELDS = 30
 
 # Distinct paths that answered 404 kept for the admin's monitor.
 ORION_404_MAX_PATHS = 1000

@@ -1,0 +1,10 @@
+{% extends "orion/base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+  <section class="mx-auto max-w-3xl space-y-6 px-4 py-12 md:py-16">
+    <h1 class="orion-title text-4xl font-bold tracking-tight md:text-5xl">{{ page.title }}</h1>
+    {% if page.intro %}<div class="orion-richtext prose max-w-none">{{ page.intro|richtext }}</div>{% endif %}
+    {% include "orion/forms/includes/form.html" with form=form action=page.url %}
+  </section>
+{% endblock %}

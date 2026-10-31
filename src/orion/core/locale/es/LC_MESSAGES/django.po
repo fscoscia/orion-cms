@@ -3,15 +3,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 17:51-0300\n"
+"POT-Creation-Date: 2026-10-31 19:54-0300\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
-"1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #: apps.py:8
 msgid "Orion core"
@@ -91,8 +90,8 @@ msgstr "Hero"
 
 #: blocks/content.py:247
 msgid ""
-"The large opening section of a page, with a title, a short text, buttons and "
-"an optional image."
+"The large opening section of a page, with a title, a short text, buttons and"
+" an optional image."
 msgstr ""
 "La sección grande del comienzo de una página, con título, un texto corto, "
 "botones y una imagen opcional."
@@ -236,7 +235,7 @@ msgstr "Un recuadro destacado que invita a dar el siguiente paso."
 msgid "Logo"
 msgstr "Logo"
 
-#: blocks/content.py:533 blocks/content.py:741
+#: blocks/content.py:533 blocks/content.py:783
 msgid "Name"
 msgstr "Nombre"
 
@@ -334,47 +333,60 @@ msgstr "Últimas novedades"
 msgid "The most recent articles, from every listing or from one."
 msgstr "Los artículos más recientes, de todos los listados o de uno."
 
-#: blocks/content.py:740
+#: blocks/content.py:720 blocks/content.py:751
+msgid "Form"
+msgstr "Formulario"
+
+#: blocks/content.py:721
+msgid "Submissions arrive at the form's page, as if sent from there."
+msgstr ""
+"Los envíos llegan a la página del formulario, como si se enviaran desde ahí."
+
+#: blocks/content.py:752
+msgid "A form created in Pages, to fill in from this page."
+msgstr "Un formulario creado en Páginas, para completarlo desde esta página."
+
+#: blocks/content.py:782
 msgid "Location"
 msgstr "Ubicación"
 
-#: blocks/content.py:743
+#: blocks/content.py:785
 msgid "Description"
 msgstr "Descripción"
 
-#: blocks/content.py:746
+#: blocks/content.py:788
 msgid "For example, the address or the opening hours."
 msgstr "Por ejemplo, la dirección o el horario."
 
-#: blocks/content.py:751
+#: blocks/content.py:793
 msgid "Point"
 msgstr "Punto"
 
-#: blocks/content.py:759
+#: blocks/content.py:801
 msgid "Include the site location"
 msgstr "Incluir la ubicación del sitio"
 
-#: blocks/content.py:762
+#: blocks/content.py:804
 msgid "The location set in Site data."
 msgstr "La ubicación cargada en Datos del sitio."
 
-#: blocks/content.py:764
+#: blocks/content.py:806
 msgid "Points"
 msgstr "Puntos"
 
-#: blocks/content.py:766
+#: blocks/content.py:808
 msgid "Zoom"
 msgstr "Zoom"
 
-#: blocks/content.py:770
+#: blocks/content.py:812
 msgid "Used with a single point; several points are all shown."
 msgstr "Se usa con un solo punto; con varios, se muestran todos."
 
-#: blocks/content.py:804 templates/orion/includes/map.html:11
+#: blocks/content.py:846 templates/orion/includes/map.html:11
 msgid "Map"
 msgstr "Mapa"
 
-#: blocks/content.py:806
+#: blocks/content.py:848
 msgid ""
 "A map with the site location and other points, loaded when the visitor asks "
 "for it."
@@ -382,7 +394,7 @@ msgstr ""
 "Un mapa con la ubicación del sitio y otros puntos, que se carga cuando el "
 "visitante lo pide."
 
-#: blocks/content.py:850
+#: blocks/content.py:893
 msgid "The hero must be the first block."
 msgstr "El Hero tiene que ser el primer bloque."
 
@@ -438,7 +450,7 @@ msgstr "La longitud tiene que estar entre -180 y 180."
 msgid "The file is not a valid SVG image."
 msgstr "El archivo no es una imagen SVG válida."
 
-#: templates/orion/base.html:20
+#: templates/orion/base.html:21
 msgid "Skip to content"
 msgstr "Saltar al contenido"
 
@@ -467,7 +479,8 @@ msgid "Open in OpenStreetMap"
 msgstr "Abrir en OpenStreetMap"
 
 #: templates/orion/widgets/location_widget.html:11
-msgid "Click on the map or drag the marker. You can also type the coordinates."
+msgid ""
+"Click on the map or drag the marker. You can also type the coordinates."
 msgstr ""
 "Hacer clic en el mapa o arrastrar el marcador. También se pueden escribir "
 "las coordenadas."

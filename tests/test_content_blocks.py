@@ -40,6 +40,7 @@ BLOCK_TYPES = [
     "buttons",
     "latest_articles",
     "map",
+    "form",
 ]
 
 

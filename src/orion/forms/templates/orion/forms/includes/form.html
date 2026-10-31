@@ -1,0 +1,53 @@
+{% load i18n %}{# A form of orion.forms. Pass `form` and `action` (the form page's URL). #}
+<form class="orion-form space-y-5" method="post" action="{{ action }}" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    <div class="orion-form__alert" role="alert">
+      {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+
+  {% for field in form.editor_fields %}
+    {% if field.field.widget.input_type == "checkbox" and not field.field.choices %}
+      <div class="orion-form__field orion-form__field--check">
+        {{ field }}
+        <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span aria-hidden="true">*</span>{% endif %}</label>
+        {% include "orion/forms/includes/field_messages.html" %}
+      </div>
+    {% elif field.field.choices and field.field.widget.allow_multiple_selected or field.field.widget.input_type == "radio" %}
+      <fieldset class="orion-form__field orion-form__field--choices"{% if field.help_text or field.errors %} aria-describedby="{% if field.help_text %}{{ field.auto_id }}_help{% endif %}{% if field.errors %} {{ field.auto_id }}_errors{% endif %}"{% endif %}>
+        <legend>{{ field.label }}{% if field.field.required %} <span aria-hidden="true">*</span>{% endif %}</legend>
+        {{ field }}
+        {% include "orion/forms/includes/field_messages.html" %}
+      </fieldset>
+    {% else %}
+      <div class="orion-form__field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span aria-hidden="true">*</span>{% endif %}</label>
+        {{ field }}
+        {% include "orion/forms/includes/field_messages.html" %}
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  {# Orion's own fields: a trap that people never see and the consent. #}
+  <div class="orion-form__trap" aria-hidden="true">
+    <label for="{{ form.website.id_for_label }}">{{ form.website.label }}</label>
+    {{ form.website }}
+  </div>
+  {{ form.rendered_at }}
+  <div class="orion-form__field orion-form__field--check">
+    {{ form.consent }}
+    <label for="{{ form.consent.id_for_label }}">
+      {% if form.privacy_url %}
+        {% blocktranslate trimmed with url=form.privacy_url %}I accept the <a href="{{ url }}" target="_blank" rel="noopener">privacy policy</a>.{% endblocktranslate %}
+      {% else %}
+        {{ form.consent.label }}
+      {% endif %}
+      <span aria-hidden="true">*</span>
+    </label>
+    {% include "orion/forms/includes/field_messages.html" with field=form.consent %}
+  </div>
+
+  <p class="text-sm text-ink-muted">{% translate "Fields marked with * are required." %}</p>
+  <button type="submit" class="orion-button orion-button--primary">{% translate "Send" %}</button>
+</form>

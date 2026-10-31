@@ -1,0 +1,20 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Send a test email" %}{% endblock %}
+{% block content %}
+  {% translate "Send a test email" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title subtitle=page.get_admin_display_title icon="mail" %}
+  <div class="nice-padding">
+    {% if recipients %}
+      <p>{% blocktranslate trimmed with recipients=recipients|join:", " %}A test email will be sent to {{ recipients }}, with the form's sender and subject.{% endblocktranslate %}</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="button">{% translate "Send test email" %}</button>
+        <a class="button button-secondary" href="{% url 'wagtailadmin_pages:edit' page.pk %}">{% translate "Cancel" %}</a>
+      </form>
+    {% else %}
+      <p>{% translate "This form has no recipients. Add them in the Email tab and save first." %}</p>
+      <a class="button button-secondary" href="{% url 'wagtailadmin_pages:edit' page.pk %}">{% translate "Back to the form" %}</a>
+    {% endif %}
+  </div>
+{% endblock %}

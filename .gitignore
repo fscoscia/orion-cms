@@ -15,6 +15,7 @@ htmlcov/
 
 # Example project runtime files
 example/media/
+example/private/
 example/static/
 *.sqlite3
 

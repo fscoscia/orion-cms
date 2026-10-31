@@ -58,6 +58,15 @@ class SiteSettings(BaseGenericSetting):
         related_name="+",
         help_text=_("Usually a light version for the dark footer."),
     )
+    privacy_page = models.ForeignKey(
+        "wagtailcore.Page",
+        verbose_name=_("privacy policy page"),
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text=_("Linked from the consent checkbox of every form."),
+    )
     phone = models.CharField(_("phone"), max_length=30, blank=True)
     whatsapp = models.CharField(_("WhatsApp"), max_length=30, blank=True)
     email = models.EmailField(_("email"), blank=True)
@@ -126,7 +135,12 @@ class SiteSettings(BaseGenericSetting):
     edit_handler = TabbedInterface(
         [
             ObjectList(
-                [FieldPanel("logo"), FieldPanel("footer_logo")], heading=_("Identity")
+                [
+                    FieldPanel("logo"),
+                    FieldPanel("footer_logo"),
+                    FieldPanel("privacy_page"),
+                ],
+                heading=_("Identity"),
             ),
             ObjectList(
                 [
