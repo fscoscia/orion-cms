@@ -7,6 +7,8 @@ from wagtail.fields import StreamField
 from wagtail.models import Locale, TranslatableMixin
 from wagtail.snippets.models import register_snippet
 
+CONTACT_FIELDS = ("phone", "whatsapp", "email", "address")
+
 SOCIAL_NETWORK_CHOICES = [
     ("facebook", "Facebook"),
     ("instagram", "Instagram"),
@@ -78,6 +80,10 @@ class SiteSettings(BaseGenericSetting):
 
     class Meta:
         verbose_name = _("site data")
+
+    def contact_items(self, names=CONTACT_FIELDS):
+        """Return ``(name, value)`` pairs of the contact fields that are filled in."""
+        return [(name, getattr(self, name)) for name in names if getattr(self, name)]
 
 
 @register_snippet

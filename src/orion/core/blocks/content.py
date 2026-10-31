@@ -505,15 +505,12 @@ class ContactBlock(BaseContentBlock):
 
     def get_context(self, value, parent_context=None):
         # Imported here: the settings model's app may load after the blocks module.
-        from orion.site_data.models import SiteSettings
+        from orion.site_data.models import CONTACT_FIELDS, SiteSettings
 
         context = super().get_context(value, parent_context)
-        site_settings = SiteSettings.load()
-        context["site_items"] = [
-            (name, getattr(site_settings, name))
-            for name in ("phone", "whatsapp", "email", "address")
-            if value.get(f"show_{name}", True) and getattr(site_settings, name)
-        ]
+        context["site_items"] = SiteSettings.load().contact_items(
+            [name for name in CONTACT_FIELDS if value.get(f"show_{name}", True)]
+        )
         return context
 
     class Meta:
@@ -559,6 +556,42 @@ class ButtonsBlock(BaseContentBlock):
         }
 
 
+class LatestArticlesBlock(BaseContentBlock):
+    style_key = "latest_articles"
+
+    title = HighlightedTitleBlock(required=False)
+    count = blocks.IntegerBlock(
+        label=_("How many"), default=3, min_value=1, max_value=12
+    )
+    index = blocks.PageChooserBlock(
+        page_type="orion_pages.ArticleIndexPage",
+        label=_("Listing"),
+        required=False,
+        help_text=_("Optional. Without a listing, shows articles from all of them."),
+    )
+
+    def get_context(self, value, parent_context=None):
+        # Imported here: the pages app imports these blocks for its models.
+        from orion.pages.models import ArticlePage
+
+        context = super().get_context(value, parent_context)
+        index = value.get("index")
+        if index is not None:
+            # The listing chosen in the original, in the visitor's language.
+            index = index.localized
+            context["index"] = index if index.live else None
+        context["articles"] = ArticlePage.objects.latest(
+            index=index, limit=value.get("count") or 3
+        )
+        return context
+
+    class Meta:
+        icon = "doc-full-inverse"
+        label = _("Latest articles")
+        description = _("The most recent articles, from every listing or from one.")
+        template = "orion/blocks/latest_articles.html"
+
+
 class ContentStreamBlock(blocks.StreamBlock):
     """Every Orion content block, ready to use as a page body.
 
@@ -580,22 +613,37 @@ class ContentStreamBlock(blocks.StreamBlock):
     logos = LogosBlock()
     contact = ContactBlock()
     buttons = ButtonsBlock()
+    latest_articles = LatestArticlesBlock()
+
+    def clean(self, value):
+        # The hero holds the page's h1, so it can only open the body.
+        value = super().clean(value)
+        misplaced_heroes = {
+            index: ValidationError(_("The hero must be the first block."))
+            for index, child in enumerate(value)
+            if child.block_type == "hero" and index > 0
+        }
+        if misplaced_heroes:
+            raise blocks.StreamBlockValidationError(block_errors=misplaced_heroes)
+        return value
 
     def render_basic(self, value, context=None):
         parent_context = dict(context or {})
+        rendered_children = [
+            (
+                child.block_type,
+                child.block.render(
+                    child.value, context={**parent_context, "block_id": child.id}
+                ),
+            )
+            for child in value
+            if is_visible(child.value)
+        ]
+        # A block may render nothing, such as latest articles without articles.
         return format_html_join(
             "\n",
             '<div class="block-{}">{}</div>',
-            [
-                (
-                    child.block_type,
-                    child.block.render(
-                        child.value, context={**parent_context, "block_id": child.id}
-                    ),
-                )
-                for child in value
-                if is_visible(child.value)
-            ],
+            [(name, html) for name, html in rendered_children if html.strip()],
         )
 
 

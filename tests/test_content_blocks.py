@@ -4,7 +4,7 @@ import pytest
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.urls import reverse
-from wagtail.blocks import StructBlockValidationError
+from wagtail.blocks import StreamBlockValidationError, StructBlockValidationError
 from wagtail.images.models import Image
 from wagtail.images.tests.utils import get_test_image_file
 from wagtail.rich_text import RichText
@@ -37,6 +37,7 @@ BLOCK_TYPES = [
     "logos",
     "contact",
     "buttons",
+    "latest_articles",
 ]
 
 
@@ -115,6 +116,31 @@ class TestBody:
 
         assert layout.children == ["title", "intro", "buttons", "image"]
         assert layout.settings == ["style", "is_visible"]
+
+
+class TestHeroPosition:
+    @staticmethod
+    def _clean(*block_types):
+        stream_block = ContentStreamBlock()
+        values = {
+            "hero": {"title": "<p>Hero</p>"},
+            "text": {"body": "<p>Texto</p>"},
+        }
+        raw = [{"type": name, "value": values[name]} for name in block_types]
+        return stream_block.clean(stream_block.to_python(raw))
+
+    def test_hero_first_is_accepted(self):
+        assert len(self._clean("hero", "text")) == 2
+
+    def test_hero_after_another_block_is_rejected(self):
+        with pytest.raises(StreamBlockValidationError) as error:
+            self._clean("text", "hero")
+
+        assert list(error.value.block_errors) == [1]
+
+    def test_second_hero_is_rejected(self):
+        with pytest.raises(StreamBlockValidationError):
+            self._clean("hero", "hero")
 
 
 class TestStyles:

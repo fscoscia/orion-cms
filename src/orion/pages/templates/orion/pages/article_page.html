@@ -1,0 +1,44 @@
+{% extends "orion/base.html" %}
+{% load i18n wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+  {% with index=page.get_parent %}
+    <article>
+      <header class="mx-auto max-w-3xl space-y-4 px-4 pt-12 md:pt-16">
+        {% with categories=page.categories.all %}
+          {% if categories %}
+            <ul class="flex flex-wrap gap-2 text-sm" aria-label="{% translate 'Categories' %}">
+              {% for category in categories %}{% with category=category.localized %}
+                <li><a href="{% pageurl index %}?category={{ category.slug|urlencode }}" class="rounded-full bg-primary-50 px-3 py-1 font-semibold text-primary-700 hover:bg-primary-100">{{ category.name }}</a></li>
+              {% endwith %}{% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <h1 class="orion-title text-4xl font-bold tracking-tight md:text-5xl">{{ page.title }}</h1>
+        <p class="text-ink-muted"><time datetime="{{ page.date|date:'Y-m-d' }}">{{ page.date|date:"DATE_FORMAT" }}</time></p>
+        <p class="text-xl text-ink-muted">{{ page.summary }}</p>
+      </header>
+
+      {% if page.image %}
+        <div class="mx-auto max-w-4xl px-4 pt-8">
+          {# The article's main image, so it is not lazy-loaded. #}
+          {% srcset_image page.image format-webp width-{480,800,1200,1600} sizes="(min-width: 56rem) 54rem, 100vw" alt=page.image_alt_text class="h-auto w-full rounded-lg" %}
+        </div>
+      {% endif %}
+
+      {% include_block page.body %}
+
+      {% with tags=page.tags %}
+        {% if tags %}
+          <footer class="mx-auto max-w-3xl px-4 pt-8 pb-12">
+            <ul class="flex flex-wrap gap-2 text-sm" aria-label="{% translate 'Tags' %}">
+              {% for tag in tags %}{% with tag=tag.localized %}
+                <li><a href="{% pageurl index %}?tag={{ tag.slug|urlencode }}" class="rounded-full border border-line px-3 py-1 hover:border-primary-700 hover:text-primary-700">#{{ tag.name }}</a></li>
+              {% endwith %}{% endfor %}
+            </ul>
+          </footer>
+        {% endif %}
+      {% endwith %}
+    </article>
+  {% endwith %}
+{% endblock %}

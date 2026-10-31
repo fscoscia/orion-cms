@@ -1,0 +1,7 @@
+{% extends "orion/base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+  {% include "orion/pages/includes/page_header.html" %}
+  {% include_block page.body %}
+{% endblock %}

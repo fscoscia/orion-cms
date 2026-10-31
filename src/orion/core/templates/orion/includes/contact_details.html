@@ -1,0 +1,25 @@
+{% load i18n orion_core %}{# Contact data as a list. Pass `site_items` ((name, value) pairs from Site data) and optionally `extra_items`. #}
+{% if site_items or extra_items %}
+  <dl class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {% for name, data in site_items %}
+      <div class="flex gap-3">
+        <dt class="mt-0.5 shrink-0 text-primary-700">
+          {% include "orion/includes/icon.html" with name=name %}
+          <span class="sr-only">{% if name == "phone" %}{% translate "Phone" %}{% elif name == "whatsapp" %}WhatsApp{% elif name == "email" %}{% translate "Email" %}{% else %}{% translate "Address" %}{% endif %}</span>
+        </dt>
+        <dd>
+          {% if name == "phone" %}<a class="hover:underline" href="{{ data|tel_url }}">{{ data }}</a>
+          {% elif name == "whatsapp" %}<a class="hover:underline" href="{{ data|whatsapp_url }}" rel="noopener noreferrer">{{ data }}</a>
+          {% elif name == "email" %}<a class="hover:underline" href="mailto:{{ data }}">{{ data }}</a>
+          {% else %}{{ data|linebreaksbr }}{% endif %}
+        </dd>
+      </div>
+    {% endfor %}
+    {% for item in extra_items %}
+      <div>
+        <dt class="font-semibold">{{ item.label }}</dt>
+        <dd class="text-ink-muted">{{ item.text|linebreaksbr }}</dd>
+      </div>
+    {% endfor %}
+  </dl>
+{% endif %}

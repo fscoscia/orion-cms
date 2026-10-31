@@ -154,11 +154,51 @@ Los grupos *Editors* y *Moderators* de Wagtail pueden editar los textos del siti
 menús. Los datos que no estén cargados no se muestran; sin logo, el encabezado muestra el
 nombre del sitio (**Propiedades → Sitios**).
 
+## Páginas y artículos
+
+Orion trae estos tipos de página, y cada uno va solo en ciertos lugares:
+
+| Tipo | Va debajo de | Para qué |
+| --- | --- | --- |
+| Portada | la raíz del sitio (una por idioma) | inicio del sitio, con cuerpo de bloques |
+| Página libre | Portada o Página libre | cualquier contenido con bloques |
+| Página de contacto | Portada o Página libre | datos de contacto de Datos del sitio, más bloques |
+| Listado de artículos | Portada o Página libre | novedades o blog, con sus artículos adentro |
+| Artículo | Listado de artículos | fecha, resumen, imagen, categorías, etiquetas y bloques |
+
+Al migrar una base nueva, la página de bienvenida de Wagtail se reemplaza por una Portada
+("Inicio" en el idioma base). Si esa página ya tenía cambios, hijas o traducciones, no se
+toca: hay que crear la Portada a mano y elegirla como raíz en **Propiedades → Sitios**.
+
+Cada página tiene un solo título principal: si el cuerpo empieza con un Hero, su título es
+el principal; si no, se muestra el título de la página. Por eso el Hero solo se admite como
+primer bloque.
+
+### Listados, filtros y RSS
+
+Un listado muestra sus artículos publicados del más nuevo al más viejo, de a
+`ORION_ARTICLES_PER_PAGE` (12 por defecto), y se filtra con `?category=<slug>` (incluye
+las subcategorías) o `?tag=<slug>`; los artículos enlazan sus categorías y etiquetas a esos
+filtros. Cada listado tiene su feed RSS en `<listado>/rss/` (por ejemplo `/novedades/rss/`
+y `/en/news/rss/`), con los últimos `ORION_FEED_ITEMS` artículos (20 por defecto).
+
+El bloque **Últimas novedades** muestra los artículos más recientes del idioma de la
+visita, de todos los listados o de uno elegido.
+
+### Categorías y etiquetas
+
+Se cargan en **Fragmentos → Categorías** y **Fragmentos → Etiquetas**, y las editan
+también los grupos *Editors* y *Moderators*. Las categorías tienen dos niveles. Ambas se
+traducen con la acción "Traducir" del fragmento, una sola vez: el artículo elige sus
+categorías y etiquetas en el original, sus traducciones las heredan al sincronizarse y cada
+idioma las muestra con su nombre traducido (o en el idioma base si falta la traducción).
+
 ## Bloques de contenido
 
-Orion trae trece bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y texto,
-Tarjetas, Cifras, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de contacto y
-Botones. `ContentStreamBlock` los reúne a todos, listos para el cuerpo de una página:
+Orion trae catorce bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y
+texto, Tarjetas, Cifras, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de contacto,
+Botones y Últimas novedades. Los tipos de página de Orion ya los usan; para un tipo de
+página propio del proyecto, `ContentStreamBlock` los reúne a todos:
 
 ```python
 from wagtail.admin.panels import FieldPanel

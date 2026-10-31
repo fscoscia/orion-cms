@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 00:27+0000\n"
+"POT-Creation-Date: 2026-10-31 01:14+0000\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -67,7 +67,7 @@ msgstr "Secundario"
 msgid "Button"
 msgstr "Botón"
 
-#: blocks/content.py:173 blocks/content.py:547
+#: blocks/content.py:173 blocks/content.py:544
 msgid "Buttons"
 msgstr "Botones"
 
@@ -93,7 +93,9 @@ msgstr "Hero"
 msgid ""
 "The large opening section of a page, with a title, a short text, buttons and "
 "an optional image."
-msgstr "La sección grande del comienzo de una página, con título, un texto corto, botones y una imagen opcional."
+msgstr ""
+"La sección grande del comienzo de una página, con título, un texto corto, "
+"botones y una imagen opcional."
 
 #: blocks/content.py:215
 msgid "Paragraphs with bold, italics, links, lists and subtitles."
@@ -123,11 +125,11 @@ msgstr "Una grilla de fotos con epígrafes opcionales."
 msgid "Image position"
 msgstr "Lado de la imagen"
 
-#: blocks/content.py:270 blocks/content.py:541
+#: blocks/content.py:270 blocks/content.py:538
 msgid "Left"
 msgstr "Izquierda"
 
-#: blocks/content.py:270 blocks/content.py:541
+#: blocks/content.py:270 blocks/content.py:538
 msgid "Right"
 msgstr "Derecha"
 
@@ -161,7 +163,8 @@ msgstr "Tarjetas"
 
 #: blocks/content.py:311
 msgid "A grid of cards, each with an optional image, a text and a link."
-msgstr "Una grilla de tarjetas, cada una con imagen opcional, un texto y un enlace."
+msgstr ""
+"Una grilla de tarjetas, cada una con imagen opcional, un texto y un enlace."
 
 #: blocks/content.py:326
 msgid "Number"
@@ -217,7 +220,9 @@ msgstr "Acordeón"
 
 #: blocks/content.py:420
 msgid "Questions that open to show their answer, such as an FAQ."
-msgstr "Preguntas que se abren para mostrar su respuesta, como unas preguntas frecuentes."
+msgstr ""
+"Preguntas que se abren para mostrar su respuesta, como unas preguntas "
+"frecuentes."
 
 #: blocks/content.py:440
 msgid "Call to action"
@@ -264,7 +269,7 @@ msgid "Extra item"
 msgstr "Dato extra"
 
 #: blocks/content.py:496 blocks/links.py:105
-#: templates/orion/blocks/contact.html:10
+#: templates/orion/includes/contact_details.html:8
 msgid "Phone"
 msgstr "Teléfono"
 
@@ -273,11 +278,11 @@ msgid "WhatsApp"
 msgstr "WhatsApp"
 
 #: blocks/content.py:500 blocks/links.py:104
-#: templates/orion/blocks/contact.html:10
+#: templates/orion/includes/contact_details.html:8
 msgid "Email"
 msgstr "Email"
 
-#: blocks/content.py:501 templates/orion/blocks/contact.html:10
+#: blocks/content.py:501 templates/orion/includes/contact_details.html:8
 msgid "Address"
 msgstr "Dirección"
 
@@ -285,27 +290,53 @@ msgstr "Dirección"
 msgid "Extra items"
 msgstr "Datos extra"
 
-#: blocks/content.py:521
+#: blocks/content.py:518
 msgid "Contact details"
 msgstr "Datos de contacto"
 
-#: blocks/content.py:523
+#: blocks/content.py:520
 msgid ""
 "The site's phone, WhatsApp, email and address from Site data, plus extra "
 "items such as opening hours."
-msgstr "El teléfono, el WhatsApp, el email y la dirección de Datos del sitio, más datos extra como el horario."
+msgstr ""
+"El teléfono, el WhatsApp, el email y la dirección de Datos del sitio, más "
+"datos extra como el horario."
 
-#: blocks/content.py:540
+#: blocks/content.py:537
 msgid "Alignment"
 msgstr "Alineación"
 
-#: blocks/content.py:541
+#: blocks/content.py:538
 msgid "Center"
 msgstr "Centro"
 
-#: blocks/content.py:548
+#: blocks/content.py:545
 msgid "One to three buttons in a row."
 msgstr "De uno a tres botones en fila."
+
+#: blocks/content.py:564
+msgid "How many"
+msgstr "Cantidad"
+
+#: blocks/content.py:568
+msgid "Listing"
+msgstr "Listado"
+
+#: blocks/content.py:570
+msgid "Optional. Without a listing, shows articles from all of them."
+msgstr "Opcional. Sin un listado, muestra artículos de todos."
+
+#: blocks/content.py:590
+msgid "Latest articles"
+msgstr "Últimas novedades"
+
+#: blocks/content.py:591
+msgid "The most recent articles, from every listing or from one."
+msgstr "Los artículos más recientes, de todos los listados o de uno."
+
+#: blocks/content.py:622
+msgid "The hero must be the first block."
+msgstr "El Hero tiene que ser el primer bloque."
 
 #: blocks/links.py:100
 msgid "Leave empty to use the page title, email or phone."
@@ -346,6 +377,10 @@ msgstr "Ingresar un teléfono con dígitos, espacios, '+', '-' o paréntesis."
 #: templates/orion/base.html:18
 msgid "Skip to content"
 msgstr "Saltar al contenido"
+
+#: templates/orion/blocks/latest_articles.html:11
+msgid "See all articles"
+msgstr "Ver todas las novedades"
 
 #: templates/orion/includes/footer.html:25
 msgid "Social networks"

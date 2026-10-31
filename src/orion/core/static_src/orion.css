@@ -16,6 +16,7 @@
 @source "../../localization/templates";
 @source "../../site_data/templates";
 @source "../../navigation/templates";
+@source "../../pages/templates";
 
 /* static: keep every variable, even unused ones, so projects can redefine them. */
 @theme static {

@@ -1,0 +1,43 @@
+{% extends "orion/base.html" %}
+{% load i18n wagtailcore_tags wagtailroutablepage_tags %}
+
+{% block extra_head %}
+  <link rel="alternate" type="application/rss+xml" title="{{ page.title }}" href="{% routablepageurl page 'feed' %}">
+{% endblock %}
+
+{% block content %}
+  <header class="mx-auto max-w-6xl space-y-4 px-4 pt-12 md:pt-16">
+    <h1 class="orion-title text-4xl font-bold tracking-tight md:text-5xl">{{ page.title }}</h1>
+    {% if page.intro %}<p class="max-w-3xl text-lg text-ink-muted">{{ page.intro|linebreaksbr }}</p>{% endif %}
+    {% if active_category or active_tag %}
+      <p class="flex flex-wrap items-center gap-3">
+        <span>{% if active_category %}{% blocktranslate with name=active_category.localized.name %}Category: {{ name }}{% endblocktranslate %}{% else %}{% blocktranslate with name=active_tag.localized.name %}Tag: {{ name }}{% endblocktranslate %}{% endif %}</span>
+        <a href="{% pageurl page %}" class="font-semibold text-primary-700 underline-offset-4 hover:underline">{% translate "Show all articles" %}</a>
+      </p>
+    {% endif %}
+  </header>
+
+  <div class="mx-auto max-w-6xl px-4 py-10">
+    {% if articles %}
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {% for article in articles %}
+          <li class="flex">{% include "orion/pages/includes/article_card.html" with article=article heading="h2" %}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-ink-muted">{% translate "There are no articles yet." %}</p>
+    {% endif %}
+
+    {% if articles.has_other_pages %}
+      <nav class="mt-10 flex items-center justify-between gap-4" aria-label="{% translate 'Pagination' %}">
+        {% if articles.has_previous %}
+          <a href="{% querystring page=articles.previous_page_number %}" rel="prev" class="orion-button orion-button--secondary">{% translate "Newer articles" %}</a>
+        {% else %}<span></span>{% endif %}
+        <span class="text-sm text-ink-muted">{% blocktranslate with number=articles.number total=articles.paginator.num_pages %}Page {{ number }} of {{ total }}{% endblocktranslate %}</span>
+        {% if articles.has_next %}
+          <a href="{% querystring page=articles.next_page_number %}" rel="next" class="orion-button orion-button--secondary">{% translate "Older articles" %}</a>
+        {% else %}<span></span>{% endif %}
+      </nav>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "orion/base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+  {% include "orion/pages/includes/page_header.html" %}
+  {% include_block page.body %}
+  <section class="mx-auto max-w-6xl px-4 py-12">
+    {% include "orion/includes/contact_details.html" with site_items=site_items %}
+  </section>
+{% endblock %}

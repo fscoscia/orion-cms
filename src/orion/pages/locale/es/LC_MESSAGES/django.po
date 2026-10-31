@@ -1,0 +1,210 @@
+# Spanish translations for Orion's pages app.
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 01:14+0000\n"
+"PO-Revision-Date: 2026-10-31 01:30+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: apps.py:8
+msgid "Pages"
+msgstr "Páginas"
+
+#: migrations/0002_replace_welcome_page.py:58
+msgid "Home"
+msgstr "Inicio"
+
+#: models.py:45 models.py:332
+msgid "body"
+msgstr "cuerpo"
+
+#: models.py:66
+msgid "home page"
+msgstr "portada"
+
+#: models.py:67
+msgid "home pages"
+msgstr "portadas"
+
+#: models.py:81
+msgid "content page"
+msgstr "página libre"
+
+#: models.py:82
+msgid "content pages"
+msgstr "páginas libres"
+
+#: models.py:91
+msgid "contact page"
+msgstr "página de contacto"
+
+#: models.py:92
+msgid "contact pages"
+msgstr "páginas de contacto"
+
+#: models.py:108
+msgid "name"
+msgstr "nombre"
+
+#: models.py:110
+msgid "slug"
+msgstr "slug"
+
+#: models.py:114
+msgid "Used in filter URLs. Leave empty to build it from the name."
+msgstr "Se usa en las URLs de los filtros. Dejar vacío para armarlo con el nombre."
+
+#: models.py:139
+msgid "parent category"
+msgstr "categoría superior"
+
+#: models.py:145
+msgid "Optional. Categories have two levels."
+msgstr "Opcional. Las categorías tienen dos niveles."
+
+#: models.py:151
+msgid "category"
+msgstr "categoría"
+
+#: models.py:152 models.py:328
+msgid "categories"
+msgstr "categorías"
+
+#: models.py:159
+msgid "This language already has a category with this slug."
+msgstr "Este idioma ya tiene una categoría con este slug."
+
+#: models.py:173
+msgid "Choose a category without a parent category."
+msgstr "Elegir una categoría que no tenga categoría superior."
+
+#: models.py:177
+msgid "This category has subcategories, so it cannot have one."
+msgstr "Esta categoría tiene subcategorías, así que no puede tener una categoría superior."
+
+#: models.py:181
+msgid "Choose a category in the same language."
+msgstr "Elegir una categoría del mismo idioma."
+
+#: models.py:198 models.py:390 models.py:396
+msgid "tag"
+msgstr "etiqueta"
+
+#: models.py:199 models.py:397
+msgid "tags"
+msgstr "etiquetas"
+
+#: models.py:206
+msgid "This language already has a tag with this slug."
+msgstr "Este idioma ya tiene una etiqueta con este slug."
+
+#: models.py:216
+msgid "introduction"
+msgstr "introducción"
+
+#: models.py:224
+msgid "article listing"
+msgstr "listado de artículos"
+
+#: models.py:225
+msgid "article listings"
+msgstr "listados de artículos"
+
+#: models.py:301
+msgid "date"
+msgstr "fecha"
+
+#: models.py:303
+msgid "summary"
+msgstr "resumen"
+
+#: models.py:305
+msgid "Shown in listings and in the RSS feed."
+msgstr "Se muestra en los listados y en el feed RSS."
+
+#: models.py:309
+msgid "image"
+msgstr "imagen"
+
+#: models.py:316
+msgid "alternative text"
+msgstr "texto alternativo"
+
+#: models.py:319
+msgid "Describe the image for people who cannot see it."
+msgstr "Describir la imagen para quien no puede verla."
+
+#: models.py:322
+msgid "decorative image"
+msgstr "imagen decorativa"
+
+#: models.py:324
+msgid "Check only if the image adds nothing to the text."
+msgstr "Marcar solo si la imagen no aporta nada al texto."
+
+#: models.py:346
+msgid "Image"
+msgstr "Imagen"
+
+#: models.py:349 templates/orion/pages/article_page.html:34
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: models.py:360
+msgid "article"
+msgstr "artículo"
+
+#: models.py:361
+msgid "articles"
+msgstr "artículos"
+
+#: models.py:369
+msgid ""
+"Describe the image, or mark it as decorative if it adds nothing to the text."
+msgstr "Describir la imagen, o marcarla como decorativa si no aporta nada al texto."
+
+#: templates/orion/pages/article_index_page.html:14
+#, python-format
+msgid "Category: %(name)s"
+msgstr "Categoría: %(name)s"
+
+#: templates/orion/pages/article_index_page.html:14
+#, python-format
+msgid "Tag: %(name)s"
+msgstr "Etiqueta: %(name)s"
+
+#: templates/orion/pages/article_index_page.html:15
+msgid "Show all articles"
+msgstr "Ver todos los artículos"
+
+#: templates/orion/pages/article_index_page.html:28
+msgid "There are no articles yet."
+msgstr "Todavía no hay artículos."
+
+#: templates/orion/pages/article_index_page.html:32
+msgid "Pagination"
+msgstr "Paginación"
+
+#: templates/orion/pages/article_index_page.html:34
+msgid "Newer articles"
+msgstr "Artículos más nuevos"
+
+#: templates/orion/pages/article_index_page.html:36
+#, python-format
+msgid "Page %(number)s of %(total)s"
+msgstr "Página %(number)s de %(total)s"
+
+#: templates/orion/pages/article_index_page.html:38
+msgid "Older articles"
+msgstr "Artículos anteriores"
+
+#: templates/orion/pages/article_page.html:10
+msgid "Categories"
+msgstr "Categorías"

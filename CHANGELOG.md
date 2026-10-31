@@ -60,6 +60,16 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 - Componentes `tabs` y `counter` de Alpine (compatibles con CSP) para las pestañas y las
   cifras animadas; el acordeón usa `<details>` nativo.
 - App `demo` del proyecto de ejemplo con una página que usa todos los bloques.
+- Tipos de página en `orion.pages`: Portada, Página libre, Página de contacto, Listado de
+  artículos y Artículo, con reglas de dónde va cada uno.
+- La primera migración reemplaza la página de bienvenida de Wagtail por una Portada, solo
+  si sigue intacta.
+- Artículos con fecha, resumen, imagen (texto alternativo o decorativa), categorías y
+  etiquetas; listados paginados (`ORION_ARTICLES_PER_PAGE`) con filtros por categoría y
+  etiqueta, y feed RSS por listado e idioma (`ORION_FEED_ITEMS`).
+- Categorías (dos niveles) y etiquetas traducibles, con permisos para los grupos de
+  editores y moderadores.
+- Bloque "Últimas novedades" y validación de que el Hero sea el primer bloque.
 
 ### Changed
 

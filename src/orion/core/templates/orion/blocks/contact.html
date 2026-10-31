@@ -1,28 +1,4 @@
-{% load i18n orion_core %}
 <section class="orion-block block-contact--{{ value.style }} mx-auto max-w-6xl space-y-8 px-4 py-12">
   {% include "orion/blocks/includes/title.html" with title=value.title %}
-  {% if site_items or value.extra_items %}
-    <dl class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {% for name, data in site_items %}
-        <div class="flex gap-3">
-          <dt class="mt-0.5 shrink-0 text-primary-700">
-            {% include "orion/includes/icon.html" with name=name %}
-            <span class="sr-only">{% if name == "phone" %}{% translate "Phone" %}{% elif name == "whatsapp" %}WhatsApp{% elif name == "email" %}{% translate "Email" %}{% else %}{% translate "Address" %}{% endif %}</span>
-          </dt>
-          <dd>
-            {% if name == "phone" %}<a class="hover:underline" href="{{ data|tel_url }}">{{ data }}</a>
-            {% elif name == "whatsapp" %}<a class="hover:underline" href="{{ data|whatsapp_url }}" rel="noopener noreferrer">{{ data }}</a>
-            {% elif name == "email" %}<a class="hover:underline" href="mailto:{{ data }}">{{ data }}</a>
-            {% else %}{{ data|linebreaksbr }}{% endif %}
-          </dd>
-        </div>
-      {% endfor %}
-      {% for item in value.extra_items %}
-        <div>
-          <dt class="font-semibold">{{ item.label }}</dt>
-          <dd class="text-ink-muted">{{ item.text|linebreaksbr }}</dd>
-        </div>
-      {% endfor %}
-    </dl>
-  {% endif %}
+  {% include "orion/includes/contact_details.html" with site_items=site_items extra_items=value.extra_items %}
 </section>

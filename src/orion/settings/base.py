@@ -41,6 +41,7 @@ ORION_APPS = [
     "orion.localization",
     "orion.site_data",
     "orion.navigation",
+    "orion.pages",
 ]
 
 WAGTAIL_APPS = [
@@ -48,6 +49,7 @@ WAGTAIL_APPS = [
     # Replaces wagtail.locales: same language screen, plus syncing new languages.
     "wagtail_localize.locales",
     "wagtail.contrib.settings",
+    "wagtail.contrib.routable_page",
     "wagtail.sites",
     "wagtail.users",
     "wagtail.snippets",
