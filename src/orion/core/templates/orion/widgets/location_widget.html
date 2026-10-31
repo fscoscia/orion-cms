@@ -1,0 +1,21 @@
+{% load i18n l10n %}
+<div class="orion-location" data-controller="orion-location"
+     data-orion-location-center-lat-value="{{ default_center.lat|unlocalize }}"
+     data-orion-location-center-lng-value="{{ default_center.lng|unlocalize }}"
+     data-orion-location-zoom-value="{{ default_center.zoom|unlocalize }}"
+     data-orion-location-tiles-url-value="{{ tiles.url }}"
+     data-orion-location-tiles-attribution-value="{{ tiles.attribution }}"
+     data-orion-location-max-zoom-value="{{ tiles.max_zoom|unlocalize }}">
+  <input type="hidden" name="{{ widget.name }}" value="{{ widget.value|default_if_none:'' }}"{% include "django/forms/widgets/attrs.html" %} data-orion-location-target="input">
+  <div class="orion-location__map" data-orion-location-target="map"></div>
+  <p class="orion-location__help">{% translate "Click on the map or drag the marker. You can also type the coordinates." %}</p>
+  <div class="orion-location__coordinates">
+    <label>{% translate "Latitude" %}
+      <input type="number" step="any" min="-90" max="90" data-orion-location-target="lat" data-action="input->orion-location#fromCoordinates">
+    </label>
+    <label>{% translate "Longitude" %}
+      <input type="number" step="any" min="-180" max="180" data-orion-location-target="lng" data-action="input->orion-location#fromCoordinates">
+    </label>
+    <button type="button" class="button button-secondary button-small" data-action="orion-location#clear">{% translate "Remove location" %}</button>
+  </div>
+</div>

@@ -70,9 +70,19 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 - Categorías (dos niveles) y etiquetas traducibles, con permisos para los grupos de
   editores y moderadores.
 - Bloque "Últimas novedades" y validación de que el Hero sea el primer bloque.
+- Mapas con Leaflet 1.9.4 y teselas de OpenStreetMap: ubicación del sitio en Datos del
+  sitio (elegida con un clic, arrastrando o con coordenadas), mapa en la Página de
+  contacto y bloque Mapa con varios puntos. Se cargan a pedido del visitante; proveedor
+  de teselas configurable con `ORION_MAP_TILES`.
+- Vista previa en el selector para todos los bloques: los que muestran imágenes o
+  artículos usan imágenes y artículos de ejemplo de Orion
+  (`orion/core/static/orion/samples/`, generadas con `scripts/make_sample_images.py`), sin
+  agregar nada a la biblioteca ni a las páginas.
 
 ### Changed
 
+- Los slugs de páginas, categorías y etiquetas van sin tildes
+  (`WAGTAIL_ALLOW_UNICODE_SLUGS = False`).
 - `orion.core.blocks` pasó de módulo a paquete; las importaciones públicas
   (`from orion.core.blocks import LinkBlock`) no cambian.
 - El README indica declarar `TEMPLATES[0]["DIRS"]` en el proyecto para reemplazar

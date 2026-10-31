@@ -79,4 +79,18 @@ class TestEditingRights:
         tag.full_clean()
         tag.save()
 
-        assert ArticleTag.objects.get(slug="prevención").name == "Prevención"
+        assert ArticleTag.objects.get(slug="prevencion").name == "Prevención"
+
+    def test_name_without_latin_letters_gets_a_valid_slug(self):
+        tag = ArticleTag(name="Здоровье", locale=Locale.get_default())
+
+        tag.full_clean()
+
+        assert tag.slug
+        assert tag.slug.isascii()
+
+    def test_slug_with_accents_is_rejected(self):
+        tag = ArticleTag(name="Salud", slug="salúd", locale=Locale.get_default())
+
+        with pytest.raises(ValidationError):
+            tag.full_clean()

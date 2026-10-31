@@ -89,6 +89,15 @@ class TestPlacement:
         assert response.status_code == 200
 
 
+class TestSlugs:
+    def test_page_slug_has_no_accents(self, home_page):
+        page = ContentPage(title="Artículo de prueba")
+
+        home_page.add_child(instance=page)
+
+        assert page.slug == "articulo-de-prueba"
+
+
 class TestMainHeading:
     def test_page_without_hero_shows_its_title(self, client, home_page):
         page = _publish(

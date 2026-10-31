@@ -5,7 +5,7 @@
     {% for item in value.images %}
       <li>
         <figure>
-          {% srcset_image item.image format-webp fill-{400x300,800x600} sizes="(min-width: 48rem) 33vw, 50vw" alt=item.image.contextual_alt_text loading="lazy" decoding="async" class="aspect-4/3 h-auto w-full rounded-lg object-cover" %}
+          {% if item.image.is_sample %}{% include "orion/blocks/includes/sample_image.html" with image=item.image alt=item.image.contextual_alt_text class_name="aspect-4/3 h-auto w-full rounded-lg object-cover" %}{% else %}{% srcset_image item.image format-webp fill-{400x300,800x600} sizes="(min-width: 48rem) 33vw, 50vw" alt=item.image.contextual_alt_text loading="lazy" decoding="async" class="aspect-4/3 h-auto w-full rounded-lg object-cover" %}{% endif %}
           {% if item.caption %}<figcaption class="mt-2 text-sm text-ink-muted">{{ item.caption }}</figcaption>{% endif %}
         </figure>
       </li>

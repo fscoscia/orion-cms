@@ -139,7 +139,7 @@ Las URLs del idioma base no llevan prefijo (`/servicios/`); las de los demás s�
 ## Datos del sitio y menús
 
 - **Propiedades → Datos del sitio** (*Settings → Site data*): logo, logo del pie, teléfono,
-  WhatsApp, email, dirección y redes sociales. Valen para todos los idiomas y los edita
+  WhatsApp, email, dirección, ubicación en el mapa y redes sociales. Valen para todos los idiomas y los edita
   quien tenga el permiso de esos ajustes (los administradores).
 - **Fragmentos → Textos del sitio** (*Snippets → Site texts*): eslogan y texto legal del
   pie. Crear primero la versión del idioma base; las demás se crean con la acción
@@ -170,6 +170,11 @@ Al migrar una base nueva, la página de bienvenida de Wagtail se reemplaza por u
 ("Inicio" en el idioma base). Si esa página ya tenía cambios, hijas o traducciones, no se
 toca: hay que crear la Portada a mano y elegirla como raíz en **Propiedades → Sitios**.
 
+Los slugs de las URLs van sin tildes (`/novedades/articulo-de-prueba/`): el admin los arma
+así a partir del título, y también los de categorías y etiquetas
+(`WAGTAIL_ALLOW_UNICODE_SLUGS = False` en los ajustes base; un proyecto que prefiera
+slugs con tildes la redefine en `True`).
+
 Cada página tiene un solo título principal: si el cuerpo empieza con un Hero, su título es
 el principal; si no, se muestra el título de la página. Por eso el Hero solo se admite como
 primer bloque.
@@ -193,11 +198,38 @@ traducen con la acción "Traducir" del fragmento, una sola vez: el artículo eli
 categorías y etiquetas en el original, sus traducciones las heredan al sincronizarse y cada
 idioma las muestra con su nombre traducido (o en el idioma base si falta la traducción).
 
+## Mapas
+
+La ubicación del sitio se elige en **Propiedades → Datos del sitio → Contacto**: clic en el
+mapa, arrastrando el marcador o escribiendo latitud y longitud. Con la ubicación cargada,
+la Página de contacto muestra el mapa sola, y el bloque **Mapa** la incluye (se puede
+desactivar) junto con otros puntos, cada uno elegido igual y con nombre y descripción
+traducibles.
+
+El mapa se carga a pedido: el visitante ve los puntos, un botón "Ver mapa" y un enlace para
+abrirlo en OpenStreetMap; Leaflet y las teselas recién se descargan al presionar el botón.
+
+Las teselas salen de OpenStreetMap por defecto. Su [política de
+uso](https://operations.osmfoundation.org/policies/tiles/) exige mostrar la atribución y no
+admite tráfico alto; para un sitio con muchas visitas, usar otro proveedor:
+
+```python
+ORION_MAP_TILES = {
+    "url": "https://tiles.ejemplo.com/{z}/{x}/{y}.png",
+    "attribution": "&copy; Proveedor de mapas",
+    "max_zoom": 19,
+}
+ORION_MAP_DEFAULT_CENTER = (-34.6037, -58.3816, 12)  # donde arranca el mapa del admin
+```
+
+Una política de seguridad de contenido (CSP) tiene que permitir las imágenes del proveedor:
+con OpenStreetMap, `img-src 'self' data: https://tile.openstreetmap.org`.
+
 ## Bloques de contenido
 
-Orion trae catorce bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y
+Orion trae quince bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y
 texto, Tarjetas, Cifras, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de contacto,
-Botones y Últimas novedades. Los tipos de página de Orion ya los usan; para un tipo de
+Botones, Últimas novedades y Mapa. Los tipos de página de Orion ya los usan; para un tipo de
 página propio del proyecto, `ContentStreamBlock` los reúne a todos:
 
 ```python

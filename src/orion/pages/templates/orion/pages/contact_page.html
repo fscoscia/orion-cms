@@ -7,4 +7,9 @@
   <section class="mx-auto max-w-6xl px-4 py-12">
     {% include "orion/includes/contact_details.html" with site_items=site_items %}
   </section>
+  {% if map_points %}
+    <section class="mx-auto max-w-6xl px-4 pb-12">
+      {% include "orion/includes/map.html" with points=map_points zoom=map_zoom %}
+    </section>
+  {% endif %}
 {% endblock %}

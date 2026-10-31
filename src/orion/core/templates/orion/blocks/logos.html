@@ -6,7 +6,7 @@
       <li>
         {# The logo's name is its alternative text, so a linked logo is announced by name. #}
         {% if logo.url %}<a href="{{ logo.url }}" class="block rounded opacity-80 hover:opacity-100">{% endif %}
-        {% srcset_image logo.image format-webp max-{240x96,480x192} sizes="240px" alt=logo.name loading="lazy" decoding="async" class="h-12 w-auto object-contain" %}
+        {% if logo.image.is_sample %}{% include "orion/blocks/includes/sample_image.html" with image=logo.image alt=logo.name class_name="h-12 w-auto object-contain" %}{% else %}{% srcset_image logo.image format-webp max-{240x96,480x192} sizes="240px" alt=logo.name loading="lazy" decoding="async" class="h-12 w-auto object-contain" %}{% endif %}
         {% if logo.url %}</a>{% endif %}
       </li>
     {% endfor %}

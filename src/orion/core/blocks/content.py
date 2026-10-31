@@ -4,13 +4,18 @@ Block keys and field names are a StreamField contract: renaming or removing one 
 there is content requires a data migration.
 """
 
+import datetime
 import functools
+import json
 import re
 import uuid
+from types import SimpleNamespace
 
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.templatetags.static import static
+from django.utils import timezone
 from django.utils.html import format_html_join
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
@@ -20,10 +25,53 @@ from wagtail.blocks.struct_block import BlockGroup
 from wagtail.images.blocks import ImageBlock, ImageChooserBlock
 
 from orion.core.blocks.links import LinkBlock
+from orion.core.forms import LocationField
 
 DEFAULT_STYLE = "default"
 RICH_TEXT_FEATURES = ["h2", "h3", "bold", "italic", "link", "ol", "ul"]
 PARAGRAPH_PATTERN = re.compile(r"<p[\s>]")
+
+
+SAMPLE_IMAGE_SIZES = {
+    "landscape-1.webp": (1600, 900),
+    "landscape-2.webp": (1600, 900),
+    "landscape-3.webp": (800, 800),
+    "logo-1.svg": (200, 48),
+    "logo-2.svg": (200, 48),
+    "logo-3.svg": (200, 48),
+    "logo-4.svg": (200, 48),
+}
+
+
+class SampleImage:
+    """A sample image from Orion's static files, for block previews in the editor.
+
+    Previews must work on an empty site without adding images to its library, so
+    templates draw these with a plain <img> instead of renditions.
+    """
+
+    is_sample = True
+
+    def __init__(self, name, alt=""):
+        self.url = static(f"orion/samples/{name}")
+        self.width, self.height = SAMPLE_IMAGE_SIZES[name]
+        self.contextual_alt_text = alt
+        self.decorative = not alt
+
+
+def with_sample_images(value, **images):
+    """Put sample images in a preview value.
+
+    Pass a file name for an image field, or a list of names for a list whose items
+    have an ``image`` field.
+    """
+    for field, names in images.items():
+        if isinstance(names, list):
+            for item, name in zip(value[field], names, strict=False):
+                item["image"] = SampleImage(name, alt="Sample image")
+        else:
+            value[field] = SampleImage(names, alt="Sample image")
+    return value
 
 
 def get_block_style_choices(block_type):
@@ -189,6 +237,9 @@ class HeroBlock(BaseContentBlock):
         help_text=_("Shown behind the text. Use a wide photo."),
     )
 
+    def get_preview_value(self):
+        return with_sample_images(super().get_preview_value(), image="landscape-1.webp")
+
     class Meta:
         icon = "image"
         label = _("Hero")
@@ -227,11 +278,15 @@ class ImageContentBlock(BaseContentBlock):
     image = ImageBlock(label=_("Image"))
     caption = blocks.CharBlock(label=_("Caption"), required=False, max_length=200)
 
+    def get_preview_value(self):
+        return with_sample_images(super().get_preview_value(), image="landscape-2.webp")
+
     class Meta:
         icon = "image"
         label = _("Image")
         description = _("A photo with an optional caption.")
         template = "orion/blocks/image.html"
+        preview_value = {"caption": "A photo with its caption."}
 
 
 class GalleryImageBlock(blocks.StructBlock):
@@ -251,11 +306,20 @@ class GalleryBlock(BaseContentBlock):
         GalleryImageBlock(), label=_("Images"), min_num=2, max_num=24
     )
 
+    def get_preview_value(self):
+        return with_sample_images(
+            super().get_preview_value(),
+            images=["landscape-1.webp", "landscape-2.webp", "landscape-3.webp"],
+        )
+
     class Meta:
         icon = "image"
         label = _("Gallery")
         description = _("A grid of photos with optional captions.")
         template = "orion/blocks/gallery.html"
+        preview_value = {
+            "images": [{"caption": "First photo"}, {}, {"caption": "Third photo"}]
+        }
 
 
 class ImageTextBlock(BaseContentBlock):
@@ -271,11 +335,19 @@ class ImageTextBlock(BaseContentBlock):
         default="left",
     )
 
+    def get_preview_value(self):
+        return with_sample_images(super().get_preview_value(), image="landscape-3.webp")
+
     class Meta:
         icon = "image"
         label = _("Image and text")
         description = _("A photo next to a title, a text and buttons.")
         template = "orion/blocks/image_text.html"
+        preview_value = {
+            "title": "<p>A photo next to <b>a text</b></p>",
+            "body": "<p>A short text that goes with the photo.</p>",
+            "buttons": [{"label": "Learn more", "url": "https://example.com/"}],
+        }
 
 
 class CardBlock(blocks.StructBlock):
@@ -303,6 +375,12 @@ class CardsBlock(BaseContentBlock):
         default="3",
     )
     cards = blocks.ListBlock(CardBlock(), label=_("Cards"), min_num=1)
+
+    def get_preview_value(self):
+        return with_sample_images(
+            super().get_preview_value(),
+            cards=["landscape-1.webp", "landscape-2.webp", "landscape-3.webp"],
+        )
 
     class Meta:
         icon = "table"
@@ -469,6 +547,12 @@ class LogosBlock(BaseContentBlock):
     title = HighlightedTitleBlock(required=False)
     logos = blocks.ListBlock(LogoBlock(), label=_("Logos"), min_num=1)
 
+    def get_preview_value(self):
+        return with_sample_images(
+            super().get_preview_value(),
+            logos=["logo-1.svg", "logo-2.svg", "logo-3.svg", "logo-4.svg"],
+        )
+
     class Meta:
         icon = "site"
         label = _("Logos")
@@ -476,6 +560,15 @@ class LogosBlock(BaseContentBlock):
             "A row of logos, such as partners or clients, with optional links."
         )
         template = "orion/blocks/logos.html"
+        preview_value = {
+            "title": "<p>Our <b>partners</b></p>",
+            "logos": [
+                {"name": "Partner 1"},
+                {"name": "Partner 2"},
+                {"name": "Partner 3"},
+                {"name": "Partner 4"},
+            ],
+        }
 
 
 class ContactItemBlock(blocks.StructBlock):
@@ -556,6 +649,23 @@ class ButtonsBlock(BaseContentBlock):
         }
 
 
+def sample_articles(count):
+    """Articles for the latest articles preview, which must not touch the database."""
+    images = ["landscape-1.webp", "landscape-2.webp", "landscape-3.webp"]
+    today = timezone.localdate()
+    return [
+        SimpleNamespace(
+            title=f"Sample article {number}",
+            date=today - datetime.timedelta(days=number * 7),
+            summary="A short summary that invites people to read the article.",
+            image=SampleImage(images[(number - 1) % len(images)]),
+            image_alt_text="",
+            url="#",
+        )
+        for number in range(1, count + 1)
+    ]
+
+
 class LatestArticlesBlock(BaseContentBlock):
     style_key = "latest_articles"
 
@@ -570,11 +680,20 @@ class LatestArticlesBlock(BaseContentBlock):
         help_text=_("Optional. Without a listing, shows articles from all of them."),
     )
 
+    def get_preview_context(self, value, parent_context=None):
+        context = super().get_preview_context(value, parent_context)
+        context["is_block_preview"] = True
+        return context
+
     def get_context(self, value, parent_context=None):
         # Imported here: the pages app imports these blocks for its models.
         from orion.pages.models import ArticlePage
 
         context = super().get_context(value, parent_context)
+        if (parent_context or {}).get("is_block_preview"):
+            # Previews show sample articles: a new site has none.
+            context["articles"] = sample_articles(value.get("count") or 3)
+            return context
         index = value.get("index")
         if index is not None:
             # The listing chosen in the original, in the visitor's language.
@@ -590,6 +709,114 @@ class LatestArticlesBlock(BaseContentBlock):
         label = _("Latest articles")
         description = _("The most recent articles, from every listing or from one.")
         template = "orion/blocks/latest_articles.html"
+
+
+class LocationBlock(blocks.FieldBlock):
+    """A point on the map, as ``{"lat": float, "lng": float}``."""
+
+    def __init__(self, required=True, help_text=None, **kwargs):
+        self.field = LocationField(required=required, help_text=help_text)
+        super().__init__(**kwargs)
+
+    # The widget's hidden input holds the location as JSON text: the form posts that
+    # text, and the stored value is the decoded object.
+    def value_for_form(self, value):
+        return value if isinstance(value, str) else self.field.prepare_value(value)
+
+    def value_from_form(self, value):
+        if not isinstance(value, str):
+            return value
+        try:
+            return json.loads(value) if value else None
+        except ValueError:
+            # Left as text, so that validation reports it.
+            return value
+
+    class Meta:
+        icon = "site"
+
+
+class MapPointBlock(blocks.StructBlock):
+    location = LocationBlock(label=_("Location"))
+    name = blocks.CharBlock(label=_("Name"), max_length=100)
+    description = blocks.TextBlock(
+        label=_("Description"),
+        required=False,
+        max_length=300,
+        help_text=_("For example, the address or the opening hours."),
+    )
+
+    class Meta:
+        icon = "site"
+        label = _("Point")
+
+
+class MapBlock(BaseContentBlock):
+    style_key = "map"
+
+    title = HighlightedTitleBlock(required=False)
+    include_site_location = blocks.BooleanBlock(
+        label=_("Include the site location"),
+        default=True,
+        required=False,
+        help_text=_("The location set in Site data."),
+    )
+    points = blocks.ListBlock(MapPointBlock(), label=_("Points"), default=[], min_num=0)
+    zoom = blocks.IntegerBlock(
+        label=_("Zoom"),
+        default=16,
+        min_value=1,
+        max_value=19,
+        help_text=_("Used with a single point; several points are all shown."),
+    )
+
+    def get_context(self, value, parent_context=None):
+        # Imported here: the settings model's app may load after the blocks module.
+        from wagtail.models import Site
+
+        from orion.site_data.models import SiteSettings
+
+        context = super().get_context(value, parent_context)
+        points = []
+        if value.get("include_site_location", True):
+            request = (parent_context or {}).get("request")
+            site = Site.find_for_request(request) if request else None
+            site_point = SiteSettings.load().map_point(
+                name=site.site_name if site else ""
+            )
+            if site_point:
+                points.append(site_point)
+        points += [
+            {
+                **point["location"],
+                "name": point["name"],
+                "description": point.get("description") or "",
+            }
+            for point in value.get("points") or []
+            if point.get("location")
+        ]
+        context["points"] = points
+        context["zoom"] = value.get("zoom") or 16
+        return context
+
+    class Meta:
+        icon = "site"
+        label = _("Map")
+        description = _(
+            "A map with the site location and other points, loaded when the visitor "
+            "asks for it."
+        )
+        template = "orion/blocks/map.html"
+        preview_value = {
+            "include_site_location": False,
+            "points": [
+                {
+                    "location": {"lat": -25.2637, "lng": -57.5759},
+                    "name": "Example point",
+                    "description": "An address or the opening hours.",
+                }
+            ],
+        }
 
 
 class ContentStreamBlock(blocks.StreamBlock):
@@ -614,6 +841,7 @@ class ContentStreamBlock(blocks.StreamBlock):
     contact = ContactBlock()
     buttons = ButtonsBlock()
     latest_articles = LatestArticlesBlock()
+    map = MapBlock()
 
     def clean(self, value):
         # The hero holds the page's h1, so it can only open the body.

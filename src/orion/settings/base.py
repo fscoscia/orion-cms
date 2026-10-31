@@ -185,7 +185,22 @@ LANGUAGES = [
     ("zh-hans", "简体中文"),
 ]
 WAGTAIL_I18N_ENABLED = True
+# Slugs in ASCII ("articulo", not "artículo"), so URLs read the same when shared.
+WAGTAIL_ALLOW_UNICODE_SLUGS = False
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
+
+# Maps. Tiles come from OpenStreetMap by default: its usage policy requires the
+# attribution and does not allow heavy traffic. Projects may replace the whole dict.
+ORION_MAP_TILES = {
+    "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "attribution": (
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> '
+        "contributors"
+    ),
+    "max_zoom": 19,
+}
+# Where the admin's location picker starts when no location is set: (lat, lng, zoom).
+ORION_MAP_DEFAULT_CENTER = (-25.2637, -57.5759, 12)
 
 # Static and media files (projects set STATIC_ROOT and MEDIA_ROOT)
 

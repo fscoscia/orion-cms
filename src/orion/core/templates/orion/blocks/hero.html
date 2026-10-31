@@ -2,7 +2,7 @@
 <section class="orion-block orion-hero block-hero--{{ value.style }} relative isolate overflow-hidden {% if value.image %}orion-on-dark bg-primary-900 text-white{% else %}bg-primary-50{% endif %}">
   {% if value.image %}
     {# The hero image is the page's main image, so it is not lazy-loaded. #}
-    {% srcset_image value.image format-webp fill-{800x600,1280x720,1920x1080}-c50 sizes="100vw" alt=value.image.contextual_alt_text class="absolute inset-0 -z-10 size-full object-cover" %}
+    {% if value.image.is_sample %}{% include "orion/blocks/includes/sample_image.html" with image=value.image alt=value.image.contextual_alt_text class_name="absolute inset-0 -z-10 size-full object-cover" %}{% else %}{% srcset_image value.image format-webp fill-{800x600,1280x720,1920x1080}-c50 sizes="100vw" alt=value.image.contextual_alt_text class="absolute inset-0 -z-10 size-full object-cover" %}{% endif %}
     <div class="absolute inset-0 -z-10 bg-primary-900/70" aria-hidden="true"></div>
   {% endif %}
   <div class="mx-auto max-w-6xl px-4 py-20 md:py-28">

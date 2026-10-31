@@ -1,6 +1,8 @@
 import re
+from urllib.parse import urlencode
 
 from django import template
+from django.conf import settings
 from django.utils.safestring import mark_safe
 from wagtail.rich_text import expand_db_html
 
@@ -37,3 +39,16 @@ def highlighted_title(title):
 def visible_links(links):
     """Return the links that have a destination the visitor can reach."""
     return [link for link in links or () if link.is_visible]
+
+
+@register.simple_tag
+def get_map_tiles():
+    """Return the tile provider settings for maps (ORION_MAP_TILES)."""
+    return settings.ORION_MAP_TILES
+
+
+@register.filter
+def openstreetmap_url(point, zoom=16):
+    """Return a link that opens a map point on openstreetmap.org."""
+    query = urlencode({"mlat": point["lat"], "mlon": point["lng"]})
+    return f"https://www.openstreetmap.org/?{query}#map={zoom}/{point['lat']}/{point['lng']}"

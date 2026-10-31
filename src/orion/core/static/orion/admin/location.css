@@ -1,0 +1,27 @@
+/* The location picker in the admin (orion/widgets/location_widget.html). */
+.orion-location__map {
+  height: 18rem;
+  border-radius: 0.25rem;
+}
+
+.orion-location__help {
+  margin-block: 0.5rem;
+}
+
+.orion-location__coordinates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.orion-location__coordinates input {
+  max-width: 12rem;
+}
+
+.orion-marker svg {
+  width: 2rem;
+  height: 2rem;
+  color: #15645d;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.4));
+}

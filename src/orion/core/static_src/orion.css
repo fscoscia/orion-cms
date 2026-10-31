@@ -140,6 +140,13 @@
     background-color: rgb(255 255 255 / 0.1);
   }
 
+  .orion-map__marker svg {
+    width: 2rem;
+    height: 2rem;
+    color: var(--color-primary-700);
+    filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.4));
+  }
+
   @media (width < 48rem) {
     .site-nav.is-enhanced .site-nav__panel {
       display: none;

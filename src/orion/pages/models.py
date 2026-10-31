@@ -20,8 +20,16 @@ from wagtail.admin.panels import (
     MultipleChooserPanel,
 )
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path
+from wagtail.coreutils import cautious_slugify
 from wagtail.fields import StreamField
-from wagtail.models import Locale, Orderable, Page, PageManager, TranslatableMixin
+from wagtail.models import (
+    Locale,
+    Orderable,
+    Page,
+    PageManager,
+    Site,
+    TranslatableMixin,
+)
 from wagtail.snippets.models import register_snippet
 from wagtail_localize.fields import SynchronizedField
 
@@ -96,9 +104,12 @@ class ContactPage(BodyPage):
         from orion.site_data.models import SiteSettings
 
         context = super().get_context(request, *args, **kwargs)
-        context["site_items"] = SiteSettings.load(
-            request_or_site=request
-        ).contact_items()
+        site_settings = SiteSettings.load(request_or_site=request)
+        context["site_items"] = site_settings.contact_items()
+        site = Site.find_for_request(request)
+        site_point = site_settings.map_point(name=site.site_name if site else "")
+        context["map_points"] = [site_point] if site_point else []
+        context["map_zoom"] = site_settings.map_zoom
         return context
 
 
@@ -119,8 +130,17 @@ class TaxonomyMixin(TranslatableMixin, models.Model):
 
     def clean(self):
         super().clean()
+        allow_unicode = getattr(settings, "WAGTAIL_ALLOW_UNICODE_SLUGS", True)
         if not self.slug:
-            self.slug = slugify(self.name, allow_unicode=True)
+            # Names without Latin letters slugify to nothing in ASCII; Wagtail's
+            # cautious_slugify escapes them instead.
+            self.slug = slugify(self.name, allow_unicode=allow_unicode) or (
+                cautious_slugify(self.name)
+            )
+        elif not allow_unicode and not self.slug.isascii():
+            raise ValidationError(
+                {"slug": _("Use only letters without accents, numbers and hyphens.")}
+            )
 
     @classmethod
     def from_slug(cls, slug):

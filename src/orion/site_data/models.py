@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
@@ -6,6 +8,8 @@ from wagtail.contrib.settings.models import BaseGenericSetting, register_setting
 from wagtail.fields import StreamField
 from wagtail.models import Locale, TranslatableMixin
 from wagtail.snippets.models import register_snippet
+
+from orion.core.forms import LocationWidget, clean_location
 
 CONTACT_FIELDS = ("phone", "whatsapp", "email", "address")
 
@@ -54,6 +58,18 @@ class SiteSettings(BaseGenericSetting):
     whatsapp = models.CharField(_("WhatsApp"), max_length=30, blank=True)
     email = models.EmailField(_("email"), blank=True)
     address = models.TextField(_("address"), blank=True)
+    location = models.JSONField(
+        _("location on the map"),
+        null=True,
+        blank=True,
+        help_text=_("Shown on the contact page and in map blocks."),
+    )
+    map_zoom = models.PositiveSmallIntegerField(
+        _("map zoom"),
+        default=16,
+        validators=[MinValueValidator(1), MaxValueValidator(19)],
+        help_text=_("From 1 (the whole world) to 19 (a single building)."),
+    )
     social_links = StreamField(
         [("social_link", SocialLinkBlock())],
         blank=True,
@@ -71,6 +87,8 @@ class SiteSettings(BaseGenericSetting):
                     FieldPanel("whatsapp"),
                     FieldPanel("email"),
                     FieldPanel("address"),
+                    FieldPanel("location", widget=LocationWidget),
+                    FieldPanel("map_zoom"),
                 ],
                 heading=_("Contact"),
             ),
@@ -80,6 +98,19 @@ class SiteSettings(BaseGenericSetting):
 
     class Meta:
         verbose_name = _("site data")
+
+    def clean(self):
+        super().clean()
+        try:
+            self.location = clean_location(self.location)
+        except ValidationError as error:
+            raise ValidationError({"location": error.messages}) from None
+
+    def map_point(self, name=""):
+        """The site's location as a map point, or None when it is not set."""
+        if not self.location:
+            return None
+        return {**self.location, "name": name, "description": self.address}
 
     def contact_items(self, names=CONTACT_FIELDS):
         """Return ``(name, value)`` pairs of the contact fields that are filled in."""

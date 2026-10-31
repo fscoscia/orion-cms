@@ -7,6 +7,7 @@ from django.urls import reverse
 from wagtail.blocks import StreamBlockValidationError, StructBlockValidationError
 from wagtail.images.models import Image
 from wagtail.images.tests.utils import get_test_image_file
+from wagtail.models import Page
 from wagtail.rich_text import RichText
 from wagtail_localize.segments.extract import extract_segments
 
@@ -38,6 +39,7 @@ BLOCK_TYPES = [
     "contact",
     "buttons",
     "latest_articles",
+    "map",
 ]
 
 
@@ -418,8 +420,27 @@ class TestEditor:
         )
 
         assert block.get_description()
+        assert block.is_previewable
         assert response.status_code == 200
         assert "orion/css/orion.css" in response.content.decode()
+
+    @pytest.mark.parametrize(
+        "block_type",
+        ["hero", "image", "gallery", "image_text", "cards", "logos", "latest_articles"],
+    )
+    def test_previews_use_sample_content_without_touching_the_site(
+        self, admin_client, block_type
+    ):
+        block = ContentStreamBlock().child_blocks[block_type]
+        pages_before = Page.objects.count()
+
+        html = admin_client.get(
+            reverse("wagtailadmin_block_preview"), {"id": block.definition_prefix}
+        ).content.decode()
+
+        assert re.search(r'<img src="/static/orion/samples/[\w-]+\.(webp|svg)"', html)
+        assert Image.objects.count() == 0
+        assert Page.objects.count() == pages_before
 
 
 class TestTranslation:

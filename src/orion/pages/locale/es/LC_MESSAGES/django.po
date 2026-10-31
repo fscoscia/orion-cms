@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 01:14+0000\n"
+"POT-Creation-Date: 2026-10-31 02:25+0000\n"
 "PO-Revision-Date: 2026-10-31 01:30+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -21,154 +21,162 @@ msgstr "Páginas"
 msgid "Home"
 msgstr "Inicio"
 
-#: models.py:45 models.py:332
+#: models.py:53 models.py:352
 msgid "body"
 msgstr "cuerpo"
 
-#: models.py:66
+#: models.py:74
 msgid "home page"
 msgstr "portada"
 
-#: models.py:67
+#: models.py:75
 msgid "home pages"
 msgstr "portadas"
 
-#: models.py:81
+#: models.py:89
 msgid "content page"
 msgstr "página libre"
 
-#: models.py:82
+#: models.py:90
 msgid "content pages"
 msgstr "páginas libres"
 
-#: models.py:91
+#: models.py:99
 msgid "contact page"
 msgstr "página de contacto"
 
-#: models.py:92
+#: models.py:100
 msgid "contact pages"
 msgstr "páginas de contacto"
 
-#: models.py:108
+#: models.py:119
 msgid "name"
 msgstr "nombre"
 
-#: models.py:110
+#: models.py:121
 msgid "slug"
 msgstr "slug"
 
-#: models.py:114
+#: models.py:125
 msgid "Used in filter URLs. Leave empty to build it from the name."
-msgstr "Se usa en las URLs de los filtros. Dejar vacío para armarlo con el nombre."
+msgstr ""
+"Se usa en las URLs de los filtros. Dejar vacío para armarlo con el nombre."
 
-#: models.py:139
+#: models.py:142
+msgid "Use only letters without accents, numbers and hyphens."
+msgstr "Usar solo letras sin tilde, números y guiones."
+
+#: models.py:159
 msgid "parent category"
 msgstr "categoría superior"
 
-#: models.py:145
+#: models.py:165
 msgid "Optional. Categories have two levels."
 msgstr "Opcional. Las categorías tienen dos niveles."
 
-#: models.py:151
+#: models.py:171
 msgid "category"
 msgstr "categoría"
 
-#: models.py:152 models.py:328
+#: models.py:172 models.py:348
 msgid "categories"
 msgstr "categorías"
 
-#: models.py:159
+#: models.py:179
 msgid "This language already has a category with this slug."
 msgstr "Este idioma ya tiene una categoría con este slug."
 
-#: models.py:173
+#: models.py:193
 msgid "Choose a category without a parent category."
 msgstr "Elegir una categoría que no tenga categoría superior."
 
-#: models.py:177
+#: models.py:197
 msgid "This category has subcategories, so it cannot have one."
-msgstr "Esta categoría tiene subcategorías, así que no puede tener una categoría superior."
+msgstr ""
+"Esta categoría tiene subcategorías, así que no puede tener una categoría "
+"superior."
 
-#: models.py:181
+#: models.py:201
 msgid "Choose a category in the same language."
 msgstr "Elegir una categoría del mismo idioma."
 
-#: models.py:198 models.py:390 models.py:396
+#: models.py:218 models.py:410 models.py:416
 msgid "tag"
 msgstr "etiqueta"
 
-#: models.py:199 models.py:397
+#: models.py:219 models.py:417
 msgid "tags"
 msgstr "etiquetas"
 
-#: models.py:206
+#: models.py:226
 msgid "This language already has a tag with this slug."
 msgstr "Este idioma ya tiene una etiqueta con este slug."
 
-#: models.py:216
+#: models.py:236
 msgid "introduction"
 msgstr "introducción"
 
-#: models.py:224
+#: models.py:244
 msgid "article listing"
 msgstr "listado de artículos"
 
-#: models.py:225
+#: models.py:245
 msgid "article listings"
 msgstr "listados de artículos"
 
-#: models.py:301
+#: models.py:321
 msgid "date"
 msgstr "fecha"
 
-#: models.py:303
+#: models.py:323
 msgid "summary"
 msgstr "resumen"
 
-#: models.py:305
+#: models.py:325
 msgid "Shown in listings and in the RSS feed."
 msgstr "Se muestra en los listados y en el feed RSS."
 
-#: models.py:309
+#: models.py:329
 msgid "image"
 msgstr "imagen"
 
-#: models.py:316
+#: models.py:336
 msgid "alternative text"
 msgstr "texto alternativo"
 
-#: models.py:319
+#: models.py:339
 msgid "Describe the image for people who cannot see it."
 msgstr "Describir la imagen para quien no puede verla."
 
-#: models.py:322
+#: models.py:342
 msgid "decorative image"
 msgstr "imagen decorativa"
 
-#: models.py:324
+#: models.py:344
 msgid "Check only if the image adds nothing to the text."
 msgstr "Marcar solo si la imagen no aporta nada al texto."
 
-#: models.py:346
+#: models.py:366
 msgid "Image"
 msgstr "Imagen"
 
-#: models.py:349 templates/orion/pages/article_page.html:34
+#: models.py:369 templates/orion/pages/article_page.html:34
 msgid "Tags"
 msgstr "Etiquetas"
 
-#: models.py:360
+#: models.py:380
 msgid "article"
 msgstr "artículo"
 
-#: models.py:361
+#: models.py:381
 msgid "articles"
 msgstr "artículos"
 
-#: models.py:369
+#: models.py:389
 msgid ""
 "Describe the image, or mark it as decorative if it adds nothing to the text."
-msgstr "Describir la imagen, o marcarla como decorativa si no aporta nada al texto."
+msgstr ""
+"Describir la imagen, o marcarla como decorativa si no aporta nada al texto."
 
 #: templates/orion/pages/article_index_page.html:14
 #, python-format

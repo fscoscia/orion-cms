@@ -1,0 +1,30 @@
+{% load i18n l10n static orion_core %}{# A map that loads on request. Pass `points` (dicts with lat, lng, name, description) and `zoom`. #}
+{% if points %}
+  {% get_map_tiles as tiles %}
+  <figure class="orion-map overflow-hidden rounded-lg border border-line" x-data="map"
+          data-zoom="{{ zoom|default:16|unlocalize }}" data-tiles-url="{{ tiles.url }}"
+          data-tiles-attribution="{{ tiles.attribution }}" data-max-zoom="{{ tiles.max_zoom|unlocalize }}"
+          data-leaflet-js="{% static 'orion/vendor/leaflet-1.9.4/leaflet.js' %}"
+          data-leaflet-css="{% static 'orion/vendor/leaflet-1.9.4/leaflet.css' %}">
+    {{ points|json_script }}
+    {# The map itself: tiles come from an external provider, so it loads only on request. #}
+    <div class="orion-map__canvas aspect-4/3 w-full md:aspect-video" x-ref="canvas" tabindex="0" role="region" aria-label="{% translate 'Map' %}" hidden></div>
+    <div class="flex flex-wrap items-center justify-between gap-4 bg-surface-muted p-6" x-ref="placeholder">
+      <ul class="space-y-2">
+        {% for point in points %}
+          <li class="flex gap-3">
+            <span class="mt-0.5 shrink-0 text-primary-700">{% include "orion/includes/icon.html" with name="address" %}</span>
+            <span>
+              {% if point.name %}<strong class="block font-semibold">{{ point.name }}</strong>{% endif %}
+              {% if point.description %}<span class="block text-ink-muted">{{ point.description|linebreaksbr }}</span>{% endif %}
+            </span>
+          </li>
+        {% endfor %}
+      </ul>
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button" class="orion-button orion-button--primary" x-ref="showButton" x-on:click="show" hidden>{% translate "Show map" %}</button>
+        <a href="{{ points.0|openstreetmap_url:zoom }}" class="font-semibold text-primary-700 underline-offset-4 hover:underline" target="_blank" rel="noopener noreferrer">{% translate "Open in OpenStreetMap" %}</a>
+      </div>
+    </div>
+  </figure>
+{% endif %}

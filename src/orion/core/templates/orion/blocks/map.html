@@ -1,0 +1,6 @@
+{% if points %}
+  <section class="orion-block block-map--{{ value.style }} mx-auto max-w-6xl space-y-8 px-4 py-12">
+    {% include "orion/blocks/includes/title.html" with title=value.title %}
+    {% include "orion/includes/map.html" with points=points zoom=zoom %}
+  </section>
+{% endif %}
