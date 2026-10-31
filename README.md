@@ -309,6 +309,27 @@ Los templates de los bloques están en `orion/blocks/<clave>.html` (`hero.html`,
 carpeta `templates/` del proyecto. Las clases de Tailwind que use un template propio las
 compila el proyecto con su propio CSS.
 
+## El admin
+
+Al entrar, el panel de inicio saluda a cada usuario y ofrece las tareas más comunes según
+sus permisos: crear una página, escribir un artículo, editar la portada, subir imágenes,
+menús y datos del sitio; debajo lista las páginas con cambios sin publicar. El menú
+lateral suma "Nuevo artículo" (con un listado abre directo el formulario; con varios, pide
+elegir) y "Ver el sitio", y muestra Informes y Ayuda solo a los administradores. En el
+sitio, la barra flotante de Wagtail suma accesos al menú del encabezado, al del pie y a los
+textos del pie del idioma que se está mirando.
+
+El admin muestra la marca del cliente: el logo del pie (la versión clara) en el menú
+lateral, el logo en el login y el nombre del sitio (**Propiedades → Sitios**) en el login,
+el panel y la pestaña del navegador. Los colores se definen en los ajustes del proyecto:
+
+```python
+ORION_ADMIN_COLORS = {"primary": "#1e3a8a", "secondary": "#b45309"}
+```
+
+El admin muestra texto blanco sobre esos colores: `manage.py check` avisa (`orion.W001`)
+si el contraste es menor que 4.5:1 y no deja arrancar (`orion.E004`) con un color inválido.
+
 ## Diseño: colores, fuentes y CSS
 
 Orion trae su hoja de estilos ya compilada (`orion/css/orion.css`), así que un proyecto se

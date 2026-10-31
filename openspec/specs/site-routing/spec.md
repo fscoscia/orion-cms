@@ -61,3 +61,12 @@ visitante.
 #### Scenario: Prefixed URL with a different browser language
 - **WHEN** `en` es público y un visitante pide `/en/` con `Accept-Language: es`
 - **THEN** el documento HTML declara `lang="en"`
+
+### Requirement: Page URLs have no accents
+Los slugs de las páginas SHALL generarse solo con letras ASCII, números y guiones: las
+letras con tilde o diéresis SHALL pasar a su versión sin tilde, de modo que las URLs se
+lean igual al compartirlas.
+
+#### Scenario: Title with accents
+- **WHEN** un editor crea una página con el título "Artículo de prueba"
+- **THEN** su slug es `articulo-de-prueba`

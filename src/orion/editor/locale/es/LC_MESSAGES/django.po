@@ -1,0 +1,123 @@
+# Spanish translations for Orion's editor app.
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 02:43+0000\n"
+"PO-Revision-Date: 2026-10-31 03:00+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: apps.py:8
+msgid "Editor experience"
+msgstr "Experiencia del editor"
+
+#: home.py:44
+msgid "Create a page"
+msgstr "Crear una página"
+
+#: home.py:45
+msgid "A new page for the site, with blocks."
+msgstr "Una página nueva del sitio, con bloques."
+
+#: home.py:53
+msgid "Write an article"
+msgstr "Escribir un artículo"
+
+#: home.py:54
+msgid "News or a blog post."
+msgstr "Una novedad o una entrada de blog."
+
+#: home.py:62
+msgid "Edit the home page"
+msgstr "Editar la portada"
+
+#: home.py:63
+msgid "Texts, photos and buttons of the home page."
+msgstr "Textos, fotos y botones de la portada."
+
+#: home.py:71
+msgid "Upload images"
+msgstr "Subir imágenes"
+
+#: home.py:72
+msgid "Drag several at once."
+msgstr "Se pueden arrastrar varias a la vez."
+
+#: home.py:80
+msgid "Menus"
+msgstr "Menús"
+
+#: home.py:81
+msgid "The header and footer menus."
+msgstr "Los menús del encabezado y del pie."
+
+#: home.py:92
+msgid "Site data"
+msgstr "Datos del sitio"
+
+#: home.py:93
+msgid "Logo, contact details and social networks."
+msgstr "Logo, datos de contacto y redes sociales."
+
+#: templates/orion/editor/home/welcome_panel.html:3
+#, python-format
+msgid "Hello, %(name)s"
+msgstr "Hola, %(name)s"
+
+#: templates/orion/editor/home/welcome_panel.html:3
+msgid "Hello"
+msgstr "Hola"
+
+#: templates/orion/editor/home/welcome_panel.html:4
+msgid "What do you want to do today?"
+msgstr "¿Qué hacemos hoy?"
+
+#: templates/orion/editor/home/welcome_panel.html:20
+msgid "Unpublished changes"
+msgstr "Cambios sin publicar"
+
+#: templates/orion/editor/home/welcome_panel.html:27
+#, python-format
+msgid "%(time)s ago"
+msgstr "hace %(time)s"
+
+#: templates/orion/editor/new_article.html:3
+#: templates/orion/editor/new_article.html:5 wagtail_hooks.py:55
+msgid "New article"
+msgstr "Nuevo artículo"
+
+#: templates/orion/editor/new_article.html:8
+msgid "Choose the listing for the new article:"
+msgstr "Elegir el listado del artículo nuevo:"
+
+#: templates/wagtailadmin/home.html:3
+#, python-format
+msgid "%(site_name)s dashboard"
+msgstr "Panel de %(site_name)s"
+
+#: templates/wagtailadmin/login.html:3
+#, python-format
+msgid "Sign in to %(site_name)s"
+msgstr "Ingresar a %(site_name)s"
+
+#: wagtail_hooks.py:66
+msgid "View the site"
+msgstr "Ver el sitio"
+
+#: wagtail_hooks.py:120
+msgid "Header"
+msgstr "Encabezado"
+
+#: wagtail_hooks.py:121
+msgid "Footer"
+msgstr "Pie"
+
+#: wagtail_hooks.py:129
+msgid "Footer texts"
+msgstr "Textos del pie"

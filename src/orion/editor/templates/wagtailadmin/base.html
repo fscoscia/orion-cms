@@ -1,0 +1,4 @@
+{% extends "wagtailadmin/base.html" %}
+{% load wagtailimages_tags orion_editor %}
+{# The sidebar is dark, so it shows the light logo meant for the footer. #}
+{% block branding_logo %}{% admin_logo "footer_logo" as logo %}{% if logo %}{% image logo max-160x160 class="orion-sidebar-logo" %}{% else %}{{ block.super }}{% endif %}{% endblock %}

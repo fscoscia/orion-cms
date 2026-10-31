@@ -1,0 +1,3 @@
+{% extends "wagtailadmin/admin_base.html" %}
+{% load orion_editor %}
+{% block branding_title %}{% admin_site_name as site_name %}{{ site_name|default:"Wagtail" }}{% endblock %}

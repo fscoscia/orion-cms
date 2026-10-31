@@ -1,0 +1,33 @@
+{% load i18n wagtailadmin_tags %}
+<section class="orion-welcome" aria-labelledby="orion-welcome-title">
+  <h2 id="orion-welcome-title" class="orion-welcome__greeting">{% if user.first_name %}{% blocktranslate with name=user.first_name %}Hello, {{ name }}{% endblocktranslate %}{% else %}{% translate "Hello" %}{% endif %}</h2>
+  <p class="orion-welcome__subtitle">{% translate "What do you want to do today?" %}</p>
+  {% if actions %}
+    <ul class="orion-welcome__actions">
+      {% for action in actions %}
+        <li>
+          <a class="orion-welcome__action" href="{{ action.url }}">
+            {% icon name=action.icon classname="orion-welcome__icon" %}
+            <strong>{{ action.title }}</strong>
+            <span>{{ action.description }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if unpublished_pages %}
+    <h3 class="orion-welcome__heading">{% translate "Unpublished changes" %}</h3>
+    <ul class="orion-welcome__changes">
+      {% for page in unpublished_pages %}
+        <li>
+          <a href="{% url 'wagtailadmin_pages:edit' page.pk %}">{{ page.get_admin_display_title }}</a>
+          <span class="orion-welcome__tag">{{ page.get_verbose_name }}</span>
+          {% if page.latest_revision_created_at %}
+            <span class="orion-welcome__date">{% blocktranslate with time=page.latest_revision_created_at|timesince %}{{ time }} ago{% endblocktranslate %}</span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</section>

@@ -1,0 +1,3 @@
+{% extends "wagtailadmin/home.html" %}
+{% load i18n orion_editor %}
+{% block branding_welcome %}{% admin_site_name as site_name %}{% if site_name %}{% blocktranslate %}{{ site_name }} dashboard{% endblocktranslate %}{% else %}{{ block.super }}{% endif %}{% endblock %}

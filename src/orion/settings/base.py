@@ -42,6 +42,7 @@ ORION_APPS = [
     "orion.site_data",
     "orion.navigation",
     "orion.pages",
+    "orion.editor",
 ]
 
 WAGTAIL_APPS = [
@@ -188,6 +189,13 @@ WAGTAIL_I18N_ENABLED = True
 # Slugs in ASCII ("articulo", not "artículo"), so URLs read the same when shared.
 WAGTAIL_ALLOW_UNICODE_SLUGS = False
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES
+
+# No check for new Wagtail versions: the admin makes no external requests.
+WAGTAIL_ENABLE_UPDATE_CHECK = False
+
+# Admin colors, as hex: {"primary": "#...", "secondary": "#..."}. Empty keeps
+# Wagtail's colors. The admin shows white text on them (checks orion.E004 and W001).
+ORION_ADMIN_COLORS = {}
 
 # Maps. Tiles come from OpenStreetMap by default: its usage policy requires the
 # attribution and does not allow heavy traffic. Projects may replace the whole dict.

@@ -78,6 +78,12 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   artículos usan imágenes y artículos de ejemplo de Orion
   (`orion/core/static/orion/samples/`, generadas con `scripts/make_sample_images.py`), sin
   agregar nada a la biblioteca ni a las páginas.
+- Admin (`orion.editor`): panel de inicio con saludo, acciones según permisos y cambios
+  sin publicar; atajos "Nuevo artículo" y "Ver el sitio"; Informes y Ayuda solo para
+  administradores; accesos al encabezado y al pie desde la barra del sitio; logo y nombre
+  del cliente en el admin y colores con `ORION_ADMIN_COLORS` (chequeos `orion.E004` y
+  `orion.W001`).
+- `WAGTAIL_ENABLE_UPDATE_CHECK = False`: el admin no consulta nuevas versiones de Wagtail.
 
 ### Changed
 

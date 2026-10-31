@@ -1,0 +1,15 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "New article" %}{% endblock %}
+{% block content %}
+  {% translate "New article" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="doc-full" %}
+  <div class="nice-padding">
+    <p>{% translate "Choose the listing for the new article:" %}</p>
+    <ul class="orion-welcome__changes">
+      {% for listing in listings %}
+        <li><a href="{% url 'wagtailadmin_pages:add' 'orion_pages' 'articlepage' listing.pk %}">{{ listing.get_admin_display_title }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}

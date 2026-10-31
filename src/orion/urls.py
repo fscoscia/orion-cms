@@ -18,9 +18,16 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from orion.core.views import health_check
+from orion.editor.views import admin_colors
 
 urlpatterns = [
     path("health/", health_check, name="health_check"),
+    # Before the admin's routes: the login page needs it without a session.
+    path(
+        f"{settings.ORION_ADMIN_PATH}orion/colors.css",
+        admin_colors,
+        name="orion_admin_colors",
+    ),
     path(settings.ORION_ADMIN_PATH, include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
 ]

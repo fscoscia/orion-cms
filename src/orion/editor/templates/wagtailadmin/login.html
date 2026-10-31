@@ -1,0 +1,4 @@
+{% extends "wagtailadmin/login.html" %}
+{% load i18n wagtailimages_tags orion_editor %}
+{% block branding_login %}{% admin_site_name as site_name %}{% if site_name %}{% blocktranslate %}Sign in to {{ site_name }}{% endblocktranslate %}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block branding_logo %}{% admin_logo as logo %}{% if logo %}<div class="login-logo">{% image logo max-320x160 class="orion-login-logo" %}</div>{% else %}{{ block.super }}{% endif %}{% endblock %}

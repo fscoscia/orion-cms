@@ -149,8 +149,8 @@ class TestStyles:
         css = COMPILED_CSS.read_text()
         classes = set()
         for template in ORION_DIR.glob("*/templates/**/*.html"):
-            # Admin widgets use Wagtail's admin styles, not Orion's stylesheet.
-            if template.parent.name == "widgets":
+            # Admin templates use Wagtail's admin styles, not Orion's stylesheet.
+            if template.parent.name == "widgets" or "editor" in template.parts:
                 continue
             for attribute in CLASS_ATTRIBUTE.findall(template.read_text()):
                 classes.update(TEMPLATE_TAG.sub(" ", attribute).split())

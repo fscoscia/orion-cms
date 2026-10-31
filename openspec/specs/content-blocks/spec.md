@@ -9,13 +9,13 @@ títulos y cómo se traducen.
 
 ### Requirement: The block library offers the base blocks
 Orion SHALL ofrecer los bloques Hero, Texto, Imagen, Galería, Imagen + texto, Tarjetas,
-Cifras animadas, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de contacto, Botón y
-Últimas novedades, y un cuerpo de página que los reúne a todos para que un tipo de página
-lo use sin declararlos uno por uno.
+Cifras animadas, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de contacto, Botón,
+Últimas novedades y Mapa, y un cuerpo de página que los reúne a todos para que un tipo de
+página lo use sin declararlos uno por uno.
 
 #### Scenario: Adding a block
 - **WHEN** un editor agrega un bloque en un campo que usa el cuerpo de página de Orion
-- **THEN** el selector ofrece los catorce bloques
+- **THEN** el selector ofrece los quince bloques
 
 #### Scenario: Project with a subset
 - **WHEN** un proyecto arma su propio cuerpo de página con algunos bloques de Orion y uno
@@ -25,11 +25,18 @@ lo use sin declararlos uno por uno.
 ### Requirement: Blocks explain themselves in the editor
 Cada bloque SHALL mostrarse en el selector con un nombre en el idioma del admin, un ícono,
 una descripción de para qué sirve y una vista previa con contenido de ejemplo y los
-estilos del sitio.
+estilos del sitio. Los bloques que muestran imágenes o artículos SHALL usar en su vista
+previa imágenes y artículos de ejemplo que trae Orion, y la vista previa MUST NOT agregar
+imágenes a la biblioteca ni crear páginas.
 
 #### Scenario: Choosing a block
 - **WHEN** un editor abre el selector de bloques
 - **THEN** cada bloque muestra su nombre, su descripción y una vista previa
+
+#### Scenario: Gallery preview on a new site
+- **WHEN** un editor de un sitio sin imágenes cargadas mira la vista previa de la Galería
+- **THEN** ve la galería con las imágenes de ejemplo de Orion y la biblioteca de imágenes
+  sigue vacía
 
 ### Requirement: Blocks can be hidden without deleting them
 Cada bloque SHALL tener un interruptor "Visible", activado por defecto. Un bloque oculto
