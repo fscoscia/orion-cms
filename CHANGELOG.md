@@ -46,9 +46,27 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 - Permisos de textos del sitio y menús para los grupos *Editors* y *Moderators*.
 - Traducción al español de los textos de `orion.core`, `orion.site_data` y
   `orion.navigation`.
+- Biblioteca de bloques en `orion.core.blocks`: Hero, Texto, Imagen, Galería, Imagen y
+  texto, Tarjetas, Cifras, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de
+  contacto y Botones, con descripción y vista previa en el editor, y `ContentStreamBlock`
+  que los reúne como cuerpo de página.
+- Interruptor "Visible" en cada bloque para ocultarlo sin borrarlo, y campo "Estilo" con
+  opciones que declara cada proyecto en `ORION_BLOCK_STYLES` (sin migraciones).
+- Títulos de bloque con palabras resaltadas en el color de acento (negrita).
+- Texto enriquecido con el plugin de tipografía de Tailwind, ligado a las variables de
+  color y fuente del tema.
+- Imágenes de bloques en WebP con `srcset`, medidas y carga diferida, con texto alternativo
+  obligatorio o marca de decorativa.
+- Componentes `tabs` y `counter` de Alpine (compatibles con CSP) para las pestañas y las
+  cifras animadas; el acordeón usa `<details>` nativo.
+- App `demo` del proyecto de ejemplo con una página que usa todos los bloques.
 
 ### Changed
 
+- `orion.core.blocks` pasó de módulo a paquete; las importaciones públicas
+  (`from orion.core.blocks import LinkBlock`) no cambian.
+- El README indica declarar `TEMPLATES[0]["DIRS"]` en el proyecto para reemplazar
+  templates de Orion por nombre.
 - El email usa TLS por defecto salvo que `EMAIL_USE_SSL` esté activado. **Atención:** un
   proyecto con `EMAIL_HOST` cuyo servidor SMTP no soporta STARTTLS debe definir
   `EMAIL_USE_TLS=false`.

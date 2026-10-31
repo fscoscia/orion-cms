@@ -1,0 +1,19 @@
+{# Without JavaScript every panel shows with its own title; the tabs component turns them into tabs. #}
+<section class="orion-block block-tabs--{{ value.style }} mx-auto max-w-6xl space-y-8 px-4 py-12">
+  {% include "orion/blocks/includes/title.html" with title=value.title %}
+  <div class="orion-tabs" x-data="tabs">
+    <div class="orion-tabs__list flex flex-wrap gap-1 border-b border-line" role="tablist" hidden>
+      {% for tab in value.tabs %}
+        <button type="button" role="tab" id="tab-{{ block_id }}-{{ forloop.counter }}" aria-controls="tab-panel-{{ block_id }}-{{ forloop.counter }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"{% if not forloop.first %} tabindex="-1"{% endif %}
+                class="-mb-px border-b-2 border-transparent px-4 py-2 font-semibold text-ink-muted hover:text-primary-700 aria-selected:border-primary-700 aria-selected:text-primary-700"
+                x-on:click="select" x-on:keydown="onKeydown">{{ tab.title }}</button>
+      {% endfor %}
+    </div>
+    {% for tab in value.tabs %}
+      <div class="orion-tabs__panel py-6" id="tab-panel-{{ block_id }}-{{ forloop.counter }}">
+        <h3 class="orion-tabs__panel-title mb-3 text-xl font-semibold">{{ tab.title }}</h3>
+        <div class="orion-richtext prose max-w-none">{{ tab.body }}</div>
+      </div>
+    {% endfor %}
+  </div>
+</section>

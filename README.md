@@ -92,7 +92,14 @@ WSGI_APPLICATION = "mi_sitio.wsgi.application"
 STATIC_ROOT = BASE_DIR / "static"
 MEDIA_ROOT = BASE_DIR / "media"
 INSTALLED_APPS += ["mi_sitio.home"]
+# Templates that replace Orion's by name (header, footer, blocks) go here.
+TEMPLATES[0]["DIRS"] = [BASE_DIR / "templates"]
 ```
+
+Los templates de Orion se reemplazan creando uno con el mismo nombre en esa carpeta
+`templates/` (por ejemplo `templates/orion/includes/header.html`). Un template con el
+mismo nombre dentro de una app del proyecto no alcanza: las apps de Orion van antes en
+`INSTALLED_APPS` y su template se encuentra primero.
 
 En las rutas, **sumar** las de Orion al final. No usar `include("orion.urls")`: Django
 solo acepta rutas por idioma en el nivel superior del archivo de rutas principal (el
@@ -147,6 +154,89 @@ Los grupos *Editors* y *Moderators* de Wagtail pueden editar los textos del siti
 menús. Los datos que no estén cargados no se muestran; sin logo, el encabezado muestra el
 nombre del sitio (**Propiedades → Sitios**).
 
+## Bloques de contenido
+
+Orion trae trece bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y texto,
+Tarjetas, Cifras, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de contacto y
+Botones. `ContentStreamBlock` los reúne a todos, listos para el cuerpo de una página:
+
+```python
+from wagtail.admin.panels import FieldPanel
+from wagtail.fields import StreamField
+from wagtail.models import Page
+
+from orion.core.blocks import ContentStreamBlock
+
+
+class LandingPage(Page):
+    body = StreamField(ContentStreamBlock(), blank=True)
+
+    content_panels = [*Page.content_panels, FieldPanel("body")]
+```
+
+```django
+{% extends "orion/base.html" %}
+{% load wagtailcore_tags %}
+{% block content %}{% include_block page.body %}{% endblock %}
+```
+
+`{% include_block page.body %}` omite los bloques con "Visible" apagado. Un template que
+recorra el cuerpo a mano (`{% for block in page.body %}`) tiene que saltear los bloques
+cuyo `block.value.is_visible` sea falso.
+
+Para ofrecer solo algunos bloques, o sumar bloques propios, heredar de
+`ContentStreamBlock`: se quitan bloques con `nombre = None` y se agregan los del proyecto.
+Así se conserva la omisión de los bloques ocultos. Las claves y los campos de los bloques
+quedan guardados en el contenido: cambiarlos después requiere una migración de datos.
+
+```python
+from wagtail import blocks
+
+from orion.core.blocks import ContentStreamBlock
+
+
+class LandingStreamBlock(ContentStreamBlock):
+    gallery = None
+    logos = None
+    quote = blocks.BlockQuoteBlock()  # un bloque propio del proyecto
+```
+
+Los bloques también se importan sueltos (`HeroBlock`, `CardsBlock`, `TextContentBlock`…,
+desde `orion.core.blocks`) para usarlos en otros `StreamBlock` o `StructBlock`.
+
+### Estilos de los bloques
+
+Cada bloque tiene un campo "Estilo" en su área de ajustes (el engranaje del bloque). Sus
+opciones las declara el proyecto en `ORION_BLOCK_STYLES`, con la clave del bloque; Orion
+siempre suma "Estándar" (`default`) primero. Mientras un bloque tenga una sola opción, el
+editor no ve el campo. Cambiar la lista no requiere migraciones, y un bloque cuyo estilo se
+quitó se muestra con el estándar.
+
+```python
+ORION_BLOCK_STYLES = {
+    "hero": [("split", "Imagen al costado")],
+    "cards": [("compact", "Compactas")],
+}
+```
+
+El template recibe el estilo en `value.style`, y los de Orion agregan la clase
+`block-<clave>--<estilo>` (por ejemplo `block-hero--split`), así que una variante se
+resuelve con CSS o reemplazando el template del bloque:
+
+```django
+{# templates/orion/blocks/hero.html #}
+{% if value.style == "split" %}
+  …imagen al costado…
+{% else %}
+  …diseño estándar…
+{% endif %}
+```
+
+Los templates de los bloques están en `orion/blocks/<clave>.html` (`hero.html`,
+`cards.html`, `call_to_action.html`…) y se reemplazan creando uno con el mismo nombre en la
+carpeta `templates/` del proyecto. Las clases de Tailwind que use un template propio las
+compila el proyecto con su propio CSS.
+
 ## Diseño: colores, fuentes y CSS
 
 Orion trae su hoja de estilos ya compilada (`orion/css/orion.css`), así que un proyecto se
@@ -171,17 +261,37 @@ bloque `extra_css` de la plantilla base:
 {% block extra_css %}<link rel="stylesheet" href="{% static 'mi_sitio/css/brand.css' %}">{% endblock %}
 ```
 
+Para usar una tipografía propia, cargarla en la misma hoja (con `@font-face` o el enlace
+del servicio de fuentes) y redefinir `--font-sans`, que usa todo el texto, incluido el de
+los bloques de texto enriquecido, y `--font-display`, que usan los títulos de los bloques
+y los subtítulos del texto enriquecido:
+
+```css
+@font-face {
+  font-family: "Mi Fuente";
+  src: url("../fonts/mi-fuente.woff2") format("woff2");
+  font-display: swap;
+}
+
+:root {
+  --font-sans: "Mi Fuente", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Mi Fuente", ui-sans-serif, system-ui, sans-serif;
+}
+```
+
 Las variables disponibles (escala `--color-primary-50` a `--color-primary-900`,
 `--color-accent-500`, `--color-accent-600`, `--color-surface`, `--color-surface-muted`,
 `--color-ink`, `--color-ink-muted`, `--color-line`, `--font-sans` y `--font-display`)
 están en el bloque `@theme` de `src/orion/core/static_src/orion.css`. El encabezado y el
-pie se reemplazan creando en el proyecto `orion/includes/header.html` o
-`orion/includes/footer.html`.
+pie se reemplazan creando `orion/includes/header.html` u `orion/includes/footer.html` en la
+carpeta `templates/` del proyecto.
 
 Los scripts de Orion son Alpine.js en su variante compatible con CSP
 (`orion/vendor/alpine-csp-3.17.4.min.js`) y los componentes de `orion/js/orion.js`; no
 evalúan código, así que funcionan con una política que prohíbe `unsafe-eval` y scripts en
-línea. Sin JavaScript, el menú queda visible y navegable.
+línea. Sin JavaScript, el menú queda visible y navegable, las pestañas se muestran una
+debajo de la otra, el acordeón funciona (es un `<details>` nativo) y las cifras muestran su
+número final.
 
 ### Recompilar el CSS de Orion
 

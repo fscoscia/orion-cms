@@ -1,0 +1,15 @@
+{% load wagtailimages_tags orion_core %}
+<section class="orion-block orion-hero block-hero--{{ value.style }} relative isolate overflow-hidden {% if value.image %}orion-on-dark bg-primary-900 text-white{% else %}bg-primary-50{% endif %}">
+  {% if value.image %}
+    {# The hero image is the page's main image, so it is not lazy-loaded. #}
+    {% srcset_image value.image format-webp fill-{800x600,1280x720,1920x1080}-c50 sizes="100vw" alt=value.image.contextual_alt_text class="absolute inset-0 -z-10 size-full object-cover" %}
+    <div class="absolute inset-0 -z-10 bg-primary-900/70" aria-hidden="true"></div>
+  {% endif %}
+  <div class="mx-auto max-w-6xl px-4 py-20 md:py-28">
+    <div class="max-w-3xl space-y-6">
+      <h1 class="orion-title text-4xl font-bold tracking-tight md:text-6xl">{{ value.title|highlighted_title }}</h1>
+      {% if value.intro %}<p class="text-lg md:text-xl {% if value.image %}text-primary-50{% else %}text-ink-muted{% endif %}">{{ value.intro }}</p>{% endif %}
+      {% include "orion/blocks/includes/buttons.html" with buttons=value.buttons class_name="pt-2" %}
+    </div>
+  </div>
+</section>

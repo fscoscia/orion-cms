@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-30 20:42+0000\n"
+"POT-Creation-Date: 2026-10-31 00:27+0000\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -17,57 +17,331 @@ msgstr ""
 msgid "Orion core"
 msgstr "Núcleo de Orion"
 
-#: blocks.py:97
+#: blocks/content.py:35
+msgid "Standard"
+msgstr "Estándar"
+
+#: blocks/content.py:87
+msgid "Style"
+msgstr "Estilo"
+
+#: blocks/content.py:92
+msgid "Visible"
+msgstr "Visible"
+
+#: blocks/content.py:93
+msgid "Turn off to hide the block without deleting it."
+msgstr "Desactivar para ocultar el bloque sin borrarlo."
+
+#: blocks/content.py:137 blocks/content.py:283 blocks/content.py:362
+msgid "Title"
+msgstr "Título"
+
+#: blocks/content.py:138
+msgid "Make words bold to highlight them."
+msgstr "Poner en negrita las palabras que se quieren resaltar."
+
+#: blocks/content.py:144
+msgid "A title must be a single paragraph."
+msgstr "Un título tiene que ser un solo párrafo."
+
+#: blocks/content.py:152 blocks/content.py:214 blocks/content.py:284
+#: blocks/content.py:333 blocks/content.py:435 blocks/content.py:485
+#: blocks/links.py:97
 msgid "Text"
 msgstr "Texto"
 
-#: blocks.py:100
-msgid "Leave empty to use the page title, email or phone."
-msgstr "Dejar vacío para usar el título de la página, el email o el teléfono."
+#: blocks/content.py:160
+msgid "Button style"
+msgstr "Estilo del botón"
 
-#: blocks.py:102
-msgid "Page"
-msgstr "Página"
+#: blocks/content.py:161
+msgid "Primary"
+msgstr "Principal"
 
-#: blocks.py:103
-msgid "External URL"
-msgstr "URL externa"
+#: blocks/content.py:161
+msgid "Secondary"
+msgstr "Secundario"
 
-#: blocks.py:104
-msgid "Email"
-msgstr "Email"
+#: blocks/content.py:167
+msgid "Button"
+msgstr "Botón"
 
-#: blocks.py:105
+#: blocks/content.py:173 blocks/content.py:547
+msgid "Buttons"
+msgstr "Botones"
+
+#: blocks/content.py:184
+msgid "Supporting text"
+msgstr "Texto de apoyo"
+
+#: blocks/content.py:187 blocks/content.py:227 blocks/content.py:232
+#: blocks/content.py:238 blocks/content.py:243 blocks/content.py:264
+#: blocks/content.py:282
+msgid "Image"
+msgstr "Imagen"
+
+#: blocks/content.py:189
+msgid "Shown behind the text. Use a wide photo."
+msgstr "Se muestra detrás del texto. Usar una foto apaisada."
+
+#: blocks/content.py:194
+msgid "Hero"
+msgstr "Hero"
+
+#: blocks/content.py:196
+msgid ""
+"The large opening section of a page, with a title, a short text, buttons and "
+"an optional image."
+msgstr "La sección grande del comienzo de una página, con título, un texto corto, botones y una imagen opcional."
+
+#: blocks/content.py:215
+msgid "Paragraphs with bold, italics, links, lists and subtitles."
+msgstr "Párrafos con negrita, itálica, enlaces, listas y subtítulos."
+
+#: blocks/content.py:228 blocks/content.py:239
+msgid "Caption"
+msgstr "Epígrafe"
+
+#: blocks/content.py:233
+msgid "A photo with an optional caption."
+msgstr "Una foto con epígrafe opcional."
+
+#: blocks/content.py:251
+msgid "Images"
+msgstr "Imágenes"
+
+#: blocks/content.py:256
+msgid "Gallery"
+msgstr "Galería"
+
+#: blocks/content.py:257
+msgid "A grid of photos with optional captions."
+msgstr "Una grilla de fotos con epígrafes opcionales."
+
+#: blocks/content.py:269
+msgid "Image position"
+msgstr "Lado de la imagen"
+
+#: blocks/content.py:270 blocks/content.py:541
+msgid "Left"
+msgstr "Izquierda"
+
+#: blocks/content.py:270 blocks/content.py:541
+msgid "Right"
+msgstr "Derecha"
+
+#: blocks/content.py:276
+msgid "Image and text"
+msgstr "Imagen y texto"
+
+#: blocks/content.py:277
+msgid "A photo next to a title, a text and buttons."
+msgstr "Una foto al lado de un título, un texto y botones."
+
+#: blocks/content.py:286 blocks/links.py:157
+msgid "Link"
+msgstr "Enlace"
+
+#: blocks/content.py:288
+msgid "Optional. The text defaults to the page title."
+msgstr "Opcional. Si no se escribe un texto, se usa el título de la página."
+
+#: blocks/content.py:293
+msgid "Card"
+msgstr "Tarjeta"
+
+#: blocks/content.py:301
+msgid "Columns"
+msgstr "Columnas"
+
+#: blocks/content.py:305 blocks/content.py:309
+msgid "Cards"
+msgstr "Tarjetas"
+
+#: blocks/content.py:311
+msgid "A grid of cards, each with an optional image, a text and a link."
+msgstr "Una grilla de tarjetas, cada una con imagen opcional, un texto y un enlace."
+
+#: blocks/content.py:326
+msgid "Number"
+msgstr "Número"
+
+#: blocks/content.py:328
+msgid "Before the number"
+msgstr "Antes del número"
+
+#: blocks/content.py:331
+msgid "After the number"
+msgstr "Después del número"
+
+#: blocks/content.py:337
+msgid "Figure"
+msgstr "Cifra"
+
+#: blocks/content.py:344 blocks/content.py:348
+msgid "Figures"
+msgstr "Cifras"
+
+#: blocks/content.py:349
+msgid "Large numbers that count up when they appear on screen."
+msgstr "Números grandes que se cuentan al aparecer en pantalla."
+
+#: blocks/content.py:369
+msgid "Tab"
+msgstr "Pestaña"
+
+#: blocks/content.py:373 blocks/content.py:378
+msgid "Question"
+msgstr "Pregunta"
+
+#: blocks/content.py:374
+msgid "Answer"
+msgstr "Respuesta"
+
+#: blocks/content.py:392 blocks/content.py:400
+msgid "Tabs"
+msgstr "Pestañas"
+
+#: blocks/content.py:401
+msgid "Content split into tabs; only one tab is shown at a time."
+msgstr "Contenido dividido en pestañas; se muestra una pestaña a la vez."
+
+#: blocks/content.py:415
+msgid "Questions"
+msgstr "Preguntas"
+
+#: blocks/content.py:419
+msgid "Accordion"
+msgstr "Acordeón"
+
+#: blocks/content.py:420
+msgid "Questions that open to show their answer, such as an FAQ."
+msgstr "Preguntas que se abren para mostrar su respuesta, como unas preguntas frecuentes."
+
+#: blocks/content.py:440
+msgid "Call to action"
+msgstr "Llamada a la acción"
+
+#: blocks/content.py:442
+msgid "A highlighted box that invites visitors to take the next step."
+msgstr "Un recuadro destacado que invita a dar el siguiente paso."
+
+#: blocks/content.py:453 blocks/content.py:463
+msgid "Logo"
+msgstr "Logo"
+
+#: blocks/content.py:455
+msgid "Name"
+msgstr "Nombre"
+
+#: blocks/content.py:457
+msgid "Read by screen readers and shown if the image fails to load."
+msgstr "Lo leen los lectores de pantalla y se muestra si la imagen no carga."
+
+#: blocks/content.py:459
+msgid "Website"
+msgstr "Sitio web"
+
+#: blocks/content.py:470 blocks/content.py:474
+msgid "Logos"
+msgstr "Logos"
+
+#: blocks/content.py:476
+msgid "A row of logos, such as partners or clients, with optional links."
+msgstr "Una fila de logos, como convenios o clientes, con enlaces opcionales."
+
+#: blocks/content.py:483
+msgid "Label"
+msgstr "Etiqueta"
+
+#: blocks/content.py:483
+msgid "Opening hours"
+msgstr "Horario"
+
+#: blocks/content.py:489
+msgid "Extra item"
+msgstr "Dato extra"
+
+#: blocks/content.py:496 blocks/links.py:105
+#: templates/orion/blocks/contact.html:10
 msgid "Phone"
 msgstr "Teléfono"
 
-#: blocks.py:107
+#: blocks/content.py:498
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: blocks/content.py:500 blocks/links.py:104
+#: templates/orion/blocks/contact.html:10
+msgid "Email"
+msgstr "Email"
+
+#: blocks/content.py:501 templates/orion/blocks/contact.html:10
+msgid "Address"
+msgstr "Dirección"
+
+#: blocks/content.py:503
+msgid "Extra items"
+msgstr "Datos extra"
+
+#: blocks/content.py:521
+msgid "Contact details"
+msgstr "Datos de contacto"
+
+#: blocks/content.py:523
+msgid ""
+"The site's phone, WhatsApp, email and address from Site data, plus extra "
+"items such as opening hours."
+msgstr "El teléfono, el WhatsApp, el email y la dirección de Datos del sitio, más datos extra como el horario."
+
+#: blocks/content.py:540
+msgid "Alignment"
+msgstr "Alineación"
+
+#: blocks/content.py:541
+msgid "Center"
+msgstr "Centro"
+
+#: blocks/content.py:548
+msgid "One to three buttons in a row."
+msgstr "De uno a tres botones en fila."
+
+#: blocks/links.py:100
+msgid "Leave empty to use the page title, email or phone."
+msgstr "Dejar vacío para usar el título de la página, el email o el teléfono."
+
+#: blocks/links.py:102
+msgid "Page"
+msgstr "Página"
+
+#: blocks/links.py:103
+msgid "External URL"
+msgstr "URL externa"
+
+#: blocks/links.py:107
 msgid "Open in a new tab"
 msgstr "Abrir en una pestaña nueva"
 
-#: blocks.py:109
+#: blocks/links.py:109
 msgid "Only applies to external URLs."
 msgstr "Solo se aplica a URLs externas."
 
-#: blocks.py:126
+#: blocks/links.py:126
 msgid "Choose only one destination: a page, a URL, an email or a phone."
 msgstr "Elegir un solo destino: una página, una URL, un email o un teléfono."
 
-#: blocks.py:136
+#: blocks/links.py:136
 msgid "Choose a destination: a page, a URL, an email or a phone."
 msgstr "Elegir un destino: una página, una URL, un email o un teléfono."
 
-#: blocks.py:145
+#: blocks/links.py:145
 msgid "This address belongs to this site. Choose the page instead."
 msgstr "Esta dirección es de este sitio. Conviene elegir la página."
 
-#: blocks.py:149
+#: blocks/links.py:149
 msgid "Enter a phone number using digits, spaces, '+', '-' or parentheses."
 msgstr "Ingresar un teléfono con dígitos, espacios, '+', '-' o paréntesis."
-
-#: blocks.py:157
-msgid "Link"
-msgstr "Enlace"
 
 #: templates/orion/base.html:18
 msgid "Skip to content"

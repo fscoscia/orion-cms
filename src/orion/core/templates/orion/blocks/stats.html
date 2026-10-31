@@ -1,0 +1,14 @@
+<section class="orion-block block-stats--{{ value.style }} bg-surface-muted">
+  <div class="mx-auto max-w-6xl space-y-10 px-4 py-12 md:py-16">
+    {% include "orion/blocks/includes/title.html" with title=value.title class_name="text-center" %}
+    <ul class="grid gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
+      {% for stat in value.stats %}
+        <li>
+          {# The animated number is hidden from screen readers, which read the final one. #}
+          <p class="text-5xl font-bold text-primary-700" aria-hidden="true">{{ stat.prefix|default:"" }}<span x-data="counter" data-target="{{ stat.number }}" x-text="display">{{ stat.number }}</span>{{ stat.suffix|default:"" }}</p>
+          <p class="mt-2 text-ink-muted"><span class="sr-only">{{ stat.prefix|default:"" }}{{ stat.number }}{{ stat.suffix|default:"" }} </span>{{ stat.label }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>

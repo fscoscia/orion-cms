@@ -1,0 +1,10 @@
+{% extends "wagtailcore/shared/block_preview.html" %}
+{% load static %}
+{# Block previews in the editor use the site's stylesheet and scripts. #}
+{% block css %}{{ block.super }}
+  <link rel="stylesheet" href="{% static 'orion/css/orion.css' %}">
+{% endblock %}
+{% block js %}{{ block.super }}
+  <script src="{% static 'orion/js/orion.js' %}" defer></script>
+  <script src="{% static 'orion/vendor/alpine-csp-3.17.4.min.js' %}" defer></script>
+{% endblock %}

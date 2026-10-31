@@ -1,0 +1,8 @@
+{% load orion_core %}{# Renders `buttons` (ButtonBlock values) that have a reachable destination. Pass `class_name` for the row. #}
+{% with links=buttons|visible_links %}{% if links %}
+<div class="orion-buttons flex flex-wrap gap-3 {{ class_name }}">
+  {% for button in links %}
+    <a href="{{ button.href }}" class="orion-button orion-button--{{ button.variant|default:'primary' }}"{% if button.opens_in_new_tab %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ button.text }}</a>
+  {% endfor %}
+</div>
+{% endif %}{% endwith %}

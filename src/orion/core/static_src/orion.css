@@ -8,6 +8,8 @@
  */
 
 @import "tailwindcss" source(none);
+/* Bundled with the Tailwind CLI binary: styles rich text with the `prose` class. */
+@plugin "@tailwindcss/typography";
 
 /* Orion's templates live in the package, outside the project being built. */
 @source "../templates";
@@ -59,6 +61,84 @@
  * component it adds .is-enhanced, and only then the mobile panel collapses.
  */
 @layer components {
+  /* Rich text follows the theme: the site's fonts and colors, set by variables. */
+  .orion-richtext {
+    --tw-prose-body: var(--color-ink);
+    --tw-prose-headings: var(--color-ink);
+    --tw-prose-bold: var(--color-ink);
+    --tw-prose-links: var(--color-primary-700);
+    --tw-prose-bullets: var(--color-primary-500);
+    --tw-prose-counters: var(--color-ink-muted);
+    --tw-prose-quotes: var(--color-ink);
+    --tw-prose-quote-borders: var(--color-primary-200);
+    --tw-prose-hr: var(--color-line);
+  }
+
+  .orion-richtext :is(h2, h3),
+  .orion-title {
+    font-family: var(--font-display);
+  }
+
+  /* Bold words in titles are the highlighted ones. */
+  .orion-title :is(b, strong) {
+    color: var(--color-accent-600);
+    font-weight: inherit;
+  }
+
+  .orion-on-dark .orion-title :is(b, strong) {
+    color: var(--color-accent-500);
+  }
+
+  .orion-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 2px solid transparent;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 150ms, color 150ms;
+  }
+
+  .orion-button--primary {
+    background-color: var(--color-primary-700);
+    color: #fff;
+  }
+
+  .orion-button--primary:hover {
+    background-color: var(--color-primary-800);
+  }
+
+  .orion-button--secondary {
+    border-color: var(--color-primary-700);
+    color: var(--color-primary-700);
+  }
+
+  .orion-button--secondary:hover {
+    background-color: var(--color-primary-50);
+  }
+
+  /* On dark backgrounds (a hero with an image, a call to action) buttons invert. */
+  .orion-on-dark .orion-button--primary {
+    background-color: #fff;
+    color: var(--color-primary-800);
+  }
+
+  .orion-on-dark .orion-button--primary:hover {
+    background-color: var(--color-primary-50);
+  }
+
+  .orion-on-dark .orion-button--secondary {
+    border-color: #fff;
+    color: #fff;
+  }
+
+  .orion-on-dark .orion-button--secondary:hover {
+    background-color: rgb(255 255 255 / 0.1);
+  }
+
   @media (width < 48rem) {
     .site-nav.is-enhanced .site-nav__panel {
       display: none;

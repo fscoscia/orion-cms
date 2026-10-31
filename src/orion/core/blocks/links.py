@@ -1,4 +1,4 @@
-"""StreamField blocks shared by Orion's apps."""
+"""Links to pages, external URLs, email addresses and phone numbers."""
 
 import re
 from urllib.parse import urlsplit

@@ -31,3 +31,6 @@ TAILWIND_CLI_VERSION = "4.3.3"
 TAILWIND_CLI_SRC_CSS = ORION_PACKAGE_DIR / "core" / "static_src" / "orion.css"
 TAILWIND_CLI_DIST_CSS = "orion/css/orion.css"
 TAILWIND_CLI_PATH = BASE_DIR / ".tailwind"
+
+# A page with every content block, to develop and test them; not part of Orion.
+INSTALLED_APPS += ["demo"]

@@ -151,11 +151,12 @@ class TestStyles:
         for template in ORION_DIR.glob("*/templates/**/*.html"):
             for attribute in CLASS_ATTRIBUTE.findall(template.read_text()):
                 classes.update(TEMPLATE_TAG.sub(" ", attribute).split())
-        # BEM hooks and state classes exist for projects and scripts, not Tailwind.
+        # Hooks, components and state classes are Orion's own, not Tailwind utilities.
+        own_prefixes = ("site-", "is-", "language-", "orion-", "block-")
         utilities = {
             name
             for name in classes
-            if "__" not in name and not name.startswith(("site-", "is-", "language-"))
+            if "__" not in name and not name.startswith(own_prefixes)
         }
 
         missing = {

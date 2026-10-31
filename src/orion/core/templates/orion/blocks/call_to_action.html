@@ -1,0 +1,7 @@
+<section class="orion-block block-call_to_action--{{ value.style }} mx-auto max-w-6xl px-4 py-12">
+  <div class="orion-on-dark space-y-6 rounded-2xl bg-primary-900 px-6 py-12 text-center text-white md:px-12">
+    {% include "orion/blocks/includes/title.html" with title=value.title %}
+    {% if value.text %}<p class="mx-auto max-w-2xl text-lg text-primary-100">{{ value.text }}</p>{% endif %}
+    {% include "orion/blocks/includes/buttons.html" with buttons=value.buttons class_name="justify-center" %}
+  </div>
+</section>

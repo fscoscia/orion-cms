@@ -1,0 +1,5 @@
+/* A block's "Style" field renders as a hidden input when the project declares no
+   styles; hide its whole row, label included. */
+.w-field__wrapper:has(> .orion-block-style input[type="hidden"]) {
+  display: none;
+}

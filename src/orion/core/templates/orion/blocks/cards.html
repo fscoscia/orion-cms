@@ -1,0 +1,20 @@
+{% load wagtailimages_tags %}
+<section class="orion-block block-cards--{{ value.style }} mx-auto max-w-6xl space-y-8 px-4 py-12 md:py-16">
+  {% include "orion/blocks/includes/title.html" with title=value.title %}
+  <ul class="grid gap-6 sm:grid-cols-2{% if value.columns == '3' %} lg:grid-cols-3{% elif value.columns == '4' %} lg:grid-cols-4{% endif %}">
+    {% for card in value.cards %}
+      <li class="flex flex-col overflow-hidden rounded-lg border border-line bg-surface">
+        {% if card.image %}
+          {% srcset_image card.image format-webp fill-{480x300,800x500} sizes="(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw" alt=card.image.contextual_alt_text loading="lazy" decoding="async" class="aspect-8/5 h-auto w-full object-cover" %}
+        {% endif %}
+        <div class="flex flex-1 flex-col gap-3 p-6">
+          <h3 class="text-xl font-semibold">{{ card.title }}</h3>
+          {% if card.text %}<p class="text-ink-muted">{{ card.text }}</p>{% endif %}
+          {% if card.link.is_visible %}
+            <p class="mt-auto pt-2">{% include "orion/includes/link.html" with link=card.link class_name="font-semibold text-primary-700 underline-offset-4 hover:underline" %}</p>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+</section>

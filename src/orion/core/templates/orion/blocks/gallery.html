@@ -1,0 +1,14 @@
+{% load wagtailimages_tags %}
+<section class="orion-block block-gallery--{{ value.style }} mx-auto max-w-6xl space-y-8 px-4 py-12">
+  {% include "orion/blocks/includes/title.html" with title=value.title %}
+  <ul class="grid grid-cols-2 gap-4 md:grid-cols-3">
+    {% for item in value.images %}
+      <li>
+        <figure>
+          {% srcset_image item.image format-webp fill-{400x300,800x600} sizes="(min-width: 48rem) 33vw, 50vw" alt=item.image.contextual_alt_text loading="lazy" decoding="async" class="aspect-4/3 h-auto w-full rounded-lg object-cover" %}
+          {% if item.caption %}<figcaption class="mt-2 text-sm text-ink-muted">{{ item.caption }}</figcaption>{% endif %}
+        </figure>
+      </li>
+    {% endfor %}
+  </ul>
+</section>

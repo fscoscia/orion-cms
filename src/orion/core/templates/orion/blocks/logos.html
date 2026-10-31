@@ -1,0 +1,14 @@
+{% load wagtailimages_tags %}
+<section class="orion-block block-logos--{{ value.style }} mx-auto max-w-6xl space-y-8 px-4 py-12">
+  {% include "orion/blocks/includes/title.html" with title=value.title class_name="text-center" %}
+  <ul class="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+    {% for logo in value.logos %}
+      <li>
+        {# The logo's name is its alternative text, so a linked logo is announced by name. #}
+        {% if logo.url %}<a href="{{ logo.url }}" class="block rounded opacity-80 hover:opacity-100">{% endif %}
+        {% srcset_image logo.image format-webp max-{240x96,480x192} sizes="240px" alt=logo.name loading="lazy" decoding="async" class="h-12 w-auto object-contain" %}
+        {% if logo.url %}</a>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>

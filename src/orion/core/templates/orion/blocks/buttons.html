@@ -1,0 +1,9 @@
+<div class="orion-block block-buttons--{{ value.style }} mx-auto max-w-6xl px-4 py-6">
+  {% if value.alignment == "center" %}
+    {% include "orion/blocks/includes/buttons.html" with buttons=value.buttons class_name="justify-center" %}
+  {% elif value.alignment == "right" %}
+    {% include "orion/blocks/includes/buttons.html" with buttons=value.buttons class_name="justify-end" %}
+  {% else %}
+    {% include "orion/blocks/includes/buttons.html" with buttons=value.buttons %}
+  {% endif %}
+</div>
