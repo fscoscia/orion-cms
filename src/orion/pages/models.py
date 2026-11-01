@@ -30,6 +30,7 @@ from wagtail.models import (
     Site,
     TranslatableMixin,
 )
+from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 from wagtail_localize.fields import SynchronizedField
 
@@ -63,6 +64,7 @@ class BodyPage(SeoMixin, DesktopPreviewMixin, Page):
     body = StreamField(ContentStreamBlock(), blank=True, verbose_name=_("body"))
 
     content_panels = [*Page.content_panels, FieldPanel("body")]
+    search_fields = [*SeoMixin.search_fields, index.SearchField("body")]
 
     class Meta:
         abstract = True
@@ -249,6 +251,7 @@ class ArticleIndexPage(SeoMixin, DesktopPreviewMixin, RoutablePageMixin, Page):
     intro = models.TextField(_("introduction"), blank=True, max_length=500)
 
     content_panels = [*Page.content_panels, FieldPanel("intro")]
+    search_fields = [*SeoMixin.search_fields, index.SearchField("intro")]
     parent_page_types = ["orion_pages.HomePage", "orion_pages.ContentPage"]
     subpage_types = ["orion_pages.ArticlePage"]
     template = "orion/pages/article_index_page.html"
@@ -381,6 +384,11 @@ class ArticlePage(SeoMixin, DesktopPreviewMixin, Page):
         FieldPanel("categories", widget=forms.CheckboxSelectMultiple),
         MultipleChooserPanel("article_tags", chooser_field_name="tag", label=_("Tags")),
         FieldPanel("body"),
+    ]
+    search_fields = [
+        *SeoMixin.search_fields,
+        index.SearchField("summary"),
+        index.SearchField("body"),
     ]
     base_form_class = ArticlePageForm
     # wagtail-localize skips many-to-many fields; translations keep the original's.

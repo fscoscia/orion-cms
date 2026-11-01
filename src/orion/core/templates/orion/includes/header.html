@@ -20,6 +20,7 @@
     </button>
     <div id="site-nav-panel" class="site-nav__panel w-full md:flex md:w-auto md:items-center md:gap-6">
       {% site_menu "header" %}
+      {% search_in_header as show_search %}{% if show_search %}{% include "orion/search/includes/header_search.html" %}{% endif %}
       {% language_switcher %}
     </div>
   </div>

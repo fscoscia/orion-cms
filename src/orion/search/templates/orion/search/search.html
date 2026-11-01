@@ -1,0 +1,54 @@
+{% extends "orion/base.html" %}
+{% load i18n %}
+
+{% block seo %}{{ block.super }}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+  <section class="mx-auto max-w-3xl space-y-8 px-4 py-12 md:py-16">
+    <h1 class="orion-title text-4xl font-bold tracking-tight md:text-5xl">{% translate "Search" %}</h1>
+
+    <form class="orion-search space-y-4" method="get" action="{% url 'orion_search' %}" role="search">
+      <div class="flex gap-2">
+        <label for="search-query" class="sr-only">{% translate "Search the site" %}</label>
+        <input id="search-query" class="orion-search__input min-w-0 flex-1" type="search" name="q" value="{{ query }}" maxlength="100" autocomplete="off">
+        <button type="submit" class="orion-button orion-button--primary">{% translate "Search" context "verb" %}</button>
+      </div>
+      {% if query %}
+        <fieldset class="flex flex-wrap gap-4 text-sm">
+          <legend class="sr-only">{% translate "Type" %}</legend>
+          <label class="flex items-center gap-2"><input type="radio" name="type" value=""{% if not page_type %} checked{% endif %}> {% translate "Everything" %}</label>
+          {% for value, label in type_choices %}
+            <label class="flex items-center gap-2"><input type="radio" name="type" value="{{ value }}"{% if page_type == value %} checked{% endif %}> {{ label }}</label>
+          {% endfor %}
+        </fieldset>
+      {% endif %}
+    </form>
+
+    {% if query %}
+      <p class="text-ink-muted" role="status">
+        {% blocktranslate trimmed count counter=total with query=query %}
+          {{ counter }} result for “{{ query }}”.
+        {% plural %}
+          {{ counter }} results for “{{ query }}”.
+        {% endblocktranslate %}
+      </p>
+
+      {% if promoted or results %}
+        <ol class="space-y-6">
+          {% for result in promoted %}{% include "orion/search/includes/result.html" with is_promoted=True %}{% endfor %}
+          {% for result in results %}{% include "orion/search/includes/result.html" %}{% endfor %}
+        </ol>
+      {% else %}
+        <p>{% translate "Nothing was found. Check the spelling or try other words." %}</p>
+      {% endif %}
+
+      {% if results_page.has_other_pages %}
+        <nav class="flex items-center justify-between gap-4" aria-label="{% translate 'Result pages' %}">
+          {% if results_page.has_previous %}<a class="orion-button orion-button--secondary" href="?q={{ query|urlencode }}&amp;type={{ page_type }}&amp;page={{ results_page.previous_page_number }}">{% translate "Previous" %}</a>{% else %}<span></span>{% endif %}
+          <span class="text-sm text-ink-muted">{% blocktranslate with number=results_page.number pages=results_page.paginator.num_pages %}Page {{ number }} of {{ pages }}{% endblocktranslate %}</span>
+          {% if results_page.has_next %}<a class="orion-button orion-button--secondary" href="?q={{ query|urlencode }}&amp;type={{ page_type }}&amp;page={{ results_page.next_page_number }}">{% translate "Next" %}</a>{% endif %}
+        </nav>
+      {% endif %}
+    {% endif %}
+  </section>
+{% endblock %}

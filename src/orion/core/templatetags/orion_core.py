@@ -129,3 +129,9 @@ def font_preloads():
         '<link rel="preload" href="{}" as="font" type="font/woff2" crossorigin>',
         ((static(path),) for path in settings.ORION_FONT_PRELOAD),
     )
+
+
+@register.simple_tag
+def search_in_header():
+    """Whether the header shows the site search form (ORION_SEARCH_IN_HEADER)."""
+    return settings.ORION_SEARCH_IN_HEADER

@@ -18,6 +18,7 @@
 @source "../../navigation/templates";
 @source "../../pages/templates";
 @source "../../forms/templates";
+@source "../../search/templates";
 
 /* static: keep every variable, even unused ones, so projects can redefine them. */
 @theme static {
@@ -139,6 +140,19 @@
 
   .orion-on-dark .orion-button--secondary:hover {
     background-color: rgb(255 255 255 / 0.1);
+  }
+
+  /* The site search, in the header and on the results page (orion.search). */
+  .orion-search__input {
+    border: 1px solid var(--color-line);
+    border-radius: 0.5rem;
+    background-color: var(--color-surface);
+    padding: 0.5rem 0.75rem;
+  }
+
+  .orion-search__input:focus-visible {
+    outline: 2px solid var(--color-primary-700);
+    outline-offset: 1px;
   }
 
   /* Forms built by editors (orion.forms): Django renders the inputs. */

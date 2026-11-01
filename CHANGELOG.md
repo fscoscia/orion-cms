@@ -139,6 +139,16 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   política de privacidad (**Datos del sitio**), límites de campos por proyecto, aviso por
   email con remitente, respuesta a quien envió y prueba desde el admin, y el comando
   `orion_create_example_forms`.
+- Bandeja de envíos: estado (nuevo, leído, respondido) con filtro, búsqueda, detalle con
+  notas internas, exportación CSV y Excel limpia, retención de 12 meses
+  (`ORION_FORMS_RETENTION_MONTHS`, comando `orion_purge_submissions`) y borrado de los
+  adjuntos al borrar envíos.
+- Buscador del sitio (`orion.search`): índice del texto de los bloques, resúmenes e
+  introducciones; configuración de idioma de PostgreSQL según el idioma base
+  (`ORION_SEARCH_CONFIG`); búsqueda aproximada si `pg_trgm` está activo; página de
+  resultados en `/buscar/` con filtro por tipo y paginación; formulario en el
+  encabezado (`ORION_SEARCH_IN_HEADER`); resultados destacados para Editores y
+  Administradores; informe de búsquedas frecuentes y sin resultados.
 
 ### Changed
 
@@ -158,6 +168,8 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 
 ### Fixed
 
+- El aviso de publicación programada detenida salía en inglés con dos o más atrasadas:
+  faltaba una forma del plural en español; una prueba revisa todos los plurales.
 - Leaflet incluido con sus imágenes y sin la referencia a un mapa de código ausente, que
   hacía fallar `collectstatic` con nombres con hash.
 - Pruebas de la ruta del admin que dependían del orden de ejecución, y pruebas de ajustes

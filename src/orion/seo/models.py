@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel
-from wagtail.models import Page
+from wagtail.models import Page, get_page_models
+from wagtail.search import index
 
 
 class SeoMixin(models.Model):
@@ -30,6 +31,9 @@ class SeoMixin(models.Model):
         default=False,
         help_text=_("Search engines will not follow the links of this page."),
     )
+
+    # Page's own fields, plus the flag that keeps a page out of search results.
+    search_fields = [*Page.search_fields, index.FilterField("no_index")]
 
     promote_panels = [
         *Page.promote_panels,
@@ -77,3 +81,13 @@ class NotFoundPath(models.Model):
 
     def __str__(self):
         return self.path
+
+
+def get_not_indexed_ids():
+    """Ids of the pages marked not to be indexed, across page types with the field."""
+    return [
+        pk
+        for model in get_page_models()
+        if any(field.name == "no_index" for field in model._meta.fields)
+        for pk in model.objects.filter(no_index=True).values_list("pk", flat=True)
+    ]

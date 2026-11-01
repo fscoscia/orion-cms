@@ -579,6 +579,40 @@ Para recompilar mientras se editan templates, `pipenv run css-watch` (deja el CS
 minificar: correr `css-build` antes de versionarlo). La fuente es
 `src/orion/core/static_src/orion.css`.
 
+## Buscador
+
+El sitio tiene un buscador en `/buscar/` (`/en/search/` en inglés; esas rutas quedan
+reservadas) y un formulario en el encabezado (`ORION_SEARCH_IN_HEADER = False` lo quita).
+Busca en el título, la descripción, el resumen, la introducción y el texto de los bloques
+de las páginas publicadas y públicas del idioma de la visita, sin las marcadas para no
+indexar, de a 10 resultados, con filtro por páginas o artículos.
+
+En PostgreSQL entiende el idioma base ("médicos" encuentra "médico"); la configuración se
+elige con `ORION_SEARCH_CONFIG` (por defecto `spanish` si el idioma base es español). Un
+proyecto que cambia `LANGUAGE_CODE` en sus ajustes también define `ORION_SEARCH_CONFIG`.
+Si el hosting permite crear extensiones, la búsqueda tolera errores de tipeo cuando no
+encuentra nada exacto:
+
+```bash
+pipenv run manage enable_trigram   # una vez; después reiniciar el sitio
+```
+
+El umbral de esa búsqueda aproximada (0,3) se ajusta con `FUZZY_SIMILARITY_THRESHOLD` en
+`WAGTAILSEARCH_BACKENDS["default"]`. En MySQL la búsqueda usa su texto completo, más
+básico (ignora palabras muy cortas y no entiende plurales).
+
+El índice se actualiza al publicar. Después de instalar o actualizar Orion en un sitio con
+contenido, indexarlo una vez:
+
+```bash
+pipenv run manage update_index
+```
+
+Editores y Administradores eligen en **Propiedades → Resultados de busqueda promocionados** (así lo traduce Wagtail)
+qué páginas aparecen primero para una búsqueda. **Informes → Búsquedas** muestra a los
+administradores las búsquedas más frecuentes de los últimos 30 días y las que no
+encontraron nada (hasta `ORION_SEARCH_MAX_NO_RESULTS` términos).
+
 ## Formularios
 
 Los formularios son páginas de tipo **Formulario**: el editor agrega campos (texto, área
@@ -615,6 +649,21 @@ se duplican si ya existen:
 
 ```bash
 pipenv run manage orion_create_example_forms
+```
+
+Los envíos de cada formulario están en **Formularios**, para quien puede editar esa
+página. La lista muestra el estado (nuevo, leído o respondido), filtra por estado y por
+fecha, busca en los datos y exporta a CSV o Excel (los adjuntos, como nombre de archivo).
+**Abrir** muestra el envío completo, con sus adjuntos para descargar, permite cambiar el
+estado y agregar notas internas con autor y fecha; abrir un envío nuevo lo marca leído.
+Borrar envíos borra también sus archivos.
+
+Los envíos y sus archivos se guardan `ORION_FORMS_RETENTION_MONTHS` meses (12 por
+defecto; `0` los guarda siempre). Los borra este comando, con una tarea diaria junto a la
+de `publish_scheduled`:
+
+```cron
+0 3 * * * cd /ruta/al/proyecto && .venv/bin/python manage.py orion_purge_submissions
 ```
 
 Los errores de un formulario insertado con el bloque se muestran en la página del

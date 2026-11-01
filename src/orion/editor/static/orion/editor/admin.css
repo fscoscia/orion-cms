@@ -349,3 +349,66 @@
   gap: 0.5rem;
   justify-content: flex-end;
 }
+
+/* A form submission (orion.forms) */
+.orion-submission {
+  max-width: 50rem;
+}
+
+.orion-submission__meta {
+  color: var(--w-color-text-meta);
+}
+
+.orion-submission__data {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) 1fr;
+  gap: 0.5rem 1.5rem;
+  margin-block: 1.5rem;
+}
+
+.orion-submission__data dt {
+  font-weight: 600;
+}
+
+.orion-submission__data dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.orion-submission__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block: 1.5rem;
+}
+
+.orion-submission__status select {
+  width: auto;
+}
+
+.orion-submission__notes {
+  padding: 0;
+  list-style: none;
+}
+
+.orion-submission__notes li {
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--w-color-border-furniture);
+}
+
+.orion-submission__note {
+  display: grid;
+  gap: 0.5rem;
+  margin-block-start: 1rem;
+}
+
+@media (max-width: 40em) {
+  .orion-submission__data {
+    grid-template-columns: 1fr;
+  }
+
+  .orion-submission__data dd {
+    margin-block-end: 0.5rem;
+  }
+}

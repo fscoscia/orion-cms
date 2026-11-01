@@ -1,0 +1,6 @@
+{% load i18n %}
+<li class="space-y-1 border-b border-line pb-6">
+  <p class="text-sm text-ink-muted">{% if is_promoted %}<span class="font-semibold text-accent-600">{% translate "Featured" %}</span> · {% endif %}{{ result.type|capfirst }}</p>
+  <h2 class="text-xl font-semibold"><a class="text-primary-700 underline-offset-4 hover:underline" href="{{ result.url }}">{{ result.title }}</a></h2>
+  {% if result.summary %}<p class="text-ink-muted">{{ result.summary|truncatewords:40 }}</p>{% endif %}
+</li>

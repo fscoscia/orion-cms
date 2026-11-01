@@ -10,4 +10,4 @@ class FormsConfig(AppConfig):
 
     def ready(self):
         # Importing the module registers its system checks with Django.
-        from orion.forms import checks  # noqa: F401
+        from orion.forms import checks, signals  # noqa: F401

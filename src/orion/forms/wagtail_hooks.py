@@ -16,6 +16,11 @@ def register_form_urls():
             name="orion_form_attachment",
         ),
         path(
+            "orion/forms/submissions/<int:submission_id>/",
+            admin_views.submission_detail,
+            name="orion_form_submission",
+        ),
+        path(
             "orion/forms/<int:page_id>/test-email/",
             admin_views.test_email,
             name="orion_form_test_email",

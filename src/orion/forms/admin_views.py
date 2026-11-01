@@ -11,15 +11,26 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods
 from wagtail.contrib.forms.utils import get_forms_for_user
 
-from orion.forms.models import FormPage, FormSubmission
+from orion.forms.models import (
+    FormPage,
+    FormSubmission,
+    SubmissionNote,
+    SubmissionStatus,
+)
 from orion.forms.storage import get_private_storage
+
+
+def _get_submission(request, submission_id):
+    """The submission, if the user may see the submissions of its form."""
+    submission = get_object_or_404(FormSubmission, pk=submission_id)
+    if not get_forms_for_user(request.user).filter(pk=submission.page_id).exists():
+        raise PermissionDenied
+    return submission
 
 
 @require_GET
 def attachment(request, submission_id, field_name):
-    submission = get_object_or_404(FormSubmission, pk=submission_id)
-    if not get_forms_for_user(request.user).filter(pk=submission.page_id).exists():
-        raise PermissionDenied
+    submission = _get_submission(request, submission_id)
     value = submission.form_data.get(field_name)
     if not isinstance(value, dict) or "path" not in value:
         raise Http404
@@ -72,4 +83,54 @@ def test_email(request, page_id):
         request,
         "orion/forms/admin/test_email.html",
         {"page": page, "recipients": recipients},
+    )
+
+
+@require_http_methods(["GET", "POST"])
+def submission_detail(request, submission_id):
+    """A submission's data and attachments, with its status and internal notes."""
+    submission = _get_submission(request, submission_id)
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "status" and request.POST.get("status") in SubmissionStatus:
+            submission.status = request.POST["status"]
+            submission.save(update_fields=["status"])
+            messages.success(request, _("Status updated."))
+        elif action == "note":
+            text = request.POST.get("text", "").strip()[:2000]
+            if text:
+                SubmissionNote.objects.create(
+                    submission=submission, author=request.user, text=text
+                )
+                messages.success(request, _("Note added."))
+            else:
+                messages.error(request, _("Write the note first."))
+        return redirect("orion_form_submission", submission.pk)
+    if submission.status == SubmissionStatus.NEW:
+        submission.status = SubmissionStatus.READ
+        submission.save(update_fields=["status"])
+    page = submission.page.specific
+    labels = {field.clean_name: field.label for field in page.get_form_fields()}
+    attachments = dict(submission.attachments())
+    values = []
+    for name, value in submission.form_data.items():
+        if name in attachments:
+            continue
+        if isinstance(value, list):
+            value = ", ".join(map(str, value))
+        values.append((labels.get(name, name), "" if value is None else value))
+    return TemplateResponse(
+        request,
+        "orion/forms/admin/submission_detail.html",
+        {
+            "submission": submission,
+            "page": page,
+            "values": values,
+            "attachments": [
+                (labels.get(name, name), name, value["name"])
+                for name, value in attachments.items()
+            ],
+            "statuses": SubmissionStatus.choices,
+            "notes": submission.notes.select_related("author"),
+        },
     )

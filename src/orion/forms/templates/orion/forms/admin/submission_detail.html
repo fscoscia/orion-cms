@@ -1,0 +1,54 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% blocktranslate trimmed with form=page.title %}Submission of {{ form }}{% endblocktranslate %}{% endblock %}
+{% block content %}
+  {% translate "Submission" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title subtitle=page.title icon="form" %}
+  <div class="nice-padding orion-submission">
+    <p><a href="{% url 'wagtailforms:list_submissions' page.pk %}">{% translate "Back to the submissions" %}</a></p>
+    <p class="orion-submission__meta">{% blocktranslate trimmed with date=submission.submit_time|date:"DATETIME_FORMAT" %}Sent on {{ date }}.{% endblocktranslate %}{% if submission.consent_at %} {% translate "Privacy policy accepted." %}{% endif %}</p>
+
+    <dl class="orion-submission__data">
+      {% for label, value in values %}
+        <dt>{{ label }}</dt>
+        <dd>{{ value|linebreaksbr|default:"—" }}</dd>
+      {% endfor %}
+      {% for label, name, filename in attachments %}
+        <dt>{{ label }}</dt>
+        <dd><a href="{% url 'orion_form_attachment' submission.pk name %}">{{ filename }}</a></dd>
+      {% endfor %}
+    </dl>
+
+    <form method="post" class="orion-submission__status">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="status">
+      <label for="id_status">{% translate "Status" %}</label>
+      <select name="status" id="id_status">
+        {% for value, label in statuses %}<option value="{{ value }}"{% if value == submission.status %} selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <button type="submit" class="button button-small">{% translate "Save status" %}</button>
+    </form>
+
+    <h2>{% translate "Internal notes" %}</h2>
+    {% if notes %}
+      <ul class="orion-submission__notes">
+        {% for note in notes %}
+          <li>
+            <p>{{ note.text|linebreaksbr }}</p>
+            <p class="orion-submission__meta">{% if note.author %}{{ note.author.get_full_name|default:note.author.get_username }} · {% endif %}{{ note.created_at|date:"DATETIME_FORMAT" }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>{% translate "No notes yet." %}</p>
+    {% endif %}
+    <form method="post" class="orion-submission__note">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="note">
+      <label for="id_text">{% translate "New note" %}</label>
+      <textarea name="text" id="id_text" rows="3" maxlength="2000"></textarea>
+      <p class="orion-submission__meta">{% translate "Only people in the admin see the notes." %}</p>
+      <button type="submit" class="button">{% translate "Add note" %}</button>
+    </form>
+  </div>
+{% endblock %}

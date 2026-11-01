@@ -34,6 +34,7 @@ from wagtail.contrib.forms.models import (
 )
 from wagtail.fields import RichTextField
 from wagtail.models import Page
+from wagtail.search import index
 
 from orion.forms.builder import (
     CONSENT_FIELD,
@@ -70,24 +71,77 @@ class FormField(AbstractFormField):
     )
 
 
+class SubmissionStatus(models.TextChoices):
+    NEW = "new", _("New")
+    READ = "read", _("Read")
+    ANSWERED = "answered", _("Answered")
+
+
 class FormSubmission(AbstractFormSubmission):
     # Its own reverse name: Wagtail's FormSubmission already uses the default one.
     page = models.ForeignKey(
         Page, on_delete=models.CASCADE, related_name="orion_form_submissions"
     )
     consent_at = models.DateTimeField(_("consent given at"), null=True, blank=True)
+    status = models.CharField(
+        _("status"),
+        max_length=10,
+        choices=SubmissionStatus.choices,
+        default=SubmissionStatus.NEW,
+        db_index=True,
+    )
+
+    def attachments(self):
+        """The submission's attachments as ``(field name, {"name", "path"})``."""
+        return [
+            (name, value)
+            for name, value in self.form_data.items()
+            if isinstance(value, dict) and "path" in value
+        ]
 
     def get_data(self):
-        """The submitted values; attachments as a link to download them."""
-        data = super().get_data()
+        """The submitted values, with the status; attachments as a download link."""
+        data = {**super().get_data(), "status": self.get_status_display()}
         for name, value in data.items():
-            if isinstance(value, dict) and "path" in value:
+            if value is None:
+                # An optional field left empty, such as an attachment.
+                data[name] = ""
+            elif isinstance(value, dict) and "path" in value:
                 data[name] = format_html(
                     '<a href="{}">{}</a>',
                     reverse("orion_form_attachment", args=[self.pk, name]),
                     value["name"],
                 )
         return data
+
+
+class SubmissionNote(models.Model):
+    """An internal note about a submission, never shown to the visitor."""
+
+    submission = models.ForeignKey(
+        FormSubmission,
+        on_delete=models.CASCADE,
+        related_name="notes",
+        verbose_name=_("submission"),
+    )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="+",
+        verbose_name=_("author"),
+    )
+    text = models.TextField(_("note"), max_length=2000)
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+        verbose_name = _("note")
+        verbose_name_plural = _("notes")
+
+    def __str__(self):
+        return self.text[:50]
 
 
 class FormPageForm(WagtailAdminFormPageForm):
@@ -140,6 +194,7 @@ class FormPage(SeoMixin, DesktopPreviewMixin, AbstractEmailForm):
         help_text=_("For example, the site name."),
     )
 
+    search_fields = [*SeoMixin.search_fields, index.SearchField("intro")]
     form_builder = OrionFormBuilder
     base_form_class = FormPageForm
     parent_page_types = ["orion_pages.HomePage", "orion_pages.ContentPage"]
@@ -182,6 +237,15 @@ class FormPage(SeoMixin, DesktopPreviewMixin, AbstractEmailForm):
 
     def get_submission_class(self):
         return FormSubmission
+
+    def get_submissions_list_view_class(self):
+        from orion.forms.submissions import OrionSubmissionsListView
+
+        return OrionSubmissionsListView
+
+    def get_data_fields(self):
+        submit_time, *fields = super().get_data_fields()
+        return [submit_time, ("status", _("Status")), *fields]
 
     def get_form_parameters(self):
         return {"privacy_url": get_privacy_url()}

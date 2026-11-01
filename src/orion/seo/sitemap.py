@@ -1,7 +1,8 @@
 from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
-from wagtail.models import Page, get_page_models
+from wagtail.models import Page
 
 from orion.localization.languages import get_public_locales
+from orion.seo.models import get_not_indexed_ids
 
 
 class Sitemap(WagtailSitemap):
@@ -20,14 +21,8 @@ class Sitemap(WagtailSitemap):
         for translated_root in filter(None, roots):
             pages |= Page.objects.descendant_of(translated_root, inclusive=True)
         # Wagtail's sitemap iterates a queryset, so pages are excluded by id.
-        not_indexed = [
-            pk
-            for model in get_page_models()
-            if any(field.name == "no_index" for field in model._meta.fields)
-            for pk in model.objects.filter(no_index=True).values_list("pk", flat=True)
-        ]
         return (
-            pages.exclude(pk__in=not_indexed)
+            pages.exclude(pk__in=get_not_indexed_ids())
             .live()
             .public()
             .order_by("path")

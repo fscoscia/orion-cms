@@ -21,6 +21,7 @@ from wagtail.documents import urls as wagtaildocs_urls
 from orion.core.views import health_check
 from orion.editor.preview_links import shared_preview
 from orion.editor.views import admin_colors
+from orion.search.views import SEARCH_PATH, search
 from orion.seo.sitemap import Sitemap
 from orion.seo.views import favicon, robots_txt
 
@@ -48,6 +49,8 @@ urlpatterns = [
 
 # Pages of the base language have no prefix; other languages use their code.
 urlpatterns += i18n_patterns(
+    # Before the pages, which match any path.
+    path(SEARCH_PATH, search, name="orion_search"),
     path("", include(wagtail_urls)),
     prefix_default_language=False,
 )

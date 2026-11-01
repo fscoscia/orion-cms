@@ -15,7 +15,8 @@ def seo_tags(context, page=None):
     listing = context.get("articles")
     return render_to_string(
         "orion/seo/head.html",
-        get_seo_context(request, page, listing),
+        # Views that are not pages pass an empty string for a missing `page`.
+        get_seo_context(request, page or None, listing),
         request=request,
     )
 
@@ -23,6 +24,6 @@ def seo_tags(context, page=None):
 @register.simple_tag(takes_context=True)
 def structured_data(context, page=None):
     """The page's JSON-LD (site, organization, breadcrumbs and article)."""
-    data = get_structured_data(context["request"], page)
+    data = get_structured_data(context["request"], page or None)
     # Safe: get_structured_data escapes the characters that could close the tag.
     return mark_safe(f'<script type="application/ld+json">{data}</script>')  # noqa: S308

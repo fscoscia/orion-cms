@@ -47,6 +47,7 @@ ORION_APPS = [
     "orion.pages",
     "orion.seo",
     "orion.forms",
+    "orion.search",
     "orion.editor",
 ]
 
@@ -58,6 +59,7 @@ WAGTAIL_APPS = [
     "wagtail.contrib.routable_page",
     "wagtail.contrib.redirects",
     "wagtail.contrib.forms",
+    "wagtail.contrib.search_promotions",
     "wagtail.contrib.sitemaps",
     "wagtail.sites",
     "wagtail.users",
@@ -274,6 +276,9 @@ ORION_FORMS_RATE_LIMIT = (5, 600)
 # None allows every field type; projects can list the ones editors may use.
 ORION_FORMS_FIELD_TYPES = None
 ORION_FORMS_MAX_FIELDS = 30
+# Submissions and their files are deleted after this many months by
+# `manage.py orion_purge_submissions` (daily cron); 0 keeps them.
+ORION_FORMS_RETENTION_MONTHS = env_int("ORION_FORMS_RETENTION_MONTHS", 12)
 
 # Distinct paths that answered 404 kept for the admin's monitor.
 ORION_404_MAX_PATHS = 1000
@@ -341,9 +346,30 @@ WAGTAIL_SITE_NAME = env_str("WAGTAIL_SITE_NAME", "Orion")
 # The name authenticator apps show for the admin's second factor.
 OTP_TOTP_ISSUER = WAGTAIL_SITE_NAME
 WAGTAILADMIN_BASE_URL = env_str("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
-WAGTAILSEARCH_BACKENDS = {
-    "default": {"BACKEND": "wagtail.search.backends.database"},
+# PostgreSQL's text search configuration of each base language: plurals and variants
+# match ("médicos" finds "médico"). MySQL and SQLite ignore it.
+POSTGRES_SEARCH_CONFIGS = {
+    "es": "spanish",
+    "en": "english",
+    "pt": "portuguese",
+    "fr": "french",
+    "it": "italian",
+    "de": "german",
 }
+ORION_SEARCH_CONFIG = env_str(
+    "ORION_SEARCH_CONFIG",
+    POSTGRES_SEARCH_CONFIGS.get(LANGUAGE_CODE.split("-")[0], "simple"),
+)
+WAGTAILSEARCH_BACKENDS = {
+    "default": {
+        "BACKEND": "wagtail.search.backends.database",
+        "SEARCH_CONFIG": ORION_SEARCH_CONFIG,
+    },
+}
+# The site search (orion.search): the form in the header, and the distinct queries
+# without results kept for the admin's report.
+ORION_SEARCH_IN_HEADER = True
+ORION_SEARCH_MAX_NO_RESULTS = 1000
 # Page editors with many StreamField blocks exceed Django's default of 1000 fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 

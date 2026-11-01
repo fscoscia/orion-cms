@@ -1,0 +1,33 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Searches" %}{% endblock %}
+{% block content %}
+  {% translate "Searches" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="search" %}
+  <div class="nice-padding orion-search-report">
+    <h2>{% blocktranslate %}Most frequent in the last {{ days }} days{% endblocktranslate %}</h2>
+    {% if popular %}
+      <table class="listing">
+        <thead><tr><th>{% translate "Search" %}</th><th>{% translate "Searches" %}</th></tr></thead>
+        <tbody>
+          {% for query_string, hits in popular %}<tr><td>{{ query_string }}</td><td>{{ hits }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>{% translate "Nobody searched yet." %}</p>
+    {% endif %}
+
+    <h2>{% translate "Without results" %}</h2>
+    <p>{% translate "What visitors look for and the site does not have: ideas for new content, or words to add to existing pages. A promoted result also answers a search." %}</p>
+    {% if no_results %}
+      <table class="listing">
+        <thead><tr><th>{% translate "Search" %}</th><th>{% translate "Searches" %}</th><th>{% translate "Last search" %}</th></tr></thead>
+        <tbody>
+          {% for query in no_results %}<tr><td>{{ query.query_string }}</td><td>{{ query.hits }}</td><td>{{ query.last_seen|date:"SHORT_DATETIME_FORMAT" }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>{% translate "Every search found something." %}</p>
+    {% endif %}
+  </div>
+{% endblock %}

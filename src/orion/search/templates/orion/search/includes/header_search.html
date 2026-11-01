@@ -1,0 +1,9 @@
+{% load i18n %}
+<form class="site-search flex items-center gap-1 py-2 md:py-0" method="get" action="{% url 'orion_search' %}" role="search">
+  <label for="site-search-query" class="sr-only">{% translate "Search the site" %}</label>
+  <input id="site-search-query" class="orion-search__input min-w-0 flex-1 md:w-40 md:flex-none" type="search" name="q" placeholder="{% translate 'Search' context 'verb' %}" maxlength="100">
+  <button type="submit" class="rounded p-2 hover:bg-primary-50">
+    {% include "orion/includes/icon.html" with name="search" %}
+    <span class="sr-only">{% translate "Search" context "verb" %}</span>
+  </button>
+</form>
