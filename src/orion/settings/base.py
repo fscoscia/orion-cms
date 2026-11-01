@@ -48,6 +48,7 @@ ORION_APPS = [
     "orion.seo",
     "orion.forms",
     "orion.search",
+    "orion.snippets",
     "orion.editor",
 ]
 
@@ -370,6 +371,10 @@ WAGTAILSEARCH_BACKENDS = {
 # without results kept for the admin's report.
 ORION_SEARCH_IN_HEADER = True
 ORION_SEARCH_MAX_NO_RESULTS = 1000
+
+# Emergency switch: true stops loading every code snippet (orion.snippets), for when one
+# breaks the site and the admin cannot be used.
+ORION_SCRIPTS_DISABLED = env_bool("ORION_SCRIPTS_DISABLED", False)
 # Page editors with many StreamField blocks exceed Django's default of 1000 fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
 

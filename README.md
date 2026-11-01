@@ -613,6 +613,25 @@ qué páginas aparecen primero para una búsqueda. **Informes → Búsquedas** m
 administradores las búsquedas más frecuentes de los últimos 30 días y las que no
 encontraron nada (hasta `ORION_SEARCH_MAX_NO_RESULTS` términos).
 
+## Fragmentos de código
+
+**Fragmentos de código**, en el menú del admin, carga código de terceros (Google
+Analytics, Meta Pixel, un chat) sin tocar el repositorio: nombre, código, ubicación
+(dentro de `<head>`, al inicio o al final de `<body>`), si está activo y dónde se aplica
+(todo el sitio, páginas elegidas con o sin sus subpáginas, o tipos de página, y
+opcionalmente solo ciertos idiomas). El código se pega tal cual y corre en el navegador
+de cada visitante: nunca se carga en el admin ni en las vistas previas.
+
+Solo lo ven los usuarios con los permisos del modelo "fragmento de código", que ningún
+grupo tiene: por defecto, solo los superusuarios. Para delegarlo, un superusuario crea un
+grupo (por ejemplo "Marketing") en **Propiedades → Grupos** con esos permisos. Cada
+guardado queda en el historial con autor y fecha, y se puede restaurar una versión
+anterior.
+
+Si un fragmento rompe el sitio, `ORION_SCRIPTS_DISABLED=true` en el `.env` (y reiniciar)
+apaga todos sin entrar al admin. Con la política de seguridad de contenido (CSP) de la
+Fase 5, los scripts en línea necesitarán un ajuste.
+
 ## Formularios
 
 Los formularios son páginas de tipo **Formulario**: el editor agrega campos (texto, área

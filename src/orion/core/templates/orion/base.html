@@ -1,4 +1,4 @@
-{% load i18n static orion_core orion_localization orion_seo wagtailcore_tags wagtailuserbar %}<!DOCTYPE html>
+{% load i18n static orion_core orion_localization orion_seo orion_snippets wagtailcore_tags wagtailuserbar %}<!DOCTYPE html>
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
 <html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_BIDI %}rtl{% else %}ltr{% endif %}">
@@ -16,8 +16,10 @@
     <script src="{% static 'orion/vendor/alpine-csp-3.17.4.min.js' %}" defer></script>
     {% if request.is_preview %}<script src="{% static 'orion/js/preview.js' %}" defer></script>{% endif %}
     {% block extra_head %}{% endblock %}
+    {% code_snippets "head" %}
   </head>
   <body class="flex min-h-screen flex-col bg-surface text-ink antialiased {% block body_class %}{% endblock %}">
+    {% code_snippets "body_start" %}
     <a href="#main-content" class="site-skip-link sr-only z-50 rounded bg-primary-700 px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3">{% translate "Skip to content" %}</a>
     {% wagtailuserbar %}
     {% block header %}{% include "orion/includes/header.html" %}{% endblock %}
@@ -26,5 +28,6 @@
     </main>
     {% block footer %}{% include "orion/includes/footer.html" %}{% endblock %}
     {% block extra_js %}{% endblock %}
+    {% code_snippets "body_end" %}
   </body>
 </html>

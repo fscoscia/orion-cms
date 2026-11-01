@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 21:22-0300\n"
+"PO-Revision-Date: 2026-10-30 21:00+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: apps.py:8 wagtail_hooks.py:27
+msgid "Code snippets"
+msgstr "Fragmentos de código"
+
+#: models.py:13
+msgid "Inside <head>"
+msgstr "Dentro de <head>"
+
+#: models.py:14
+msgid "Start of <body>"
+msgstr "Inicio de <body>"
+
+#: models.py:15
+msgid "End of <body>"
+msgstr "Final de <body>"
+
+#: models.py:19
+msgid "The whole site"
+msgstr "Todo el sitio"
+
+#: models.py:20
+msgid "Chosen pages"
+msgstr "Páginas elegidas"
+
+#: models.py:21
+msgid "Chosen page types"
+msgstr "Tipos de página elegidos"
+
+#: models.py:48
+msgid "Choose at least one page."
+msgstr "Elegir al menos una página."
+
+#: models.py:50
+msgid "Choose at least one page type."
+msgstr "Elegir al menos un tipo de página."
+
+#: models.py:55
+msgid "name"
+msgstr "nombre"
+
+#: models.py:57
+msgid "code"
+msgstr "código"
+
+#: models.py:59
+msgid ""
+"Pasted as is into the pages: it runs in every visitor's browser. Paste only "
+"code from a trusted service."
+msgstr ""
+"Se pega tal cual en las páginas: corre en el navegador de cada visitante. "
+"Pegar solo código de un servicio de confianza."
+
+#: models.py:64
+msgid "location"
+msgstr "ubicación"
+
+#: models.py:67
+msgid "active"
+msgstr "activo"
+
+#: models.py:69
+msgid "Turn off to stop loading it without deleting it."
+msgstr "Desactivar para dejar de cargarlo sin borrarlo."
+
+#: models.py:72
+msgid "where"
+msgstr "dónde"
+
+#: models.py:74
+msgid "include their subpages"
+msgstr "incluir sus subpáginas"
+
+#: models.py:77
+msgid "page types"
+msgstr "tipos de página"
+
+#: models.py:84
+msgid "languages"
+msgstr "idiomas"
+
+#: models.py:87
+msgid "Leave empty for every language."
+msgstr "Dejar vacío para todos los idiomas."
+
+#: models.py:89
+msgid "created at"
+msgstr "creado el"
+
+#: models.py:95
+msgid "code snippet"
+msgstr "fragmento de código"
+
+#: models.py:96
+msgid "code snippets"
+msgstr "fragmentos de código"
+
+#: models.py:112 models.py:116
+msgid "page"
+msgstr "página"
+
+#: models.py:117
+msgid "pages"
+msgstr "páginas"
+
+#: wagtail_hooks.py:13
+msgid "ORION_SCRIPTS_DISABLED is on: no code snippet is loaded on the site."
+msgstr ""
+"ORION_SCRIPTS_DISABLED está activo: el sitio no carga ningún fragmento de "
+"código."
+
+#: wagtail_hooks.py:35
+#| msgid "active"
+msgid "Active"
+msgstr "activo"
+
+#: wagtail_hooks.py:50
+msgid "Pages"
+msgstr "Páginas"
+
+#: wagtail_hooks.py:56
+msgid "Where"
+msgstr "Dónde"

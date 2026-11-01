@@ -20,6 +20,7 @@ INVALIDATING_MODELS = [
     "wagtailcore.Site",
     "wagtailimages.Image",
     "wagtailredirects.Redirect",
+    "orion_snippets.CodeSnippet",
 ]
 
 

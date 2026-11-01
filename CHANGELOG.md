@@ -149,6 +149,10 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   resultados en `/buscar/` con filtro por tipo y paginación; formulario en el
   encabezado (`ORION_SEARCH_IN_HEADER`); resultados destacados para Editores y
   Administradores; informe de búsquedas frecuentes y sin resultados.
+- Fragmentos de código desde el admin (`orion.snippets`): ubicación, activar y
+  desactivar, alcance por páginas, tipos de página e idiomas, historial con
+  restauración, permiso sin grupos (solo superusuarios por defecto), nunca en el admin ni
+  en vistas previas, e interruptor de emergencia `ORION_SCRIPTS_DISABLED`.
 
 ### Changed
 
