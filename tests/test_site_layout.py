@@ -156,6 +156,7 @@ class TestStyles:
             is_admin = (
                 template.parent.name == "widgets"
                 or "editor" in template.parts
+                or "integrations" in template.parts
                 or '{% extends "wagtailadmin/' in source
             )
             if is_admin:

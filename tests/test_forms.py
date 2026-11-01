@@ -1,3 +1,4 @@
+import datetime
 import io
 import re
 
@@ -37,10 +38,10 @@ def _form_page(parent, title="Contacto", slug="contacto", fields=None, **page_fi
         ("Teléfono", "phone", False),
         ("Mensaje", "multiline", True),
     ]
+    page_fields.setdefault("to_address", "equipo@example.com")
     page = FormPage(
         title=title,
         slug=slug,
-        to_address="equipo@example.com",
         subject="Consulta",
         form_fields=[
             FormField(label=label, field_type=field_type, required=required)
@@ -308,6 +309,15 @@ class TestEmail:
         assert message.reply_to == ["ana@example.com"]
         assert message.from_email.startswith('"Clínica Ejemplo" <')
         assert "Mensaje: Hola" in message.body
+        assert FormSubmission.objects.get().email_notice == "sent"
+
+    def test_without_recipients_there_is_no_notice(self, client, home_page):
+        page = _form_page(home_page, to_address="")
+
+        _send(client, page)
+
+        assert not mail.outbox
+        assert FormSubmission.objects.get().email_notice == ""
 
     def test_attachment_as_a_link(self, client, home_page):
         page = _form_page(
@@ -333,7 +343,7 @@ class TestEmail:
 
         response = _send(client, contact)
 
-        assert FormSubmission.objects.exists()
+        assert FormSubmission.objects.get().email_notice == "pending"
         assert "Gracias" in response.content.decode()
 
     def test_test_email_from_the_admin(self, admin_client, contact):
@@ -361,8 +371,110 @@ class FailingBackend:
     def __init__(self, *args, **kwargs):
         pass
 
+    def open(self):
+        raise ConnectionRefusedError("SMTP down")
+
+    def close(self):
+        pass
+
     def send_messages(self, messages):
         raise ConnectionRefusedError("SMTP down")
+
+
+class FailingAfterOneBackend(FailingBackend):
+    sent = 0
+
+    def open(self):
+        pass
+
+    def send_messages(self, messages):
+        if FailingAfterOneBackend.sent:
+            raise ConnectionRefusedError("SMTP down")
+        FailingAfterOneBackend.sent += 1
+        return mail.backends.locmem.EmailBackend().send_messages(messages)
+
+
+class TestRetry:
+    def _pending(self, client, page, form_settings, count=1):
+        form_settings.EMAIL_BACKEND = "tests.test_forms.FailingBackend"
+        for number in range(count):
+            _send(client, page, {"nombre": f"Ana {number}"})
+        form_settings.EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"
+        return list(FormSubmission.objects.order_by("pk"))
+
+    def _retry(self):
+        output = io.StringIO()
+        call_command("orion_retry_form_emails", stdout=output, stderr=output)
+        return output.getvalue()
+
+    def test_sends_the_same_notice(self, client, contact, form_settings):
+        (submission,) = self._pending(client, contact, form_settings)
+
+        output = self._retry()
+
+        (message,) = mail.outbox
+        assert message.to == ["equipo@example.com"]
+        assert message.reply_to == ["ana@example.com"]
+        assert "Nombre: Ana 0" in message.body
+        assert "Mensaje: Hola" in message.body
+        submission.refresh_from_db()
+        assert submission.email_notice == "sent"
+        assert "sent: 1" in output
+
+    def test_sent_notices_are_not_sent_again(self, client, contact, form_settings):
+        self._pending(client, contact, form_settings)
+        self._retry()
+
+        self._retry()
+
+        assert len(mail.outbox) == 1
+
+    def test_too_old_stays_pending(self, client, contact, form_settings):
+        (submission,) = self._pending(client, contact, form_settings)
+        FormSubmission.objects.filter(pk=submission.pk).update(
+            submit_time=submission.submit_time - datetime.timedelta(days=5)
+        )
+
+        self._retry()
+
+        assert not mail.outbox
+        submission.refresh_from_db()
+        assert submission.email_notice == "pending"
+
+    def test_form_without_recipients_is_skipped(self, client, contact, form_settings):
+        (submission,) = self._pending(client, contact, form_settings)
+        contact.to_address = ""
+        contact.save()
+
+        self._retry()
+
+        assert not mail.outbox
+        submission.refresh_from_db()
+        assert submission.email_notice == "pending"
+
+    def test_server_still_down(self, client, contact, form_settings):
+        (submission,) = self._pending(client, contact, form_settings)
+        form_settings.EMAIL_BACKEND = "tests.test_forms.FailingBackend"
+
+        output = self._retry()
+
+        submission.refresh_from_db()
+        assert submission.email_notice == "pending"
+        assert "SMTP down" in output
+
+    def test_stops_when_the_server_fails(
+        self, client, contact, form_settings, monkeypatch
+    ):
+        self._pending(client, contact, form_settings, count=3)
+        monkeypatch.setattr(FailingAfterOneBackend, "sent", 0)
+        form_settings.EMAIL_BACKEND = "tests.test_forms.FailingAfterOneBackend"
+
+        output = self._retry()
+
+        assert list(
+            FormSubmission.objects.order_by("pk").values_list("email_notice", flat=True)
+        ) == ["sent", "pending", "pending"]
+        assert "stopping" in output
 
 
 class TestFormBlock:

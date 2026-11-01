@@ -8,14 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 20:15-0300\n"
+"POT-Creation-Date: 2026-11-01 20:28-0300\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
 
 #: admin_views.py:55
 msgid "Add at least one recipient first."
@@ -32,8 +33,8 @@ msgid ""
 "This is a test of the email notice of the form \"%(form)s\". Submissions "
 "will arrive like this."
 msgstr ""
-"Esta es una prueba del aviso por email del formulario «%(form)s». Los envíos"
-" van a llegar así."
+"Esta es una prueba del aviso por email del formulario «%(form)s». Los envíos "
+"van a llegar así."
 
 #: admin_views.py:73
 #, python-format
@@ -92,182 +93,194 @@ msgstr "Acepto la política de privacidad."
 msgid "Accept the privacy policy to send."
 msgstr "Aceptar la política de privacidad para enviar."
 
-#: models.py:50
+#: models.py:51
 msgid "Single line text"
 msgstr "Texto de una línea"
 
-#: models.py:51
+#: models.py:52
 msgid "Multi-line text"
 msgstr "Texto de varias líneas"
 
-#: models.py:52 models.py:223 models.py:386
+#: models.py:53 models.py:241 models.py:422
 msgid "Email"
 msgstr "Email"
 
-#: models.py:53
+#: models.py:54
 msgid "Phone"
 msgstr "Teléfono"
 
-#: models.py:54
+#: models.py:55
 msgid "Number"
 msgstr "Número"
 
-#: models.py:55
+#: models.py:56
 msgid "Drop down"
 msgstr "Lista desplegable"
 
-#: models.py:56
+#: models.py:57
 msgid "Radio buttons"
 msgstr "Opciones"
 
-#: models.py:57
+#: models.py:58
 msgid "Checkboxes"
 msgstr "Casillas"
 
-#: models.py:58
+#: models.py:59
 msgid "Checkbox"
 msgstr "Casilla"
 
-#: models.py:59
+#: models.py:60
 msgid "Date"
 msgstr "Fecha"
 
-#: models.py:60
+#: models.py:61
 msgid "File"
 msgstr "Archivo"
 
-#: models.py:69
+#: models.py:70
 msgid "field type"
 msgstr "tipo de campo"
 
-#: models.py:74
+#: models.py:75
 msgid "New"
 msgstr "Nuevo"
 
-#: models.py:75
+#: models.py:76
 msgid "Read"
 msgstr "Leído"
 
-#: models.py:76
+#: models.py:77
 msgid "Answered"
 msgstr "Respondido"
 
-#: models.py:84
+#: models.py:82
+msgid "Sent"
+msgstr "Enviado"
+
+#: models.py:83
+msgid "Pending"
+msgstr "Pendiente"
+
+#: models.py:91
 msgid "consent given at"
 msgstr "consentimiento dado el"
 
-#: models.py:86
+#: models.py:93
 msgid "status"
 msgstr "estado"
 
-#: models.py:121
+#: models.py:100
+msgid "email notice"
+msgstr "aviso por email"
+
+#: models.py:138
 msgid "submission"
 msgstr "envío"
 
-#: models.py:129
+#: models.py:146
 msgid "author"
 msgstr "autor"
 
-#: models.py:131 models.py:136
+#: models.py:148 models.py:153
 msgid "note"
 msgstr "nota"
 
-#: models.py:132
+#: models.py:149
 msgid "created at"
 msgstr "creado el"
 
-#: models.py:137
+#: models.py:154
 msgid "notes"
 msgstr "notas"
 
-#: models.py:157
+#: models.py:174
 #, python-format
 msgid "A form can have at most %(maximum)s fields."
 msgstr "Un formulario puede tener como máximo %(maximum)s campos."
 
-#: models.py:163
+#: models.py:180
 msgid "This field type is not allowed."
 msgstr "Este tipo de campo no está permitido."
 
-#: models.py:169
+#: models.py:186
 msgid "introduction"
 msgstr "introducción"
 
-#: models.py:172
+#: models.py:189
 msgid "thank-you text"
 msgstr "texto de agradecimiento"
 
-#: models.py:175
+#: models.py:192
 msgid "Shown after sending, unless a page is chosen below."
 msgstr "Se muestra después de enviar, salvo que se elija una página abajo."
 
-#: models.py:179
+#: models.py:196
 msgid "page after sending"
 msgstr "página después de enviar"
 
-#: models.py:184
+#: models.py:201
 msgid "Optional: visitors go to this page after sending."
 msgstr "Opcional: después de enviar, los visitantes van a esta página."
 
-#: models.py:187
+#: models.py:204
 msgid "sender name"
 msgstr "nombre del remitente"
 
-#: models.py:190
+#: models.py:207
 msgid "For example, the site name."
 msgstr "Por ejemplo, el nombre del sitio."
 
-#: models.py:203
+#: models.py:221
 msgid "Fields"
 msgstr "Campos"
 
-#: models.py:216
+#: models.py:234
 msgid "Email notice"
 msgstr "Aviso por email"
 
-#: models.py:221
+#: models.py:239
 msgid "Content"
 msgstr "Contenido"
 
-#: models.py:222
+#: models.py:240
 msgid "After sending"
 msgstr "Después de enviar"
 
-#: models.py:224
+#: models.py:242
 msgid "Promote"
 msgstr "Promocionar"
 
-#: models.py:225
+#: models.py:243
 msgid "Settings"
 msgstr "Propiedades"
 
-#: models.py:230
+#: models.py:248
 msgid "form"
 msgstr "formulario"
 
-#: models.py:231
+#: models.py:249
 msgid "forms"
 msgstr "formularios"
 
-#: models.py:243 submissions.py:15
+#: models.py:261 submissions.py:15
 #: templates/orion/forms/admin/submission_detail.html:25
 msgid "Status"
 msgstr "Estado"
 
-#: models.py:257
+#: models.py:275
 msgid "Too many submissions. Wait a few minutes and try again."
 msgstr "Demasiados envíos. Esperar unos minutos y volver a intentar."
 
-#: models.py:334
+#: models.py:370
 #, python-format
 msgid "%(name)s (download it from %(url)s)"
 msgstr "%(name)s (se descarga desde %(url)s)"
 
-#: models.py:385
+#: models.py:421
 msgid "Name"
 msgstr "Nombre"
 
-#: models.py:387
+#: models.py:423
 msgid "Message"
 msgstr "Mensaje"
 
@@ -285,7 +298,6 @@ msgid "Submission"
 msgstr "Envío"
 
 #: templates/orion/forms/admin/submission_detail.html:8
-#| msgid "Back to the form"
 msgid "Back to the submissions"
 msgstr "Volver a los envíos"
 
@@ -295,7 +307,6 @@ msgid "Sent on %(date)s."
 msgstr "Enviado el %(date)s."
 
 #: templates/orion/forms/admin/submission_detail.html:9
-#| msgid "Accept the privacy policy to send."
 msgid "Privacy policy accepted."
 msgstr "Aceptó la política de privacidad."
 
@@ -365,8 +376,8 @@ msgid ""
 "I accept the <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\">privacy "
 "policy</a>."
 msgstr ""
-"Acepto la <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\">política de"
-" privacidad</a>."
+"Acepto la <a href=\"%(url)s\" target=\"_blank\" rel=\"noopener\">política de "
+"privacidad</a>."
 
 #: templates/orion/forms/includes/form.html:51
 msgid "Fields marked with * are required."

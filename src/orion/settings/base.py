@@ -49,6 +49,7 @@ ORION_APPS = [
     "orion.forms",
     "orion.search",
     "orion.snippets",
+    "orion.integrations",
     "orion.editor",
 ]
 
@@ -280,6 +281,9 @@ ORION_FORMS_MAX_FIELDS = 30
 # Submissions and their files are deleted after this many months by
 # `manage.py orion_purge_submissions` (daily cron); 0 keeps them.
 ORION_FORMS_RETENTION_MONTHS = env_int("ORION_FORMS_RETENTION_MONTHS", 12)
+# Email notices that could not go out are sent again by
+# `manage.py orion_retry_form_emails` (cron) for this many days.
+ORION_FORMS_EMAIL_RETRY_DAYS = env_int("ORION_FORMS_EMAIL_RETRY_DAYS", 3)
 
 # Distinct paths that answered 404 kept for the admin's monitor.
 ORION_404_MAX_PATHS = 1000
@@ -323,7 +327,8 @@ DEFAULT_FROM_EMAIL = env_str("DEFAULT_FROM_EMAIL", "webmaster@localhost")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 if EMAIL_HOST:
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    # Django's SMTP backend, recording each delivery for the admin's Integrations.
+    EMAIL_BACKEND = "orion.integrations.mail.EmailBackend"
 elif DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 else:

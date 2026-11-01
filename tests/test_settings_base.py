@@ -124,7 +124,7 @@ class TestEmailBackend:
         settings = load_settings(
             SECRET_KEY="production-secret", EMAIL_HOST="mail.example.com"
         )
-        assert settings.EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend"
+        assert settings.EMAIL_BACKEND == "orion.integrations.mail.EmailBackend"
 
     def test_console_in_debug_without_host(self, load_settings):
         settings = load_settings(DEBUG="true")

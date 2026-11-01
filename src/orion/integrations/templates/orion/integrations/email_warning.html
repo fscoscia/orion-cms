@@ -1,0 +1,21 @@
+{% load i18n wagtailadmin_tags %}
+{% if is_not_configured or is_failing or pending_count %}
+  <div class="help-block help-critical orion-email-warning" role="alert">
+    {% icon name="warning" %}
+    <p>
+      {% if is_not_configured %}
+        {% translate "The site's emails are not going out: no mail server is configured. Form submissions stay in their inbox without an email notice." %}
+      {% elif is_failing %}
+        {% translate "The site's emails are not going out: the last delivery failed." %}
+      {% endif %}
+      {% if pending_count %}
+        {% blocktranslate trimmed count counter=pending_count %}
+          {{ counter }} form submission is waiting for its email notice.
+        {% plural %}
+          {{ counter }} form submissions are waiting for their email notice.
+        {% endblocktranslate %}
+      {% endif %}
+      <a href="{% url 'orion_integrations' %}">{% translate "See Integrations" %}</a>
+    </p>
+  </div>
+{% endif %}

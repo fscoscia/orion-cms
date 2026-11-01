@@ -1,0 +1,341 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 20:31-0300\n"
+"PO-Revision-Date: 2026-11-01 21:00+0000\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: apps.py:8 templates/orion/integrations/integrations.html:3
+#: templates/orion/integrations/integrations.html:5 wagtail_hooks.py:24
+msgid "Integrations"
+msgstr "Integraciones"
+
+#: mail.py:61
+msgid "The mail server did not accept every message."
+msgstr "El servidor de email no aceptó todos los mensajes."
+
+#: models.py:13
+msgid "last email sent at"
+msgstr "último email enviado el"
+
+#: models.py:14
+msgid "last email failed at"
+msgstr "último email fallido el"
+
+#: models.py:15
+msgid "last error"
+msgstr "último error"
+
+#: models.py:18 models.py:19
+msgid "email status"
+msgstr "estado del email"
+
+#: status.py:24
+msgid "EMAIL_HOST_USER is set but EMAIL_HOST_PASSWORD is missing."
+msgstr "EMAIL_HOST_USER está cargada pero falta EMAIL_HOST_PASSWORD."
+
+#: status.py:26
+msgid "EMAIL_HOST_PASSWORD is set but EMAIL_HOST_USER is missing."
+msgstr "EMAIL_HOST_PASSWORD está cargada pero falta EMAIL_HOST_USER."
+
+#: status.py:29
+#, python-format
+msgid "DEFAULT_FROM_EMAIL is missing: emails would leave from %(address)s."
+msgstr "Falta DEFAULT_FROM_EMAIL: los emails saldrían desde %(address)s."
+
+#: status.py:65
+msgid "None"
+msgstr "Ninguna"
+
+#: templates/orion/integrations/email_warning.html:7
+msgid ""
+"The site's emails are not going out: no mail server is configured. Form "
+"submissions stay in their inbox without an email notice."
+msgstr ""
+"Los emails del sitio no están saliendo: no hay un servidor de email "
+"configurado. Los envíos de formularios quedan en su bandeja sin aviso por "
+"email."
+
+#: templates/orion/integrations/email_warning.html:9
+msgid "The site's emails are not going out: the last delivery failed."
+msgstr "Los emails del sitio no están saliendo: el último envío falló."
+
+#: templates/orion/integrations/email_warning.html:12
+#, python-format
+msgid "%(counter)s form submission is waiting for its email notice."
+msgid_plural "%(counter)s form submissions are waiting for their email notice."
+msgstr[0] "%(counter)s envío de formulario espera su aviso por email."
+msgstr[1] "%(counter)s envíos de formularios esperan su aviso por email."
+msgstr[2] "%(counter)s envíos de formularios esperan su aviso por email."
+
+#: templates/orion/integrations/email_warning.html:18
+msgid "See Integrations"
+msgstr "Ver Integraciones"
+
+#: templates/orion/integrations/integrations.html:8
+msgid ""
+"Every integration is optional: the site works without them. Secret keys go "
+"in the server's environment variables, never in the admin."
+msgstr ""
+"Todas las integraciones son opcionales: el sitio funciona sin ellas. Las "
+"claves secretas van en las variables de entorno del servidor, nunca en el "
+"admin."
+
+#: templates/orion/integrations/integrations.html:12
+msgid "Email (SMTP)"
+msgstr "Email (SMTP)"
+
+#: templates/orion/integrations/integrations.html:15
+msgctxt "integration state"
+msgid "Off"
+msgstr "Apagado"
+
+#: templates/orion/integrations/integrations.html:15
+msgctxt "integration state"
+msgid "Not tested yet"
+msgstr "Sin probar"
+
+#: templates/orion/integrations/integrations.html:15
+#: templates/orion/integrations/integrations.html:88
+msgctxt "integration state"
+msgid "Active"
+msgstr "Activo"
+
+#: templates/orion/integrations/integrations.html:15
+msgctxt "integration state"
+msgid "Failing"
+msgstr "Con errores"
+
+#: templates/orion/integrations/integrations.html:19
+msgid "Sends the form notices and the approval flow's notices."
+msgstr "Manda los avisos de los formularios y los del flujo de aprobación."
+
+#: templates/orion/integrations/integrations.html:24
+msgid ""
+"No mail server is configured: in development, emails are written to the "
+"console."
+msgstr ""
+"No hay un servidor de email configurado: en desarrollo, los emails se "
+"escriben en la consola."
+
+#: templates/orion/integrations/integrations.html:26
+msgid ""
+"No mail server is configured: emails are discarded. Form submissions stay in "
+"their inbox without an email notice."
+msgstr ""
+"No hay un servidor de email configurado: los emails se descartan. Los envíos "
+"de formularios quedan en su bandeja sin aviso por email."
+
+#: templates/orion/integrations/integrations.html:34
+msgid "Server"
+msgstr "Servidor"
+
+#: templates/orion/integrations/integrations.html:35
+msgid "Security"
+msgstr "Seguridad"
+
+#: templates/orion/integrations/integrations.html:36
+msgid "User"
+msgstr "Usuario"
+
+#: templates/orion/integrations/integrations.html:37
+msgid "Password"
+msgstr "Contraseña"
+
+#: templates/orion/integrations/integrations.html:37
+msgid "Set"
+msgstr "Cargada"
+
+#: templates/orion/integrations/integrations.html:37
+msgid "Missing"
+msgstr "Falta"
+
+#: templates/orion/integrations/integrations.html:38
+msgid "Sender"
+msgstr "Remitente"
+
+#: templates/orion/integrations/integrations.html:39
+msgid "Timeout"
+msgstr "Tiempo de espera"
+
+#: templates/orion/integrations/integrations.html:39
+#, python-format
+msgid "%(seconds)s seconds"
+msgstr "%(seconds)s segundos"
+
+#: templates/orion/integrations/integrations.html:41
+msgid "Last email sent"
+msgstr "Último email enviado"
+
+#: templates/orion/integrations/integrations.html:42
+msgid "Last error"
+msgstr "Último error"
+
+#: templates/orion/integrations/integrations.html:51
+#, python-format
+msgid ""
+"The project uses its own email backend (%(backend)s): deliveries are not "
+"recorded here."
+msgstr ""
+"El proyecto usa su propio backend de email (%(backend)s): los envíos no se "
+"registran acá."
+
+#: templates/orion/integrations/integrations.html:55
+msgid "Test"
+msgstr "Prueba"
+
+#: templates/orion/integrations/integrations.html:59
+msgid "Send test email"
+msgstr "Mandar email de prueba"
+
+#: templates/orion/integrations/integrations.html:63
+msgid "How to activate it"
+msgstr "Cómo activarlo"
+
+#: templates/orion/integrations/integrations.html:65
+msgid ""
+"Create a mailbox for the site in the domain's cPanel, for example no-"
+"reply@yourdomain.com (Email > Email Accounts). It is the recommended option; "
+"a dedicated provider (Brevo, Amazon SES) is only worth it for high volume or "
+"spam problems."
+msgstr ""
+"Crear una casilla para el sitio en el cPanel del dominio, por ejemplo no-"
+"responder@tudominio.com (Email > Cuentas de email). Es la opción "
+"recomendada; un proveedor dedicado (Brevo, Amazon SES) solo conviene con "
+"mucho volumen o problemas de spam."
+
+#: templates/orion/integrations/integrations.html:66
+msgid ""
+"Open “Connect Devices” for that mailbox in cPanel and copy the outgoing "
+"server (SMTP), its port and the security: port 465 uses SSL, port 587 uses "
+"TLS."
+msgstr ""
+"Abrir “Conectar dispositivos” de esa casilla en cPanel y copiar el servidor "
+"de salida (SMTP), su puerto y la seguridad: el puerto 465 usa SSL y el 587, "
+"TLS."
+
+#: templates/orion/integrations/integrations.html:68
+msgid ""
+"Whoever manages the server loads these environment variables and restarts "
+"the site:"
+msgstr ""
+"Quien administra el servidor carga estas variables de entorno y reinicia el "
+"sitio:"
+
+#: templates/orion/integrations/integrations.html:69
+msgid "or"
+msgstr "o"
+
+#: templates/orion/integrations/integrations.html:70
+msgid "The password never goes in the admin."
+msgstr "La contraseña nunca va en el admin."
+
+#: templates/orion/integrations/integrations.html:72
+msgid ""
+"In the admin, each form sets its recipients, its subject and the sender's "
+"name; replying to a notice writes to the visitor."
+msgstr ""
+"En el admin, cada formulario define sus destinatarios, su asunto y el nombre "
+"del remitente; responder un aviso le escribe al visitante."
+
+#: templates/orion/integrations/integrations.html:73
+msgid ""
+"Send a test email from this screen and check that it does not land in spam."
+msgstr ""
+"Mandar un email de prueba desde esta pantalla y revisar que no llegue como "
+"spam."
+
+#: templates/orion/integrations/integrations.html:75
+msgid "Keep in mind"
+msgstr "Para tener en cuenta"
+
+#: templates/orion/integrations/integrations.html:77
+msgid ""
+"Hostings limit how many emails go out per hour, and every site on the server "
+"shares its reputation."
+msgstr ""
+"Los hostings limitan cuántos emails salen por hora, y todos los sitios del "
+"servidor comparten su reputación."
+
+#: templates/orion/integrations/integrations.html:78
+msgid ""
+"If the domain's DNS is not at the hosting, add the SPF and DKIM records that "
+"cPanel shows under Email Deliverability; otherwise the emails end up in spam."
+msgstr ""
+"Si el DNS del dominio no está en el hosting, agregar los registros SPF y "
+"DKIM que muestra cPanel en Entregabilidad del email; si no, los emails "
+"terminan en spam."
+
+#: templates/orion/integrations/integrations.html:79
+msgid ""
+"Some hostings only let sites send through localhost: then EMAIL_HOST is "
+"localhost, usually on port 25 without user or security."
+msgstr ""
+"Algunos hostings solo dejan mandar desde localhost: entonces EMAIL_HOST es "
+"localhost, normalmente en el puerto 25 sin usuario ni seguridad."
+
+#: templates/orion/integrations/integrations.html:80
+msgid ""
+"When the server fails, the form notices wait and the orion_retry_form_emails "
+"task sends them again."
+msgstr ""
+"Si el servidor falla, los avisos de formularios esperan y la tarea "
+"orion_retry_form_emails los vuelve a mandar."
+
+#: templates/orion/integrations/integrations.html:87
+msgid "Maps"
+msgstr "Mapas"
+
+#: templates/orion/integrations/integrations.html:90
+#, python-format
+msgid "Map tiles come from %(host)s."
+msgstr "Las teselas del mapa vienen de %(host)s."
+
+#: templates/orion/integrations/integrations.html:92
+msgid ""
+"OpenStreetMap is free, but its usage policy does not allow heavy traffic. A "
+"site with many visits needs another tile provider, set up by the developer "
+"in ORION_MAP_TILES."
+msgstr ""
+"OpenStreetMap es gratuito, pero su política de uso no admite tráfico alto. "
+"Un sitio con muchas visitas necesita otro proveedor de teselas, que "
+"configura el desarrollador en ORION_MAP_TILES."
+
+#: views.py:21
+msgid "Send a test email to"
+msgstr "Mandar un email de prueba a"
+
+#: views.py:34
+#, python-format
+msgid "Test email from %(site)s"
+msgstr "Email de prueba de %(site)s"
+
+#: views.py:37
+msgid ""
+"This is a test from the site's Integrations screen. If you read it, the "
+"site's emails go out."
+msgstr ""
+"Esta es una prueba desde la pantalla Integraciones del sitio. Si llegó, los "
+"emails del sitio salen."
+
+#: views.py:47
+#, python-format
+msgid "The test email could not be sent: %(error)s"
+msgstr "No se pudo mandar el email de prueba: %(error)s"
+
+#: views.py:52
+#, python-format
+msgid "Test email sent to %(recipient)s."
+msgstr "Email de prueba enviado a %(recipient)s."

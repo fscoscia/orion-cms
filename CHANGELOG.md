@@ -153,6 +153,15 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   desactivar, alcance por páginas, tipos de página e idiomas, historial con
   restauración, permiso sin grupos (solo superusuarios por defecto), nunca en el admin ni
   en vistas previas, e interruptor de emergencia `ORION_SCRIPTS_DISABLED`.
+- Pantalla **Integraciones** (`orion.integrations`) para administradores: estado del
+  email (apagado, sin probar, activo o con errores), configuración sin la contraseña,
+  último envío y último error, email de prueba, guía de activación con cPanel y
+  proveedor de mapas. Registro de cada envío por SMTP y aviso en el panel de inicio
+  cuando los emails no salen.
+- Los envíos de formularios guardan si su aviso por email salió; el comando
+  `orion_retry_form_emails` reenvía los pendientes de los últimos
+  `ORION_FORMS_EMAIL_RETRY_DAYS` días (3 por defecto).
+- Checklist de alta de cliente en `docs/alta-de-cliente.md`.
 
 ### Changed
 

@@ -685,9 +685,39 @@ de `publish_scheduled`:
 0 3 * * * cd /ruta/al/proyecto && .venv/bin/python manage.py orion_purge_submissions
 ```
 
+Si el email de aviso no sale (servidor caído o mal configurado), el envío queda guardado
+con el aviso pendiente. Este comando, cada 15 minutos, reenvía los pendientes de los
+últimos `ORION_FORMS_EMAIL_RETRY_DAYS` días (3 por defecto) con los datos guardados; los
+más viejos no se reenvían y siguen en la bandeja:
+
+```cron
+*/15 * * * * cd /ruta/al/proyecto && .venv/bin/python manage.py orion_retry_form_emails
+```
+
 Los errores de un formulario insertado con el bloque se muestran en la página del
 formulario. Las páginas con un formulario no se guardan en la caché de página (llevan un
 token CSRF por visitante).
+
+## Integraciones
+
+**Configuración → Integraciones**, para Administradores y superusuarios, muestra el
+estado de cada integración. El email (SMTP) aparece apagado (sin `EMAIL_HOST`), sin
+probar, activo o con errores (el último envío falló o falta un dato, como la contraseña o
+`DEFAULT_FROM_EMAIL`), con la configuración en uso, nunca la contraseña, y la fecha del
+último envío correcto y del último error. Desde ahí se manda un email de prueba, y la
+guía explica cómo activarlo con una casilla de cPanel. También muestra el proveedor de
+mapas en uso.
+
+Cada email que sale por SMTP (formularios, flujo de aprobación, pruebas) queda
+registrado por el backend `orion.integrations.mail.EmailBackend`, que los ajustes base
+usan cuando hay `EMAIL_HOST`; no guarda destinatarios ni contenido. Un proyecto que ponga
+su propio `EMAIL_BACKEND` pierde ese registro. Si los emails no salen (sin SMTP en
+producción, el último envío falló o hay avisos de formularios pendientes), el panel de
+inicio avisa a los administradores.
+
+Para dar de alta un cliente nuevo (cuentas, invitación a la agencia, variables de entorno,
+DNS del email y tareas programadas) está el
+[checklist de alta de cliente](docs/alta-de-cliente.md).
 
 ## Rendimiento y caché
 

@@ -1,0 +1,96 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Integrations" %}{% endblock %}
+{% block content %}
+  {% translate "Integrations" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="cogs" %}
+  <div class="nice-padding orion-integrations">
+    <p>{% translate "Every integration is optional: the site works without them. Secret keys go in the server's environment variables, never in the admin." %}</p>
+
+    <section class="orion-integrations__item" aria-labelledby="integration-email">
+      <h2 id="integration-email">
+        {% translate "Email (SMTP)" %}
+        {% with state=email.state %}
+          <span class="w-status {% if state == 'active' %}w-status--primary{% elif state == 'failing' %}orion-integrations__state--failing{% endif %}">
+            {% if state == "off" %}{% translate "Off" context "integration state" %}{% elif state == "untested" %}{% translate "Not tested yet" context "integration state" %}{% elif state == "active" %}{% translate "Active" context "integration state" %}{% else %}{% translate "Failing" context "integration state" %}{% endif %}
+          </span>
+        {% endwith %}
+      </h2>
+      <p>{% translate "Sends the form notices and the approval flow's notices." %}</p>
+
+      {% if email.state == "off" %}
+        <p>
+          {% if is_debug %}
+            {% translate "No mail server is configured: in development, emails are written to the console." %}
+          {% else %}
+            {% translate "No mail server is configured: emails are discarded. Form submissions stay in their inbox without an email notice." %}
+          {% endif %}
+        </p>
+      {% else %}
+        {% for problem in email.problems %}
+          <div class="help-block help-critical">{% icon name="warning" %}<p>{{ problem }}</p></div>
+        {% endfor %}
+        <dl class="orion-integrations__settings">
+          <dt>{% translate "Server" %}</dt><dd>{{ email_settings.host }}:{{ email_settings.port }}</dd>
+          <dt>{% translate "Security" %}</dt><dd>{{ email_settings.security }}</dd>
+          <dt>{% translate "User" %}</dt><dd>{{ email_settings.user|default:"—" }}</dd>
+          <dt>{% translate "Password" %}</dt><dd>{% if email_settings.has_password %}{% translate "Set" %}{% elif email_settings.user %}{% translate "Missing" %}{% else %}—{% endif %}</dd>
+          <dt>{% translate "Sender" %}</dt><dd>{{ email_settings.from_email }}</dd>
+          <dt>{% translate "Timeout" %}</dt><dd>{% blocktranslate trimmed with seconds=email_settings.timeout %}{{ seconds }} seconds{% endblocktranslate %}</dd>
+          {% if email_settings.is_tracked %}
+            <dt>{% translate "Last email sent" %}</dt><dd>{{ email.status.last_success_at|date:"DATETIME_FORMAT"|default:"—" }}</dd>
+            <dt>{% translate "Last error" %}</dt>
+            <dd>
+              {% if email.status.last_failure_at %}
+                {{ email.status.last_failure_at|date:"DATETIME_FORMAT" }}: <code>{{ email.status.last_error }}</code>
+              {% else %}—{% endif %}
+            </dd>
+          {% endif %}
+        </dl>
+        {% if not email_settings.is_tracked %}
+          <p>{% blocktranslate trimmed with backend=email_settings.backend %}The project uses its own email backend ({{ backend }}): deliveries are not recorded here.{% endblocktranslate %}</p>
+        {% endif %}
+      {% endif %}
+
+      <h3>{% translate "Test" %}</h3>
+      <form method="post" novalidate class="orion-integrations__test">
+        {% csrf_token %}
+        {% formattedfield form.recipient %}
+        <button type="submit" class="button">{% translate "Send test email" %}</button>
+      </form>
+
+      <details class="orion-integrations__guide" {% if email.state == "off" %}open{% endif %}>
+        <summary>{% translate "How to activate it" %}</summary>
+        <ol>
+          <li>{% translate "Create a mailbox for the site in the domain's cPanel, for example no-reply@yourdomain.com (Email > Email Accounts). It is the recommended option; a dedicated provider (Brevo, Amazon SES) is only worth it for high volume or spam problems." %}</li>
+          <li>{% translate "Open “Connect Devices” for that mailbox in cPanel and copy the outgoing server (SMTP), its port and the security: port 465 uses SSL, port 587 uses TLS." %}</li>
+          <li>
+            {% translate "Whoever manages the server loads these environment variables and restarts the site:" %}
+            <code>EMAIL_HOST</code>, <code>EMAIL_PORT</code>, <code>EMAIL_HOST_USER</code>, <code>EMAIL_HOST_PASSWORD</code>, <code>EMAIL_USE_SSL</code> {% translate "or" %} <code>EMAIL_USE_TLS</code>, <code>DEFAULT_FROM_EMAIL</code>.
+            {% translate "The password never goes in the admin." %}
+          </li>
+          <li>{% translate "In the admin, each form sets its recipients, its subject and the sender's name; replying to a notice writes to the visitor." %}</li>
+          <li>{% translate "Send a test email from this screen and check that it does not land in spam." %}</li>
+        </ol>
+        <p><strong>{% translate "Keep in mind" %}</strong></p>
+        <ul>
+          <li>{% translate "Hostings limit how many emails go out per hour, and every site on the server shares its reputation." %}</li>
+          <li>{% translate "If the domain's DNS is not at the hosting, add the SPF and DKIM records that cPanel shows under Email Deliverability; otherwise the emails end up in spam." %}</li>
+          <li>{% translate "Some hostings only let sites send through localhost: then EMAIL_HOST is localhost, usually on port 25 without user or security." %}</li>
+          <li>{% translate "When the server fails, the form notices wait and the orion_retry_form_emails task sends them again." %}</li>
+        </ul>
+      </details>
+    </section>
+
+    <section class="orion-integrations__item" aria-labelledby="integration-maps">
+      <h2 id="integration-maps">
+        {% translate "Maps" %}
+        <span class="w-status w-status--primary">{% translate "Active" context "integration state" %}</span>
+      </h2>
+      <p>{% blocktranslate trimmed with host=map_provider.host %}Map tiles come from {{ host }}.{% endblocktranslate %}</p>
+      {% if map_provider.is_openstreetmap %}
+        <p>{% translate "OpenStreetMap is free, but its usage policy does not allow heavy traffic. A site with many visits needs another tile provider, set up by the developer in ORION_MAP_TILES." %}</p>
+      {% endif %}
+    </section>
+  </div>
+{% endblock %}

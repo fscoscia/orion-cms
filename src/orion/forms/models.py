@@ -77,6 +77,12 @@ class SubmissionStatus(models.TextChoices):
     ANSWERED = "answered", _("Answered")
 
 
+class EmailNotice(models.TextChoices):
+    # Empty: the form had no recipients, or the submission predates this field.
+    SENT = "sent", _("Sent")
+    PENDING = "pending", _("Pending")
+
+
 class FormSubmission(AbstractFormSubmission):
     # Its own reverse name: Wagtail's FormSubmission already uses the default one.
     page = models.ForeignKey(
@@ -88,6 +94,13 @@ class FormSubmission(AbstractFormSubmission):
         max_length=10,
         choices=SubmissionStatus.choices,
         default=SubmissionStatus.NEW,
+        db_index=True,
+    )
+    email_notice = models.CharField(
+        _("email notice"),
+        max_length=10,
+        choices=EmailNotice.choices,
+        blank=True,
         db_index=True,
     )
 
@@ -305,39 +318,57 @@ class FormPage(SeoMixin, DesktopPreviewMixin, AbstractEmailForm):
         return [address.strip() for address in self.to_address.split(",") if address]
 
     def send_mail(self, form, submission=None):
-        # Replying writes to the first email the visitor left.
-        reply_to = next(
-            (
-                form.cleaned_data[field.clean_name]
-                for field in self.get_form_fields()
-                if field.field_type == "email"
-                and form.cleaned_data.get(field.clean_name)
-            ),
-            None,
-        )
-        message = EmailMessage(
-            subject=self.subject or self.title,
-            body=self.render_email(form),
-            from_email=self.get_from_email(),
-            to=self.get_recipients(),
-            reply_to=[reply_to] if reply_to else None,
-        )
+        self.send_notice(submission)
+
+    def send_notice(self, submission, connection=None):
+        """Email the submission to the recipients; True if it went out.
+
+        The notice is built from the saved data, so a retry sends the same email.
+        """
+        message = self.build_notice(submission)
+        message.connection = connection
         try:
             message.send()
         except Exception:
             # The submission is already saved: a mail error must not lose it.
             logger.exception("Could not email the submission of form %s", self.pk)
+            notice = EmailNotice.PENDING
+        else:
+            notice = EmailNotice.SENT
+        FormSubmission.objects.filter(pk=submission.pk).update(email_notice=notice)
+        submission.email_notice = notice
+        return notice == EmailNotice.SENT
 
-    def render_email(self, form):
+    def build_notice(self, submission):
+        data = submission.form_data
+        fields = self.get_form_fields()
+        # Replying writes to the first email the visitor left.
+        reply_to = next(
+            (
+                data[field.clean_name]
+                for field in fields
+                if field.field_type == "email" and data.get(field.clean_name)
+            ),
+            None,
+        )
+        return EmailMessage(
+            subject=self.subject or self.title,
+            body=self.render_notice(fields, data),
+            from_email=self.get_from_email(),
+            to=self.get_recipients(),
+            reply_to=[reply_to] if reply_to else None,
+        )
+
+    def render_notice(self, fields, data):
         submissions_url = settings.WAGTAILADMIN_BASE_URL.rstrip("/") + reverse(
             "wagtailforms:list_submissions", args=[self.pk]
         )
         lines = []
-        for field in form.editor_fields:
-            value = form.cleaned_data.get(field.name)
-            if isinstance(value, UploadedFile):
+        for field in fields:
+            value = data.get(field.clean_name)
+            if isinstance(value, dict) and "path" in value:
                 value = gettext("%(name)s (download it from %(url)s)") % {
-                    "name": value.name,
+                    "name": value["name"],
                     "url": submissions_url,
                 }
             elif isinstance(value, list):
