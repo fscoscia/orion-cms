@@ -26,6 +26,11 @@ pytestmark = pytest.mark.django_db
 CACHE_HEADER = "X-Orion-Cache"
 
 
+def _without_nonce(response):
+    nonce = re.search(r"'nonce-([^']+)'", response["Content-Security-Policy"]).group(1)
+    return response.content.replace(nonce.encode(), b"")
+
+
 class TestCacheUrl:
     @pytest.mark.parametrize(
         ("url", "backend", "location"),
@@ -87,7 +92,8 @@ class TestPageCache:
 
         assert first[CACHE_HEADER] == "miss"
         assert second[CACHE_HEADER] == "hit"
-        assert second.content == first.content
+        # The same page, with a fresh nonce for the content security policy.
+        assert _without_nonce(second) == _without_nonce(first)
         assert second["Content-Type"] == first["Content-Type"]
 
     def test_query_string_is_part_of_the_key(self, client, services):

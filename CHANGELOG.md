@@ -162,9 +162,32 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   `orion_retry_form_emails` reenvía los pendientes de los últimos
   `ORION_FORMS_EMAIL_RETRY_DAYS` días (3 por defecto).
 - Checklist de alta de cliente en `docs/alta-de-cliente.md`.
+- Límite de intentos de login con django-axes: 5 contraseñas incorrectas bloquean al
+  usuario desde esa IP por 15 minutos (`ORION_LOGIN_FAILURE_LIMIT`,
+  `ORION_LOGIN_LOCKOUT_MINUTES`), con pantalla de bloqueo traducida y desbloqueo por
+  comando; sin registro de cada ingreso.
+- `ORION_TRUSTED_PROXIES`: la IP del visitante se lee de `X-Forwarded-For` detrás de
+  proxies propios, para el límite de login y el de envíos de formularios.
+- Recuperar la contraseña desde el login solo cuando hay servidor de email (o en
+  desarrollo).
+- Cambiar el email de una cuenta cierra sus otras sesiones, como ya pasaba con la
+  contraseña.
+- HTTPS forzado fuera de debug (salvo `/health/`) y HSTS de un año
+  (`ORION_HSTS_SECONDS`); `X-Forwarded-Proto` solo con `ORION_TRUSTED_PROXIES`.
+- Política de seguridad de contenido en el sitio público con un nonce nuevo por respuesta
+  (también en la caché de página), `ORION_CSP` y `ORION_CSP_REPORT_ONLY`; los scripts de
+  Orion, la barra de Wagtail y los fragmentos de código llevan el nonce.
+- Documentos limitados por extensión (`ORION_DOCUMENT_EXTENSIONS`) y peso
+  (`ORION_DOCUMENT_MAX_UPLOAD_MB`); documentos y adjuntos de formularios se validan por
+  su contenido.
 
 ### Changed
 
+- **Atención:** con django-axes, `client.login()` no funciona en las pruebas de los
+  proyectos; usar `client.force_login()`.
+- **Atención:** las plantillas de un proyecto con scripts propios necesitan
+  `nonce="{{ request.csp_nonce }}"`, y los fragmentos de código con `onclick=` o enlaces
+  `javascript:` dejan de ejecutarlos.
 - Los slugs de páginas, categorías y etiquetas van sin tildes
   (`WAGTAIL_ALLOW_UNICODE_SLUGS = False`).
 - `orion.core.blocks` pasó de módulo a paquete; las importaciones públicas

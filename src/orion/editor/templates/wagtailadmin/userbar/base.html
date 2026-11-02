@@ -1,0 +1,10 @@
+{% extends "wagtailadmin/userbar/base.html" %}
+{% load wagtailadmin_tags orion_editor %}
+{# Wagtail's scripts with the nonce of the public site's content security policy. #}
+{% block js %}
+    {% versioned_static 'wagtailadmin/js/vendor.js' as vendor_js_url %}
+    {% versioned_static 'wagtailadmin/js/userbar.js' as userbar_js_url %}
+    <script src="{% build_absolute_url vendor_js_url %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% build_absolute_url userbar_js_url %}" nonce="{{ request.csp_nonce }}"></script>
+    {{ media.js|with_nonce:request.csp_nonce }}
+{% endblock %}

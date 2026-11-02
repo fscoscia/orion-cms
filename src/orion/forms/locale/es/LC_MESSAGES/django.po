@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-01 20:28-0300\n"
+"POT-Creation-Date: 2026-11-02 00:38-0300\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -62,225 +62,225 @@ msgstr "Escribir la nota primero."
 msgid "Forms"
 msgstr "Formularios"
 
-#: builder.py:24
+#: builder.py:26
 msgid "Enter a valid phone number."
 msgstr "Escribir un teléfono válido."
 
-#: builder.py:26
+#: builder.py:28
 msgid "The form could not be sent. Wait a few seconds and try again."
 msgstr ""
 "No se pudo enviar el formulario. Esperar unos segundos y volver a intentar."
 
-#: builder.py:34
+#: builder.py:37
 #, python-format
 msgid "Files of this type are not accepted. Allowed: %(types)s."
 msgstr "No se aceptan archivos de este tipo. Permitidos: %(types)s."
 
-#: builder.py:39
+#: builder.py:42
 #, python-format
 msgid "The file is too large. The maximum is %(size)s."
 msgstr "El archivo es demasiado grande. El máximo es %(size)s."
 
-#: builder.py:52
+#: builder.py:55
 msgid "Leave this field empty"
 msgstr "Dejar este campo vacío"
 
-#: builder.py:65
+#: builder.py:68
 msgid "I accept the privacy policy."
 msgstr "Acepto la política de privacidad."
 
-#: builder.py:66
+#: builder.py:69
 msgid "Accept the privacy policy to send."
 msgstr "Aceptar la política de privacidad para enviar."
 
-#: models.py:51
+#: models.py:52
 msgid "Single line text"
 msgstr "Texto de una línea"
 
-#: models.py:52
+#: models.py:53
 msgid "Multi-line text"
 msgstr "Texto de varias líneas"
 
-#: models.py:53 models.py:241 models.py:422
+#: models.py:54 models.py:242 models.py:423
 msgid "Email"
 msgstr "Email"
 
-#: models.py:54
+#: models.py:55
 msgid "Phone"
 msgstr "Teléfono"
 
-#: models.py:55
+#: models.py:56
 msgid "Number"
 msgstr "Número"
 
-#: models.py:56
+#: models.py:57
 msgid "Drop down"
 msgstr "Lista desplegable"
 
-#: models.py:57
+#: models.py:58
 msgid "Radio buttons"
 msgstr "Opciones"
 
-#: models.py:58
+#: models.py:59
 msgid "Checkboxes"
 msgstr "Casillas"
 
-#: models.py:59
+#: models.py:60
 msgid "Checkbox"
 msgstr "Casilla"
 
-#: models.py:60
+#: models.py:61
 msgid "Date"
 msgstr "Fecha"
 
-#: models.py:61
+#: models.py:62
 msgid "File"
 msgstr "Archivo"
 
-#: models.py:70
+#: models.py:71
 msgid "field type"
 msgstr "tipo de campo"
 
-#: models.py:75
+#: models.py:76
 msgid "New"
 msgstr "Nuevo"
 
-#: models.py:76
+#: models.py:77
 msgid "Read"
 msgstr "Leído"
 
-#: models.py:77
+#: models.py:78
 msgid "Answered"
 msgstr "Respondido"
 
-#: models.py:82
+#: models.py:83
 msgid "Sent"
 msgstr "Enviado"
 
-#: models.py:83
+#: models.py:84
 msgid "Pending"
 msgstr "Pendiente"
 
-#: models.py:91
+#: models.py:92
 msgid "consent given at"
 msgstr "consentimiento dado el"
 
-#: models.py:93
+#: models.py:94
 msgid "status"
 msgstr "estado"
 
-#: models.py:100
+#: models.py:101
 msgid "email notice"
 msgstr "aviso por email"
 
-#: models.py:138
+#: models.py:139
 msgid "submission"
 msgstr "envío"
 
-#: models.py:146
+#: models.py:147
 msgid "author"
 msgstr "autor"
 
-#: models.py:148 models.py:153
+#: models.py:149 models.py:154
 msgid "note"
 msgstr "nota"
 
-#: models.py:149
+#: models.py:150
 msgid "created at"
 msgstr "creado el"
 
-#: models.py:154
+#: models.py:155
 msgid "notes"
 msgstr "notas"
 
-#: models.py:174
+#: models.py:175
 #, python-format
 msgid "A form can have at most %(maximum)s fields."
 msgstr "Un formulario puede tener como máximo %(maximum)s campos."
 
-#: models.py:180
+#: models.py:181
 msgid "This field type is not allowed."
 msgstr "Este tipo de campo no está permitido."
 
-#: models.py:186
+#: models.py:187
 msgid "introduction"
 msgstr "introducción"
 
-#: models.py:189
+#: models.py:190
 msgid "thank-you text"
 msgstr "texto de agradecimiento"
 
-#: models.py:192
+#: models.py:193
 msgid "Shown after sending, unless a page is chosen below."
 msgstr "Se muestra después de enviar, salvo que se elija una página abajo."
 
-#: models.py:196
+#: models.py:197
 msgid "page after sending"
 msgstr "página después de enviar"
 
-#: models.py:201
+#: models.py:202
 msgid "Optional: visitors go to this page after sending."
 msgstr "Opcional: después de enviar, los visitantes van a esta página."
 
-#: models.py:204
+#: models.py:205
 msgid "sender name"
 msgstr "nombre del remitente"
 
-#: models.py:207
+#: models.py:208
 msgid "For example, the site name."
 msgstr "Por ejemplo, el nombre del sitio."
 
-#: models.py:221
+#: models.py:222
 msgid "Fields"
 msgstr "Campos"
 
-#: models.py:234
+#: models.py:235
 msgid "Email notice"
 msgstr "Aviso por email"
 
-#: models.py:239
+#: models.py:240
 msgid "Content"
 msgstr "Contenido"
 
-#: models.py:240
+#: models.py:241
 msgid "After sending"
 msgstr "Después de enviar"
 
-#: models.py:242
+#: models.py:243
 msgid "Promote"
 msgstr "Promocionar"
 
-#: models.py:243
+#: models.py:244
 msgid "Settings"
 msgstr "Propiedades"
 
-#: models.py:248
+#: models.py:249
 msgid "form"
 msgstr "formulario"
 
-#: models.py:249
+#: models.py:250
 msgid "forms"
 msgstr "formularios"
 
-#: models.py:261 submissions.py:15
+#: models.py:262 submissions.py:15
 #: templates/orion/forms/admin/submission_detail.html:25
 msgid "Status"
 msgstr "Estado"
 
-#: models.py:275
+#: models.py:276
 msgid "Too many submissions. Wait a few minutes and try again."
 msgstr "Demasiados envíos. Esperar unos minutos y volver a intentar."
 
-#: models.py:370
+#: models.py:371
 #, python-format
 msgid "%(name)s (download it from %(url)s)"
 msgstr "%(name)s (se descarga desde %(url)s)"
 
-#: models.py:421
+#: models.py:422
 msgid "Name"
 msgstr "Nombre"
 
-#: models.py:423
+#: models.py:424
 msgid "Message"
 msgstr "Mensaje"
 

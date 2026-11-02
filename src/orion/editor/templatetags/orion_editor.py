@@ -1,6 +1,9 @@
 from django import template
 from django.conf import settings
+from django.utils.safestring import mark_safe
 from wagtail.models import Site
+
+from orion.core.csp import add_nonce
 
 register = template.Library()
 
@@ -21,3 +24,15 @@ def admin_logo(kind="logo"):
     from orion.site_data.models import SiteSettings
 
     return getattr(SiteSettings.load(), kind)
+
+
+@register.filter
+def in_minutes(duration):
+    """A timedelta as whole minutes, rounded up."""
+    return -(-int(duration.total_seconds()) // 60)
+
+
+@register.filter
+def with_nonce(html, nonce):
+    """Wagtail's own script tags with the content security policy's nonce."""
+    return mark_safe(add_nonce(str(html), nonce))  # noqa: S308 - Wagtail's markup

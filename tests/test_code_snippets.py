@@ -256,3 +256,17 @@ class TestAdmin:
         html = _html(admin_client, reverse(ADMIN_INDEX))
 
         assert "ORION_SCRIPTS_DISABLED" in html
+
+
+class TestContentSecurityPolicy:
+    def test_snippets_carry_the_nonce(self, client, services):
+        _snippet(
+            code='<script async src="https://x.test/gtag.js"></script><style>p{}</style>'
+        )
+
+        response = client.get(services.url)
+
+        nonce = response["Content-Security-Policy"].split("'nonce-")[1].split("'")[0]
+        html = response.content.decode()
+        assert f'<script nonce="{nonce}" async src="https://x.test/gtag.js">' in html
+        assert f'<style nonce="{nonce}">p{{}}</style>' in html

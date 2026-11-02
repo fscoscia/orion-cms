@@ -7,6 +7,8 @@ name = "pypi"
 orion = {path = ".", editable = true, extras = ["postgres", "mysql"]}
 # WhiteNoise's Brotli; pinned because the newest release is days old.
 brotli = "==1.2.0"
+# Pulled in by Django; pinned because the newest release is days old.
+sqlparse = "==0.6.0"
 
 [dev-packages]
 pytest = "~=9.2"

@@ -471,6 +471,31 @@ Recuperación:
 En desarrollo se puede apagar con `ORION_2FA_REQUIRED=false` en el `.env`; `manage.py
 check` avisa (`orion.W002`) si queda apagado con `DEBUG` desactivado.
 
+### Ingreso y contraseñas
+
+Después de 5 contraseñas incorrectas para un usuario desde una misma IP, ese usuario no
+puede ingresar desde esa IP por 15 minutos, aunque escriba bien la contraseña; desde
+otra IP, u otros usuarios desde la misma, ingresan normalmente. Se ajusta con
+`ORION_LOGIN_FAILURE_LIMIT` y `ORION_LOGIN_LOCKOUT_MINUTES`, y se desbloquea antes desde
+el servidor (lo hace [django-axes](https://django-axes.readthedocs.io/)):
+
+```bash
+pipenv run manage axes_reset_username USUARIO   # o axes_reset_ip IP, o axes_reset
+```
+
+La IP sale de `REMOTE_ADDR`. Detrás de proxies propios, `ORION_TRUSTED_PROXIES` indica
+cuántos hay (1 con Nginx delante de Gunicorn; 0 en cPanel, donde Passenger ya entrega la
+IP real) y la IP se lee de `X-Forwarded-For`. Un número mayor que los proxies reales deja
+que el visitante elija su IP. El límite de envíos de formularios usa la misma IP.
+
+**¿Olvidaste la contraseña?** aparece en el login cuando hay un servidor de email
+configurado (y en desarrollo): llega un enlace de un solo uso que vence a los 3 días.
+Después, el ingreso sigue pidiendo el segundo factor. Cambiar la contraseña o el email de
+una cuenta cierra sus otras sesiones abiertas; la que hizo el cambio sigue adentro.
+
+En las pruebas de un proyecto, django-axes rechaza `client.login()`: usar
+`client.force_login(usuario)`.
+
 ### Roles
 
 Orion convierte los grupos que crea Wagtail en sus dos roles:
@@ -629,8 +654,10 @@ guardado queda en el historial con autor y fecha, y se puede restaurar una versi
 anterior.
 
 Si un fragmento rompe el sitio, `ORION_SCRIPTS_DISABLED=true` en el `.env` (y reiniciar)
-apaga todos sin entrar al admin. Con la política de seguridad de contenido (CSP) de la
-Fase 5, los scripts en línea necesitarán un ajuste.
+apaga todos sin entrar al admin. Con la política de seguridad de contenido (ver
+[Seguridad del sitio](#seguridad-del-sitio)), cada `<script>` y `<style>` del fragmento
+recibe el nonce de la página y lo que esos scripts cargan también corre; los atributos de
+evento (`onclick=`, `onload=`) y los enlaces `javascript:` no se ejecutan.
 
 ## Formularios
 
@@ -718,6 +745,37 @@ inicio avisa a los administradores.
 Para dar de alta un cliente nuevo (cuentas, invitación a la agencia, variables de entorno,
 DNS del email y tareas programadas) está el
 [checklist de alta de cliente](docs/alta-de-cliente.md).
+
+## Seguridad del sitio
+
+Fuera de `DEBUG`, toda visita por HTTP se redirige a HTTPS (salvo `/health/`, para
+monitores internos) y las respuestas mandan HSTS por un año: el navegador recuerda usar
+HTTPS y el sitio ya no puede volver a HTTP hasta que venza. Se ajusta antes del primer
+deploy con `ORION_HSTS_SECONDS`; `ORION_HSTS_INCLUDE_SUBDOMAINS` y `ORION_HSTS_PRELOAD`
+quedan apagados porque dependen de qué más sirve el dominio del cliente. Detrás de Nginx,
+con `ORION_TRUSTED_PROXIES=1`, se confía en `X-Forwarded-Proto` para saber si la visita
+llegó por HTTPS. `manage.py check --deploy` no da avisos; los tres que se silencian a
+propósito están explicados en los ajustes base.
+
+Las páginas públicas (no el admin, cuyo editor usa scripts en línea) llevan una política
+de seguridad de contenido (CSP) con un nonce nuevo en cada respuesta, también en las que
+salen de la caché: solo corren los scripts con ese nonce y lo que ellos cargan. Imágenes,
+conexiones y marcos pueden venir de cualquier dirección HTTPS (Analytics, Pixel, chats,
+teselas del mapa). Una plantilla del proyecto con un script propio necesita el nonce:
+
+```html
+<script src="{% static 'proyecto/app.js' %}" nonce="{{ request.csp_nonce }}" defer></script>
+```
+
+Cada proyecto cambia o quita directivas con `ORION_CSP` (por ejemplo
+`{"connect-src": ["'self'", "https://api.ejemplo.com"]}`; `None` quita una) y
+`ORION_CSP_REPORT_ONLY=true` manda la política en modo informe, sin bloquear, para ver en
+la consola del navegador qué rompería.
+
+La biblioteca de documentos acepta PDF, Word, Excel, PowerPoint, OpenDocument, TXT y CSV
+(`ORION_DOCUMENT_EXTENSIONS`) hasta 20 MB (`ORION_DOCUMENT_MAX_UPLOAD_MB`). Documentos y
+adjuntos de formularios se rechazan si el contenido no corresponde a la extensión (un
+programa renombrado a `.pdf`). Los documentos ya subidos no se tocan.
 
 ## Rendimiento y caché
 

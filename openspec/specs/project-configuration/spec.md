@@ -44,12 +44,20 @@ El sistema MUST negarse a arrancar sin una clave secreta cuando el modo debug es
 
 ### Requirement: Secure defaults outside debug
 Con el modo debug apagado, el sistema SHALL enviar las cookies de sesión y de CSRF solo por
-HTTPS, marcar la cookie de sesión como no accesible desde JavaScript y prohibir que otros
-sitios muestren el sitio dentro de un marco.
+HTTPS, marcar la cookie de sesión como no accesible desde JavaScript, prohibir que otros
+sitios muestren el sitio dentro de un marco, redirigir HTTP a HTTPS y mandar HSTS.
 
 #### Scenario: Production cookies
 - **WHEN** el modo debug está apagado
 - **THEN** las cookies de sesión y CSRF se marcan como seguras y la de sesión como HttpOnly
+
+#### Scenario: Production HTTPS
+- **WHEN** el modo debug está apagado
+- **THEN** la redirección a HTTPS está activa y HSTS dura un año
+
+#### Scenario: Development
+- **WHEN** el modo debug está encendido
+- **THEN** no hay redirección a HTTPS ni HSTS
 
 ### Requirement: Contradictory email security is rejected
 El sistema MUST rechazar al arrancar una configuración de email que active SSL y TLS a la vez.
@@ -86,3 +94,20 @@ modo, y MUST dejar de usar TLS cuando se activa SSL sin indicar TLS.
 #### Scenario: TLS explicitly disabled
 - **WHEN** `EMAIL_USE_TLS` vale `false` y `EMAIL_USE_SSL` no está definida
 - **THEN** el email no usa TLS ni SSL
+
+### Requirement: The visitor's address is read behind trusted proxies
+El sistema SHALL tomar la IP del visitante de `REMOTE_ADDR` cuando
+`ORION_TRUSTED_PROXIES` vale 0 (por defecto). Con un valor N mayor que 0 SHALL tomarla de
+`X-Forwarded-For`, contando N direcciones desde la derecha, y MUST ignorar las que el
+visitante agregue a la izquierda. Si el header tiene menos direcciones que N, SHALL usar
+la primera. El límite de intentos de login y el de envíos de formularios SHALL usar esa
+IP.
+
+#### Scenario: Directly exposed
+- **WHEN** `ORION_TRUSTED_PROXIES` vale 0 y llega `X-Forwarded-For: 1.2.3.4`
+- **THEN** la IP es la de `REMOTE_ADDR` y el header se ignora
+
+#### Scenario: Behind Nginx
+- **WHEN** `ORION_TRUSTED_PROXIES` vale 1 y llega `X-Forwarded-For: 9.9.9.9, 1.2.3.4`
+- **THEN** la IP es `1.2.3.4`, la que agregó Nginx, aunque el visitante haya inventado
+  `9.9.9.9`

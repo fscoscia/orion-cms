@@ -13,6 +13,8 @@ from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.forms.forms import BaseForm, FormBuilder
 
+from orion.core.uploads import matches_extension
+
 TRAP_FIELD = "website"
 RENDERED_AT_FIELD = "rendered_at"
 CONSENT_FIELD = "consent"
@@ -29,7 +31,8 @@ REJECTED_MESSAGE = _("The form could not be sent. Wait a few seconds and try aga
 def validate_attachment(file):
     extension = os.path.splitext(file.name)[1].lower().lstrip(".")
     allowed = settings.ORION_FORMS_UPLOAD_EXTENSIONS
-    if extension not in allowed:
+    # A program renamed to .pdf is refused like any type that is not allowed.
+    if extension not in allowed or not matches_extension(file, extension):
         raise ValidationError(
             _("Files of this type are not accepted. Allowed: %(types)s.")
             % {"types": ", ".join(allowed)}

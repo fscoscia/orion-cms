@@ -5,6 +5,7 @@ from django.utils.cache import get_conditional_response
 from django.utils.http import http_date, parse_http_date_safe
 
 from orion.core.cache import generation_key
+from orion.core.csp import new_nonce
 
 # Headers that belong to one visitor or to this cache, never stored.
 SKIPPED_HEADERS = {"set-cookie", "x-orion-cache"}
@@ -32,6 +33,7 @@ class PageCacheMiddleware:
                 key,
                 {
                     "content": response.content,
+                    "nonce": getattr(request, "csp_nonce", ""),
                     "headers": [
                         (name, value)
                         for name, value in response.items()
@@ -80,8 +82,17 @@ class PageCacheMiddleware:
 
     @staticmethod
     def _from_cache(request, cached):
-        response = HttpResponse(cached["content"])
-        for name, value in cached["headers"]:
+        content, headers = cached["content"], cached["headers"]
+        old_nonce = cached.get("nonce")
+        if old_nonce:
+            # Never the same nonce twice: a fresh one in the page and in its policy.
+            nonce = new_nonce()
+            content = content.replace(old_nonce.encode(), nonce.encode())
+            headers = [
+                (name, value.replace(old_nonce, nonce)) for name, value in headers
+            ]
+        response = HttpResponse(content)
+        for name, value in headers:
             response[name] = value
         response["X-Orion-Cache"] = "hit"
         conditional = get_conditional_response(

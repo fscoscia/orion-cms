@@ -36,6 +36,7 @@ from wagtail.fields import RichTextField
 from wagtail.models import Page
 from wagtail.search import index
 
+from orion.core.client_ip import get_client_ip
 from orion.forms.builder import (
     CONSENT_FIELD,
     SYSTEM_FIELDS,
@@ -393,7 +394,7 @@ def get_privacy_url():
 def is_rate_limited(page, request):
     """Count a submission from the visitor's address; True past the limit."""
     count, seconds = settings.ORION_FORMS_RATE_LIMIT
-    key = f"orion:form-rate:{page.pk}:{request.META.get('REMOTE_ADDR', '')}"
+    key = f"orion:form-rate:{page.pk}:{get_client_ip(request)}"
     if cache.add(key, 1, seconds):
         return False
     try:

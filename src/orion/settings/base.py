@@ -8,6 +8,7 @@ Every value that differs between environments, or that is secret, is read from
 environment variables. See ``.env.example`` for the full list.
 """
 
+import datetime
 from pathlib import Path
 
 import dj_database_url
@@ -82,6 +83,7 @@ WAGTAIL_APPS = [
 
 DJANGO_APPS = [
     "django.contrib.admin",
+    "axes",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -99,6 +101,10 @@ MIDDLEWARE = [
     "orion.core.cache.middleware.PageCacheMiddleware",
     # ETag on every page, and 304 when the browser already has it.
     "django.middleware.http.ConditionalGetMiddleware",
+    # The content security policy of the public site. Inside the page cache, which
+    # gives cached pages a fresh nonce, and inside ConditionalGet: it sets an ETag that
+    # ignores the nonce, so browsers still revalidate.
+    "orion.core.csp.ContentSecurityPolicyMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     # With i18n_patterns(prefix_default_language=False) the URL alone decides the
     # language: unprefixed URLs use LANGUAGE_CODE and the browser is ignored.
@@ -107,6 +113,8 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # Changing an account's email signs out its other sessions.
+    "orion.editor.middleware.CredentialsSessionMiddleware",
     # Requires the second factor on admin pages (ORION_2FA_REQUIRED).
     "orion.editor.middleware.TwoFactorMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -114,6 +122,8 @@ MIDDLEWARE = [
     # Before the redirects: it sees the response after them, so only real 404s count.
     "orion.seo.middleware.NotFoundMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    # Last, as django-axes requires: answers locked-out logins.
+    "axes.middleware.AxesMiddleware",
 ]
 
 TEMPLATES = [
@@ -166,6 +176,30 @@ if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Authentication
+
+# django-axes first: it refuses a locked-out login before checking the password.
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+# Failed logins lock a username out from one address (not from everywhere) for a while.
+# Unlock earlier with `manage.py axes_reset_username <username>`.
+AXES_FAILURE_LIMIT = env_int("ORION_LOGIN_FAILURE_LIMIT", 5)
+AXES_COOLOFF_TIME = datetime.timedelta(
+    minutes=env_int("ORION_LOGIN_LOCKOUT_MINUTES", 15)
+)
+AXES_LOCKOUT_PARAMETERS = [["username", "ip_address"]]
+AXES_RESET_ON_SUCCESS = True
+# No record of every sign-in: personal data the admin does not use.
+AXES_DISABLE_ACCESS_LOG = True
+AXES_ENABLE_ACCESS_FAILURE_LOG = False
+# Orion does not route Django's own admin.
+AXES_ENABLE_ADMIN = False
+AXES_CLIENT_IP_CALLABLE = "orion.core.client_ip.get_client_ip"
+AXES_LOCKOUT_TEMPLATE = "orion/editor/account_locked.html"
+# How many proxies of its own the site sits behind (1 behind Nginx, 0 on cPanel's
+# Passenger): the visitor's address is then read from X-Forwarded-For.
+ORION_TRUSTED_PROXIES = env_int("ORION_TRUSTED_PROXIES", 0)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -256,6 +290,16 @@ ORION_MAP_DEFAULT_CENTER = (-25.2637, -57.5759, 12)
 WAGTAILIMAGES_EXTENSIONS = ["avif", "gif", "jpg", "jpeg", "png", "svg", "webp"]
 WAGTAILIMAGES_MAX_UPLOAD_SIZE = env_int("ORION_IMAGE_MAX_UPLOAD_MB", 10) * 1024 * 1024
 WAGTAILIMAGES_IMAGE_FORM_BASE = "orion.core.image_forms.ImageForm"
+
+# Documents: only these extensions, up to ORION_DOCUMENT_MAX_UPLOAD_MB, and the content
+# must match the extension (orion.core.uploads).
+DOCUMENT_EXTENSIONS = [
+    *("pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"),
+    *("odt", "ods", "odp", "txt", "csv"),
+]
+WAGTAILDOCS_EXTENSIONS = env_list("ORION_DOCUMENT_EXTENSIONS", DOCUMENT_EXTENSIONS)
+WAGTAILDOCS_DOCUMENT_FORM_BASE = "orion.core.document_forms.DocumentForm"
+ORION_DOCUMENT_MAX_UPLOAD_MB = env_int("ORION_DOCUMENT_MAX_UPLOAD_MB", 20)
 ORION_IMAGE_MAX_DIMENSION = 2048
 ORION_IMAGE_RENDITIONS_IN_BACKGROUND = True
 # Projects add or replace named image sizes here (see orion.core.images).
@@ -266,6 +310,13 @@ ORION_IMAGE_SIZES = {}
 ORION_PAGE_CACHE = env_bool("ORION_PAGE_CACHE", not DEBUG)
 ORION_PAGE_CACHE_SECONDS = 60 * 60 * 24
 ORION_PAGE_CACHE_MODELS = []
+
+# Content security policy of the public site (orion.core.csp): directives here replace
+# Orion's, for example {"connect-src": ["'self'", "https://api.example.com"]}; None
+# drops one. "'nonce'" stands for each response's nonce. Report-only mode does not
+# block anything: for finding what a policy would break.
+ORION_CSP = {}
+ORION_CSP_REPORT_ONLY = env_bool("ORION_CSP_REPORT_ONLY", default=False)
 
 # Forms (orion.forms). Attachments go to ORION_FORMS_PRIVATE_ROOT, never under
 # MEDIA_ROOT; empty means a "private" folder next to MEDIA_ROOT.
@@ -345,6 +396,24 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"
 # Wagtail's live preview renders pages in an iframe on the same site.
 X_FRAME_OPTIONS = "SAMEORIGIN"
+# HTTPS only outside debug. Monitors may ask for /health/ over plain HTTP.
+SECURE_SSL_REDIRECT = env_bool("ORION_SSL_REDIRECT", default=not DEBUG)
+SECURE_REDIRECT_EXEMPT = [r"^health/$"]
+# Browsers remember to use HTTPS for this long: the site cannot go back to HTTP
+# before it ends.
+SECURE_HSTS_SECONDS = env_int("ORION_HSTS_SECONDS", 0 if DEBUG else 60 * 60 * 24 * 365)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool(
+    "ORION_HSTS_INCLUDE_SUBDOMAINS", default=False
+)
+SECURE_HSTS_PRELOAD = env_bool("ORION_HSTS_PRELOAD", default=False)
+# Behind proxies of its own the site trusts the scheme they report; without them, a
+# visitor could send the header to pass as HTTPS.
+if ORION_TRUSTED_PROXIES > 0:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# Deliberate, so `check --deploy` does not warn about them: HSTS for subdomains and the
+# preload list are each client's decision about their domain (they may serve other
+# things over HTTP), and the admin's live preview needs frames from the same site.
+SILENCED_SYSTEM_CHECKS = ["security.W005", "security.W019", "security.W021"]
 
 # Wagtail
 
@@ -352,6 +421,8 @@ WAGTAIL_SITE_NAME = env_str("WAGTAIL_SITE_NAME", "Orion")
 # The name authenticator apps show for the admin's second factor.
 OTP_TOTP_ISSUER = WAGTAIL_SITE_NAME
 WAGTAILADMIN_BASE_URL = env_str("WAGTAILADMIN_BASE_URL", "http://localhost:8000")
+# "Forgotten password?" only where the email can arrive (in development, the console).
+WAGTAIL_PASSWORD_RESET_ENABLED = bool(EMAIL_HOST) or DEBUG
 # PostgreSQL's text search configuration of each base language: plurals and variants
 # match ("médicos" finds "médico"). MySQL and SQLite ignore it.
 POSTGRES_SEARCH_CONFIGS = {

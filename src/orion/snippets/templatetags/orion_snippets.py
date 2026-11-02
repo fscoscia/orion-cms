@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 from wagtail.models import Locale
 
 from orion.core.cache import generation_key
+from orion.core.csp import add_nonce
 from orion.snippets.models import CodeSnippet, Scope
 
 register = template.Library()
@@ -67,11 +68,9 @@ def code_snippets(context, location):
     if not snippets:
         return ""
     locale_id = Locale.get_active().pk
-    # Pasted by people with the dedicated permission: trusted code, inserted as is.
-    return mark_safe(  # noqa: S308
-        "\n".join(
-            snippet["code"]
-            for snippet in snippets
-            if _applies(snippet, page, locale_id)
-        )
+    code = "\n".join(
+        snippet["code"] for snippet in snippets if _applies(snippet, page, locale_id)
     )
+    # Pasted by people with the dedicated permission: trusted code, inserted as is,
+    # with the nonce that lets it run under the content security policy.
+    return mark_safe(add_nonce(code, getattr(request, "csp_nonce", "")))  # noqa: S308

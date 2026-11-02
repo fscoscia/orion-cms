@@ -154,7 +154,12 @@ class TestAttachments:
 
     @pytest.mark.parametrize(
         ("name", "content"),
-        [("virus.exe", b"MZ"), ("enorme.pdf", b"%PDF" + b"0" * (5 * 1024 * 1024 + 1))],
+        [
+            ("virus.exe", b"MZ"),
+            ("enorme.pdf", b"%PDF" + b"0" * (5 * 1024 * 1024 + 1)),
+            # A program renamed to look like a CV.
+            ("cv.pdf", b"MZ\x90\x00\x03\x00"),
+        ],
     )
     def test_rejected(self, client, jobs, name, content):
         response = self._send_cv(client, jobs, name, content)
@@ -228,6 +233,13 @@ class TestSpamProtection:
 
         assert FormSubmission.objects.count() == 5
         assert "orion-form__alert" in response.content.decode()
+
+    def test_rate_limit_behind_a_proxy(self, client, contact, form_settings):
+        form_settings.ORION_TRUSTED_PROXIES = 1
+        for number in range(6):
+            _send(client, contact, HTTP_X_FORWARDED_FOR=f"1.1.1.{number}")
+
+        assert FormSubmission.objects.count() == 6
 
     def test_csrf_is_required(self, contact):
         client = Client(enforce_csrf_checks=True)

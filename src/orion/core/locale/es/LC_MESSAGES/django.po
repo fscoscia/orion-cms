@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 19:54-0300\n"
+"POT-Creation-Date: 2026-11-02 00:38-0300\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -435,6 +435,16 @@ msgstr "Esta dirección es de este sitio. Conviene elegir la página."
 msgid "Enter a phone number using digits, spaces, '+', '-' or parentheses."
 msgstr "Ingresar un teléfono con dígitos, espacios, '+', '-' o paréntesis."
 
+#: document_forms.py:25
+#, python-format
+msgid "The file is too large. The maximum is %(size)s."
+msgstr "El archivo es demasiado grande. El máximo es %(size)s."
+
+#: document_forms.py:32
+#, python-format
+msgid "The file's content does not match its type (%(extension)s)."
+msgstr "El contenido del archivo no corresponde a su tipo (%(extension)s)."
+
 #: forms.py:26
 msgid "Choose a location on the map."
 msgstr "Elegir una ubicación en el mapa."
@@ -451,7 +461,7 @@ msgstr "La longitud tiene que estar entre -180 y 180."
 msgid "The file is not a valid SVG image."
 msgstr "El archivo no es una imagen SVG válida."
 
-#: templates/orion/base.html:21
+#: templates/orion/base.html:23
 msgid "Skip to content"
 msgstr "Saltar al contenido"
 

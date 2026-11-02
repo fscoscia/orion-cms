@@ -1,0 +1,29 @@
+{% extends "wagtailadmin/admin_base.html" %}
+{% load i18n orion_editor %}
+{# django-axes renders it, with status 429, when a username is locked out. #}
+{% block titletag %}{% translate "Too many attempts" %}{% endblock %}
+{% block bodyclass %}login{% endblock %}
+{% block furniture %}
+  <main class="content-wrapper orion-two-factor" id="main">
+    <h1>{% translate "Too many attempts" %}</h1>
+    <div class="messages" role="status">
+      <ul>
+        <li class="error">
+          {% if cooloff_timedelta %}
+            {% with minutes=cooloff_timedelta|in_minutes %}
+              {% blocktranslate trimmed count counter=minutes %}
+                After several wrong passwords, this user cannot sign in from here for {{ counter }} minute.
+              {% plural %}
+                After several wrong passwords, this user cannot sign in from here for {{ counter }} minutes.
+              {% endblocktranslate %}
+            {% endwith %}
+          {% else %}
+            {% translate "After several wrong passwords, this user cannot sign in from here." %}
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+    <p>{% translate "Wait and try again, or ask the site's administrator to unlock the user." %}</p>
+    <a href="{% url 'wagtailadmin_login' %}" class="button">{% translate "Back to sign in" %}</a>
+  </main>
+{% endblock %}

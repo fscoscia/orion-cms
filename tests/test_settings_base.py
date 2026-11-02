@@ -135,6 +135,63 @@ class TestEmailBackend:
         assert settings.EMAIL_BACKEND.endswith("dummy.EmailBackend")
 
 
+class TestHttps:
+    def test_production(self, load_settings):
+        settings = load_settings(SECRET_KEY="production-secret")
+        assert settings.SECURE_SSL_REDIRECT is True
+        assert settings.SECURE_HSTS_SECONDS == 31536000
+        assert settings.SECURE_HSTS_INCLUDE_SUBDOMAINS is False
+        assert settings.SECURE_HSTS_PRELOAD is False
+
+    def test_development(self, load_settings):
+        settings = load_settings(DEBUG="true")
+        assert settings.SECURE_SSL_REDIRECT is False
+        assert settings.SECURE_HSTS_SECONDS == 0
+
+    def test_proxy_header_only_behind_proxies(self, load_settings):
+        settings = load_settings(SECRET_KEY="production-secret")
+        assert not hasattr(settings, "SECURE_PROXY_SSL_HEADER")
+
+        settings = load_settings(
+            SECRET_KEY="production-secret", ORION_TRUSTED_PROXIES="1"
+        )
+        assert settings.SECURE_PROXY_SSL_HEADER == ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+class TestPasswordReset:
+    def test_on_with_a_mail_server(self, load_settings):
+        settings = load_settings(
+            SECRET_KEY="production-secret", EMAIL_HOST="mail.example.com"
+        )
+        assert settings.WAGTAIL_PASSWORD_RESET_ENABLED is True
+
+    def test_on_in_development(self, load_settings):
+        assert load_settings(DEBUG="true").WAGTAIL_PASSWORD_RESET_ENABLED is True
+
+    def test_off_in_production_without_a_mail_server(self, load_settings):
+        settings = load_settings(SECRET_KEY="production-secret")
+        assert settings.WAGTAIL_PASSWORD_RESET_ENABLED is False
+
+
+class TestLoginLimits:
+    def test_defaults(self, load_settings):
+        settings = load_settings(DEBUG="true")
+        assert settings.AXES_FAILURE_LIMIT == 5
+        assert settings.AXES_COOLOFF_TIME.total_seconds() == 15 * 60
+        assert settings.ORION_TRUSTED_PROXIES == 0
+
+    def test_from_the_environment(self, load_settings):
+        settings = load_settings(
+            DEBUG="true",
+            ORION_LOGIN_FAILURE_LIMIT="3",
+            ORION_LOGIN_LOCKOUT_MINUTES="60",
+            ORION_TRUSTED_PROXIES="1",
+        )
+        assert settings.AXES_FAILURE_LIMIT == 3
+        assert settings.AXES_COOLOFF_TIME.total_seconds() == 60 * 60
+        assert settings.ORION_TRUSTED_PROXIES == 1
+
+
 class TestEmailEncryption:
     def test_tls_by_default(self, load_settings):
         settings = load_settings(DEBUG="true")
