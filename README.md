@@ -777,6 +777,37 @@ La biblioteca de documentos acepta PDF, Word, Excel, PowerPoint, OpenDocument, T
 adjuntos de formularios se rechazan si el contenido no corresponde a la extensión (un
 programa renombrado a `.pdf`). Los documentos ya subidos no se tocan.
 
+## Backups y restauración
+
+El servidor necesita el cliente del motor configurado: `postgresql-client` (`pg_dump`,
+`pg_restore`) o `default-mysql-client`/`mysql-client` (`mysqldump`, `mysql`).
+
+```bash
+pipenv run manage orion_backup respaldo.tar.gz
+```
+
+Empaqueta en un solo archivo el volcado de la base de datos, `MEDIA_ROOT` y los adjuntos
+privados de formularios (`ORION_FORMS_PRIVATE_ROOT`), con un manifiesto (motor, fecha,
+versiones y tamaños). El archivo queda con permisos `0600`: contiene todo el contenido de
+la base de datos y los adjuntos privados, así que es sensible y no debe subirse a git ni
+dejarse en un directorio que sirva el sitio.
+
+```bash
+pipenv run manage orion_inspect_backup respaldo.tar.gz
+```
+
+Muestra el manifiesto sin tocar la base de datos, los medios ni el archivo inspeccionado;
+sirve para confirmar qué se restauraría antes de hacerlo.
+
+```bash
+pipenv run manage orion_restore respaldo.tar.gz
+```
+
+Reemplaza la base de datos, los medios y los adjuntos de formularios del servidor donde
+corre por los del archivo. Es destructivo: pide confirmación (`yes`) salvo que se agregue
+`--noinput` para automatizarlo, y se niega a restaurar un backup de un motor distinto al
+configurado (`DATABASE_URL`) en el servidor destino.
+
 ## Rendimiento y caché
 
 Fuera de `DEBUG`, las visitas sin sesión se sirven desde una caché de página completa: la

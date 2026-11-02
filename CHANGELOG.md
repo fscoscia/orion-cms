@@ -180,6 +180,11 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 - Documentos limitados por extensión (`ORION_DOCUMENT_EXTENSIONS`) y peso
   (`ORION_DOCUMENT_MAX_UPLOAD_MB`); documentos y adjuntos de formularios se validan por
   su contenido.
+- Backups: `orion_backup` empaqueta la base de datos (`pg_dump`/`mysqldump`, según el
+  motor), los medios y los adjuntos privados de formularios en un solo archivo;
+  `orion_inspect_backup` muestra su manifiesto sin tocar nada; `orion_restore` lo
+  restaura en otro servidor, con confirmación explícita (o `--noinput`) y rechazo si el
+  motor del backup no coincide con el del servidor destino.
 
 ### Changed
 
