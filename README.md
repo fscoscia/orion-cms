@@ -73,6 +73,20 @@ cambiar un valor, editar `.env`; para una ejecución puntual sin `.env`, usar
 
 ## Usar Orion en un proyecto
 
+El comando `orion-start` (se instala junto con el paquete) crea un proyecto nuevo con
+todo esto ya armado:
+
+```bash
+pipenv run orion-start mi_sitio
+```
+
+Genera `mi_sitio/` con `manage.py`, los ajustes conectados a Orion, las rutas, una app
+`home` vacía para el diseño propio, `templates/` para sobrescribir las de Orion,
+`.env.example` y un `Pipfile` que fija la versión de Orion instalada (confirmarla, junto
+con `<organization>` en la URL del repositorio, contra la etiqueta publicada antes de
+instalar). El resto de esta sección explica cada una de esas piezas por si se arman a
+mano o se ajustan después.
+
 Instalar desde GitHub fijando una etiqueta de versión y el driver de la base:
 
 ```bash
@@ -116,6 +130,19 @@ urlpatterns += orion_urlpatterns
 
 La configuración se lee de variables de entorno; ver `.env.example`. Sin `SECRET_KEY` y
 con `DEBUG` apagado, el sitio no arranca.
+
+Con `.env` completo (al menos `DATABASE_URL`), dejar el sitio funcionando:
+
+```bash
+pipenv run manage orion_install
+```
+
+Verifica que la base responde, migra, crea el superusuario administrador (pide los datos
+por teclado; con las variables `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL` y
+`DJANGO_SUPERUSER_PASSWORD` y `--noinput` no pide nada, para instalaciones automatizadas),
+informa el idioma base configurado (`LANGUAGE_CODE`) y carga los formularios de ejemplo
+("Contacto" y "Trabajá con nosotros"). Correrlo de nuevo sobre un sitio ya instalado no
+duplica nada ni falla si el superusuario ya existe.
 
 ## Idiomas
 
@@ -427,15 +454,8 @@ En la pestaña **Promocionar** de cada página se elige la fecha de publicación
 baja. El **Calendario** del menú lateral muestra, por mes, lo que se publica y lo que
 vence de las páginas que cada usuario puede editar.
 
-La publicación programada necesita una tarea periódica en el servidor, cada 5 minutos:
-
-```cron
-# VPS (crontab -e del usuario que corre el sitio)
-*/5 * * * * cd /ruta/al/proyecto && .venv/bin/python manage.py publish_scheduled
-
-# cPanel (Tareas Cron), con el entorno de "Setup Python App"
-*/5 * * * * cd ~/proyecto && ~/virtualenv/proyecto/3.12/bin/python manage.py publish_scheduled
-```
+La publicación programada necesita una tarea periódica en el servidor, cada 5 minutos
+(`publish_scheduled`; ver "Tareas programadas").
 
 Sin ella, lo programado no sale. Si una publicación o una baja lleva más de una hora de
 atraso, el panel de inicio y el calendario avisan a los administradores.
@@ -705,21 +725,14 @@ estado y agregar notas internas con autor y fecha; abrir un envío nuevo lo marc
 Borrar envíos borra también sus archivos.
 
 Los envíos y sus archivos se guardan `ORION_FORMS_RETENTION_MONTHS` meses (12 por
-defecto; `0` los guarda siempre). Los borra este comando, con una tarea diaria junto a la
-de `publish_scheduled`:
-
-```cron
-0 3 * * * cd /ruta/al/proyecto && .venv/bin/python manage.py orion_purge_submissions
-```
+defecto; `0` los guarda siempre). Los borra `orion_purge_submissions`, con una tarea
+diaria (ver "Tareas programadas").
 
 Si el email de aviso no sale (servidor caído o mal configurado), el envío queda guardado
-con el aviso pendiente. Este comando, cada 15 minutos, reenvía los pendientes de los
-últimos `ORION_FORMS_EMAIL_RETRY_DAYS` días (3 por defecto) con los datos guardados; los
-más viejos no se reenvían y siguen en la bandeja:
-
-```cron
-*/15 * * * * cd /ruta/al/proyecto && .venv/bin/python manage.py orion_retry_form_emails
-```
+con el aviso pendiente. `orion_retry_form_emails`, cada 15 minutos (ver "Tareas
+programadas"), reenvía los pendientes de los últimos `ORION_FORMS_EMAIL_RETRY_DAYS` días
+(3 por defecto) con los datos guardados; los más viejos no se reenvían y siguen en la
+bandeja.
 
 Los errores de un formulario insertado con el bloque se muestran en la página del
 formulario. Las páginas con un formulario no se guardan en la caché de página (llevan un
@@ -844,6 +857,136 @@ volver a descargar la página. Los archivos estáticos los sirve WhiteNoise comp
 Brotli o gzip, con nombres con hash y caché `immutable`; en producción hay que correr
 `pipenv run manage collectstatic` después de cada actualización (los archivos de medios
 los sirve el servidor web).
+
+La meta de rendimiento de la v1 es Lighthouse 95 o más en celular y LCP (tiempo hasta el
+elemento principal) menor a 2,5 segundos en la portada de ejemplo. Se mide a mano, con
+las herramientas de desarrollador de Chrome (pestaña Lighthouse) o con
+[PageSpeed Insights](https://pagespeed.web.dev/); un presupuesto que lo corra solo sobre
+las páginas de ejemplo y falle si baja de la meta queda pendiente, porque en la práctica
+necesita el CLI de Lighthouse (de Node), y el proyecto evita Node a propósito (Tailwind se
+compila con su binario nativo, sin `npm`).
+
+## Tareas programadas
+
+Cuatro tareas periódicas, con `crontab -e` del usuario que corre el sitio en un VPS, o
+**Tareas Cron** del panel en cPanel (con el entorno de "Setup Python App", ver más abajo):
+
+```cron
+# VPS
+*/5 * * * * cd /ruta/al/proyecto && .venv/bin/python manage.py publish_scheduled
+0 3 * * * cd /ruta/al/proyecto && .venv/bin/python manage.py orion_purge_submissions
+*/15 * * * * cd /ruta/al/proyecto && .venv/bin/python manage.py orion_retry_form_emails
+0 4 * * * cd /ruta/al/proyecto && .venv/bin/python manage.py clearsessions
+
+# cPanel, con el entorno de "Setup Python App"
+*/5 * * * * cd ~/proyecto && ~/virtualenv/proyecto/3.12/bin/python manage.py publish_scheduled
+0 3 * * * cd ~/proyecto && ~/virtualenv/proyecto/3.12/bin/python manage.py orion_purge_submissions
+*/15 * * * * cd ~/proyecto && ~/virtualenv/proyecto/3.12/bin/python manage.py orion_retry_form_emails
+0 4 * * * cd ~/proyecto && ~/virtualenv/proyecto/3.12/bin/python manage.py clearsessions
+```
+
+- `publish_scheduled` (cada 5 minutos): sin ella, lo que se programó para publicarse o
+  darse de baja no sale a tiempo.
+- `orion_purge_submissions` (diaria): borra los envíos de formularios y sus archivos más
+  viejos que `ORION_FORMS_RETENTION_MONTHS`.
+- `orion_retry_form_emails` (cada 15 minutos): reintenta el aviso por email de los envíos
+  cuyo primer intento falló, dentro de `ORION_FORMS_EMAIL_RETRY_DAYS`.
+- `clearsessions` (diaria, nativo de Django): borra de la base las sesiones ya vencidas;
+  sin ella, la tabla de sesiones crece sin límite.
+
+## Deploy en VPS
+
+Con Python, PostgreSQL, Nginx y Gunicorn instalados en el servidor:
+
+1. Clonar el proyecto, `pipenv install` y completar `.env` (`DATABASE_URL` apuntando a
+   PostgreSQL, `ALLOWED_HOSTS`, `WAGTAILADMIN_BASE_URL` con el dominio real,
+   `ORION_TRUSTED_PROXIES=1`: Nginx es el único proxy delante del sitio).
+2. `pipenv run manage orion_install` deja la base migrada, el administrador creado y el
+   idioma base confirmado (ver "Usar Orion en un proyecto" más arriba);
+   `pipenv run manage collectstatic`.
+3. Gunicorn, con pocos procesos e hilos y reciclado periódico (con la caché de página
+   encendida, casi ninguna visita llega hasta acá):
+
+   ```ini
+   # /etc/systemd/system/mi_sitio.service
+   [Unit]
+   Description=mi_sitio (Gunicorn)
+   After=network.target postgresql.service
+
+   [Service]
+   User=mi_sitio
+   WorkingDirectory=/ruta/al/proyecto
+   ExecStart=/ruta/al/proyecto/.venv/bin/gunicorn mi_sitio.wsgi:application \
+       --bind unix:/run/mi_sitio.sock --workers 3 --threads 2 --max-requests 1000 \
+       --max-requests-jitter 100
+   Restart=always
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+
+   `systemctl enable --now mi_sitio`. `gunicorn` no es una dependencia de Orion: se agrega
+   al `Pipfile` del proyecto (`pipenv install gunicorn`).
+4. Nginx como proxy, sirviendo los medios directo (los estáticos ya los sirve Gunicorn a
+   través de WhiteNoise, comprimidos y con caché `immutable`):
+
+   ```nginx
+   server {
+       listen 80;
+       server_name mi-sitio.com;
+
+       location /media/ {
+           alias /ruta/al/proyecto/media/;
+       }
+
+       location / {
+           proxy_pass http://unix:/run/mi_sitio.sock;
+           proxy_set_header Host $host;
+           proxy_set_header X-Forwarded-Proto $scheme;
+       }
+   }
+   ```
+5. Certificado HTTPS con [Certbot](https://certbot.eff.org/) (`certbot --nginx`): reemplaza
+   el `listen 80` por 443 y renueva solo. Fuera de `DEBUG`, el sitio ya redirige HTTP a
+   HTTPS y manda HSTS (ver "Seguridad del sitio").
+6. "Tareas programadas", arriba, con las rutas de este servidor.
+
+## Deploy en cPanel con Python
+
+Con **Setup Python App** del panel (Python 3.12) y una base MySQL ya creada:
+
+1. Crear la app con su dominio o subdominio; cPanel arma un entorno virtual propio y un
+   `passenger_wsgi.py` de ejemplo en la raíz de la app.
+2. Subir el proyecto (o clonarlo por Git) y completar `.env` (`DATABASE_URL` con los
+   datos de la base MySQL creada en cPanel, `ALLOWED_HOSTS`, `WAGTAILADMIN_BASE_URL`;
+   `ORION_TRUSTED_PROXIES` se deja en 0, el valor por defecto: Passenger ya entrega la IP
+   real sin pasar por un proxy propio).
+3. Reemplazar `passenger_wsgi.py` por:
+
+   ```python
+   import os
+   import sys
+
+   sys.path.insert(0, os.path.dirname(__file__))
+   os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mi_sitio.settings")
+
+   from django.core.wsgi import get_wsgi_application
+
+   application = get_wsgi_application()
+   ```
+4. Desde la terminal de la app (activa su entorno virtual sola):
+
+   ```bash
+   pip install "orion[mysql] @ git+https://github.com/<organizacion>/orion.git@v0.1.0"
+   python manage.py orion_install
+   python manage.py collectstatic
+   ```
+
+   Gunicorn no hace falta: Passenger ya es el servidor de aplicación.
+5. En **Dominios → Documentos**, apuntar la URL de medios (`/media/`) al directorio
+   `MEDIA_ROOT` del proyecto para que el panel los sirva directo, igual que Nginx en el
+   VPS.
+6. "Tareas programadas", arriba, con las rutas de este servidor.
 
 ## Desarrollo con OpenSpec
 

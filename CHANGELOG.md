@@ -185,6 +185,17 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   `orion_inspect_backup` muestra su manifiesto sin tocar nada; `orion_restore` lo
   restaura en otro servidor, con confirmación explícita (o `--noinput`) y rechazo si el
   motor del backup no coincide con el del servidor destino.
+- `orion-start <nombre>`: comando de consola (envuelve `django-admin startproject`) que
+  genera un proyecto cliente nuevo ya conectado a Orion (ajustes, rutas, WSGI, app
+  `home`, `templates/`, `.env.example` y `Pipfile` con la versión instalada fijada).
+  `manage.py orion_install`: deja ese proyecto funcionando (chequeo de la base, migración,
+  superusuario administrador con `createsuperuser`, idioma base informado y formularios
+  de ejemplo); correrlo de nuevo no duplica nada.
+- Documentación: guías de deploy en VPS (Gunicorn, systemd, Nginx, Certbot) y en cPanel
+  con Python (Setup Python App, `passenger_wsgi.py`, MySQL); sección única de tareas
+  programadas con los cuatro cron (`publish_scheduled`, `orion_purge_submissions`,
+  `orion_retry_form_emails` y `clearsessions`, nativo de Django); meta de rendimiento de
+  la v1 (Lighthouse 95+ en celular, LCP < 2,5 s) y cómo medirla a mano.
 
 ### Changed
 

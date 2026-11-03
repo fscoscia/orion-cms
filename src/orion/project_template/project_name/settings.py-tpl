@@ -1,0 +1,22 @@
+"""Settings for {{ project_name }}, built on Orion.
+
+Everything that differs between environments, or that is secret, is read from
+environment variables; see ``.env.example`` for the full list.
+"""
+
+from pathlib import Path
+
+from orion.settings.base import *  # noqa: F403
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+ROOT_URLCONF = "{{ project_name }}.urls"
+WSGI_APPLICATION = "{{ project_name }}.wsgi.application"
+
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_ROOT = BASE_DIR / "media"
+
+INSTALLED_APPS += ["home"]
+
+# Templates that replace Orion's by name (header, footer, blocks) go here.
+TEMPLATES[0]["DIRS"] = [BASE_DIR / "templates"]

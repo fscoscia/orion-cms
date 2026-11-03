@@ -35,6 +35,9 @@ postgres = ["psycopg[binary]>=3.3,<4"]
 mysql = ["mysqlclient>=2.3,<3"]
 redis = ["redis>=8.1,<9"]
 
+[project.scripts]
+orion-start = "orion.bin:main"
+
 [tool.hatch.version]
 path = "src/orion/__init__.py"
 
