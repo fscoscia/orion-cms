@@ -14,6 +14,7 @@ from orion.core.blocks import normalize_phone
 from orion.core.images import (
     IMAGE_FORMATS,
     get_image_size,
+    get_leading_carousel_image,
     get_leading_hero_image,
     size_filter_specs,
     svg_filter_spec,
@@ -104,8 +105,10 @@ def responsive_image(
 
 @register.simple_tag
 def main_image_preload(page):
-    """Preload the hero image of a page that starts with one, for <head>."""
-    image = get_leading_hero_image(page) if page else None
+    """Preload the image that opens a page, in a hero or a carousel, for <head>."""
+    if not page:
+        return ""
+    image = get_leading_hero_image(page) or get_leading_carousel_image(page)
     if image is None:
         return ""
     renditions = image.get_renditions(*size_filter_specs("hero", IMAGE_FORMATS[0]))

@@ -103,6 +103,38 @@ class TestCurrentPage:
         link_tag = re.search(r'<a href="/servicios/"[^>]*>', html).group()
         assert 'aria-current="page"' in link_tag
 
+    def test_item_with_an_anchor_is_not_marked(self, client, services_page):
+        _menu(items=[_item({"page": services_page.pk, "anchor": "precios"})])
+
+        html = client.get("/servicios/").content.decode()
+
+        link_tag = re.search(r'<a href="/servicios/#precios"[^>]*>', html).group()
+        assert "aria-current" not in link_tag
+
+    def test_subitem_with_an_anchor_does_not_mark_its_parent(
+        self, client, home_page, services_page
+    ):
+        _menu(
+            items=[
+                _item(
+                    {"label": "Grupo", "url": "https://example.org/"},
+                    [
+                        {
+                            "page": services_page.pk,
+                            "anchor": "precios",
+                            "label": "Precios",
+                        }
+                    ],
+                )
+            ]
+        )
+
+        html = client.get("/servicios/").content.decode()
+
+        assert (
+            "aria-current" not in re.search(r"<nav[^>]*>.*?</nav>", html, re.S).group()
+        )
+
 
 class TestTranslation:
     @pytest.fixture

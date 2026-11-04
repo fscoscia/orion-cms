@@ -76,7 +76,7 @@ ventaja sobre las secciones fijas. En "Cómo": *Wagtail* = viene incluido,
 | Funcionalidad | Detalle | Cómo | Versión |
 | --- | --- | --- | --- |
 | Tipos de página base | Portada, Página libre, Página de contacto, Listado de artículos y Artículo, con reglas de dónde puede ir cada una | A construir | v1 |
-| Biblioteca de bloques | Hero, Texto, Imagen, Galería, Imagen + texto, Tarjetas, Cifras animadas, Pestañas, Acordeón (FAQ), Llamada a la acción, Logos, Datos de contacto, Botón | A construir sobre StreamField | v1 |
+| Biblioteca de bloques | Hero, Texto, Imagen, Galería, Imagen + texto, Tarjetas, Cifras animadas, Pestañas, Acordeón (FAQ), Llamada a la acción, Logos, Datos de contacto, Botón, Video, Carrusel | A construir sobre StreamField | v1 |
 | Ocultar un bloque sin borrarlo | Interruptor "Visible" en cada bloque, con un campo `is_visible` | A construir | v1 |
 | Títulos con palabras resaltadas | La negrita en un título se pinta con el color de acento | A construir (ya está en la opción 1) | v1 |
 | Destino de botón semántico | Elegir una página interna, una URL, un email o un teléfono; nunca la URL absoluta del propio sitio | A construir | v1 |
@@ -163,6 +163,7 @@ pantalla. Acá está la mayor ganancia de peso de página.
 | Dónde se usa cada imagen | Lista de páginas que usan una imagen; aviso antes de borrarla | Wagtail (índice de referencias) | v1 |
 | Imágenes huérfanas | Comando que lista las que no se usan en ningún lado | A construir | v1 |
 | Documentos | PDF y Word con permisos y enlaces de descarga | Wagtail | v1 |
+| Video propio | MP4 o WebM de la biblioteca de documentos, con portada y carga diferida | Bloque Video | v1 |
 | Videos embebidos | YouTube y Vimeo por URL | Wagtail embeds (depende de YouTube o Vimeo) | A futuro |
 | Almacenamiento externo | Guardar medios en S3 u otro servicio | django-storages | A futuro |
 

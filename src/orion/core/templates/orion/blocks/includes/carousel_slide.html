@@ -1,0 +1,18 @@
+{# One slide of the carousel block. Pass `slide`, `layout`, `heading` (the tag of its title) and optionally `is_main`. #}
+<li class="orion-carousel__slide">
+  {% if layout == 'full' %}
+    {% include "orion/blocks/includes/video.html" with video=slide.video cover=slide.image size="hero" mode="ambient" is_main=is_main class_name="" %}
+    {% if slide.title or slide.text or slide.link.is_visible %}<div class="orion-carousel__shade" aria-hidden="true"></div>{% endif %}
+  {% else %}
+    {% include "orion/blocks/includes/video.html" with video=slide.video cover=slide.image size="carousel_card" mode="ambient" class_name="aspect-3/4 rounded-lg" %}
+  {% endif %}
+  {% if slide.title or slide.text or slide.link.is_visible %}
+    <div class="orion-carousel__body">
+      {% if slide.title %}<{{ heading }} class="orion-title {% if layout == 'full' %}text-3xl font-bold tracking-tight md:text-5xl{% else %}text-xl font-semibold{% endif %}">{{ slide.title }}</{{ heading }}>{% endif %}
+      {% if slide.text %}<p class="{% if layout == 'full' %}text-lg md:text-xl{% else %}text-ink-muted{% endif %}">{{ slide.text }}</p>{% endif %}
+      {% if slide.link.is_visible %}
+        <p>{% include "orion/includes/link.html" with link=slide.link class_name="orion-carousel__link font-semibold underline underline-offset-4" %}</p>
+      {% endif %}
+    </div>
+  {% endif %}
+</li>

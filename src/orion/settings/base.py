@@ -291,15 +291,18 @@ WAGTAILIMAGES_EXTENSIONS = ["avif", "gif", "jpg", "jpeg", "png", "svg", "webp"]
 WAGTAILIMAGES_MAX_UPLOAD_SIZE = env_int("ORION_IMAGE_MAX_UPLOAD_MB", 10) * 1024 * 1024
 WAGTAILIMAGES_IMAGE_FORM_BASE = "orion.core.image_forms.ImageForm"
 
-# Documents: only these extensions, up to ORION_DOCUMENT_MAX_UPLOAD_MB, and the content
-# must match the extension (orion.core.uploads).
+# Documents: only these extensions, up to ORION_DOCUMENT_MAX_UPLOAD_MB (videos, up to
+# ORION_VIDEO_MAX_UPLOAD_MB), and the content must match the extension
+# (orion.core.uploads).
 DOCUMENT_EXTENSIONS = [
     *("pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"),
     *("odt", "ods", "odp", "txt", "csv"),
+    *("mp4", "webm"),
 ]
 WAGTAILDOCS_EXTENSIONS = env_list("ORION_DOCUMENT_EXTENSIONS", DOCUMENT_EXTENSIONS)
 WAGTAILDOCS_DOCUMENT_FORM_BASE = "orion.core.document_forms.DocumentForm"
 ORION_DOCUMENT_MAX_UPLOAD_MB = env_int("ORION_DOCUMENT_MAX_UPLOAD_MB", 20)
+ORION_VIDEO_MAX_UPLOAD_MB = env_int("ORION_VIDEO_MAX_UPLOAD_MB", 100)
 ORION_IMAGE_MAX_DIMENSION = 2048
 ORION_IMAGE_RENDITIONS_IN_BACKGROUND = True
 # Projects add or replace named image sizes here (see orion.core.images).

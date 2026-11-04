@@ -1,10 +1,13 @@
+import json
 import re
 
 import pytest
 from django.core.exceptions import ValidationError
+from django.core.files.base import ContentFile
 from django.core.management import call_command
 from django.urls import reverse
 from wagtail.blocks import StreamBlockValidationError, StructBlockValidationError
+from wagtail.documents.models import Document
 from wagtail.fields import StreamField
 from wagtail.images.models import Image
 from wagtail.images.tests.utils import get_test_image_file
@@ -14,15 +17,19 @@ from wagtail_localize.segments.extract import extract_segments
 
 from demo.models import DemoPage
 from orion.core.blocks import (
+    BaseContentBlock,
     BodyStreamField,
+    CarouselBlock,
     ContentStreamBlock,
     HeroBlock,
     HighlightedTitleBlock,
     ImageContentBlock,
     RichTextBodyBlock,
     SiteStreamBlock,
+    VideoBlock,
 )
 from orion.core.blocks.content import BlockStyleSelect
+from orion.pages.models import ContentPage
 from orion.site_data.models import SiteSettings
 
 pytestmark = pytest.mark.django_db
@@ -44,7 +51,11 @@ BLOCK_TYPES = [
     "latest_articles",
     "map",
     "form",
+    "video",
+    "carousel",
 ]
+
+MP4 = b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 16
 
 
 @pytest.fixture
@@ -93,8 +104,24 @@ def render(client, publish):
     return _render
 
 
+@pytest.fixture
+def video(image):
+    return Document.objects.create(title="Clip", file=ContentFile(MP4, name="clip.mp4"))
+
+
+@pytest.fixture
+def pdf(image):
+    return Document.objects.create(
+        title="Informe", file=ContentFile(b"%PDF-1.7", name="informe.pdf")
+    )
+
+
 def _tags(html, tag):
     return re.findall(rf"<{tag}\b[^>]*>", html)
+
+
+def _slides(image_value, **first):
+    return [{"image": image_value, **first}, {"image": image_value}]
 
 
 class TestBody:
@@ -120,8 +147,8 @@ class TestBody:
         # The editor only renders the fields listed in the form layout.
         layout = HeroBlock().meta.form_layout
 
-        assert layout.children == ["title", "intro", "buttons", "image"]
-        assert layout.settings == ["style", "is_visible"]
+        assert layout.children == ["eyebrow", "title", "intro", "buttons", "image"]
+        assert layout.settings == ["anchor", "style", "is_visible"]
 
 
 class TestHeroPosition:
@@ -442,6 +469,238 @@ class TestInteractiveBlocks:
         assert '<span class="sr-only">+186 </span>' in html
 
 
+class TestVideo:
+    def _value(self, video, image_value, **fields):
+        return {"video": video.pk, "cover": image_value, **fields}
+
+    def test_controls_video_waits_for_the_visitor(self, render, video, image_value):
+        html = render(("video", self._value(video, image_value)))
+
+        tag = _tags(html, "video")[0]
+        assert 'preload="none"' in tag and "controls" in tag
+        assert "autoplay" not in tag and "muted" not in tag
+        assert f'src="{video.file.url}"' in html and 'type="video/mp4"' in html
+        assert "data-ambient" not in html
+        assert "aspect-video" in html
+        assert re.search(r'class="orion-video__play"[^>]*\bhidden\b', html)
+
+    def test_cover_is_lazy_and_sized(self, render, video, image_value):
+        html = render(("video", self._value(video, image_value)))
+
+        tag = _tags(html, "img")[0]
+        assert 'loading="lazy"' in tag
+        assert 'width="' in tag and 'height="' in tag
+
+    def test_ambient_vertical_video(self, render, video, image_value):
+        html = render(
+            (
+                "video",
+                self._value(video, image_value, mode="ambient", orientation="portrait"),
+            )
+        )
+
+        tag = _tags(html, "video")[0]
+        assert "muted" in tag and "loop" in tag and "playsinline" in tag
+        assert "controls" not in tag and "autoplay" not in tag
+        assert "data-ambient" in html and "aspect-9/16" in html
+        assert 'aria-pressed="false" hidden' in html
+
+    def test_video_url_keeps_the_media_url(self, render, video, image_value, settings):
+        settings.MEDIA_URL = "/sub/media/"
+
+        html = render(("video", self._value(video, image_value)))
+
+        assert 'src="/sub/media/' in html
+
+    def test_document_that_is_not_a_video_is_rejected(self, pdf, image_value):
+        block = VideoBlock()
+
+        with pytest.raises(StructBlockValidationError) as error:
+            block.clean(block.to_python(self._value(pdf, image_value)))
+
+        assert "MP4" in str(error.value.block_errors["video"])
+
+    def test_cover_is_required(self, video):
+        block = VideoBlock()
+
+        with pytest.raises(StructBlockValidationError) as error:
+            block.clean(block.to_python({"video": video.pk}))
+
+        assert "cover" in error.value.block_errors
+
+
+class TestCarousel:
+    def test_slides_keep_their_order_and_content(self, render, image_value):
+        html = render(
+            (
+                "carousel",
+                {
+                    "slides": [
+                        {"image": image_value, "title": "Uno", "text": "Texto uno"},
+                        {"image": image_value, "title": "Dos"},
+                    ]
+                },
+            )
+        )
+
+        assert html.index("Uno") < html.index("Texto uno") < html.index("Dos")
+        assert html.count("orion-carousel__slide") == 2
+        assert html.count("orion-carousel__dot") == 2
+
+    def test_controls_start_hidden(self, render, image_value):
+        html = render(("carousel", {"slides": _slides(image_value)}))
+
+        assert re.search(r'class="orion-carousel__controls"[^>]*\bhidden\b', html)
+        assert 'x-data="carousel"' in html
+
+    def test_layouts(self, render, image_value):
+        html = render(("carousel", {"layout": "cards", "slides": _slides(image_value)}))
+
+        assert "orion-carousel--cards" in html
+        assert "aspect-3/4" in html
+
+    def test_slide_titles_sit_under_the_block_title(self, render, image_value):
+        slides = _slides(image_value, title="Diapositiva")
+
+        with_title = render(("carousel", {"title": "<p>Título</p>", "slides": slides}))
+        assert re.search(r"<h3[^>]*>Diapositiva</h3>", with_title)
+
+    def test_slide_titles_are_h2_without_a_block_title(self, render, image_value):
+        html = render(
+            ("carousel", {"slides": _slides(image_value, title="Diapositiva")})
+        )
+
+        assert re.search(r"<h2[^>]*>Diapositiva</h2>", html)
+
+    def test_slide_video_is_ambient(self, render, image_value, video):
+        html = render(("carousel", {"slides": _slides(image_value, video=video.pk)}))
+
+        tag = _tags(html, "video")[0]
+        assert "muted" in tag and "controls" not in tag and "autoplay" not in tag
+
+    def test_needs_two_slides(self, image_value):
+        block = CarouselBlock()
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(block.to_python({"slides": [{"image": image_value}]}))
+
+    def test_allows_twelve_slides_at_most(self, image_value):
+        block = CarouselBlock()
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(block.to_python({"slides": [{"image": image_value}] * 13}))
+
+    def test_document_that_is_not_a_video_is_rejected(self, pdf, image_value):
+        block = CarouselBlock()
+        value = block.to_python({"slides": _slides(image_value, video=pdf.pk)})
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(value)
+
+
+class TestLeadingCarousel:
+    def _page(self, home_page, *blocks):
+        stream_block = ContentStreamBlock()
+        raw = [{"type": block_type, "value": value} for block_type, value in blocks]
+        page = home_page.add_child(
+            instance=ContentPage(
+                title="Con carrusel",
+                slug="con-carrusel",
+                body=stream_block.clean(stream_block.to_python(raw)),
+            )
+        )
+        page.save_revision().publish()
+        return page
+
+    def _html(self, client, page):
+        return client.get(page.url).content.decode()
+
+    def _main(self, client, page):
+        return self._html(client, page).split("<main", 1)[1].split("</main>", 1)[0]
+
+    def test_full_carousel_keeps_the_page_title_for_screen_readers(
+        self, client, home_page, image_value
+    ):
+        page = self._page(
+            home_page,
+            ("carousel", {"slides": _slides(image_value, title="Mensaje")}),
+        )
+
+        h1_tags = re.findall(r"<h1\b[^>]*>[^<]*</h1>", self._main(client, page))
+        assert len(h1_tags) == 1
+        assert 'class="sr-only"' in h1_tags[0] and "Con carrusel" in h1_tags[0]
+
+    def test_cards_carousel_shows_the_page_title(self, client, home_page, image_value):
+        page = self._page(
+            home_page,
+            ("carousel", {"layout": "cards", "slides": _slides(image_value)}),
+        )
+
+        h1_tags = re.findall(r"<h1\b[^>]*>", self._main(client, page))
+        assert len(h1_tags) == 1 and "sr-only" not in h1_tags[0]
+
+    def test_hidden_carousel_does_not_take_the_title(
+        self, client, home_page, image_value
+    ):
+        page = self._page(
+            home_page,
+            (
+                "carousel",
+                {"is_visible": False, "slides": _slides(image_value)},
+            ),
+        )
+
+        assert "sr-only" not in re.findall(r"<h1\b[^>]*>", self._main(client, page))[0]
+
+    def test_first_image_is_fetched_first_and_preloaded(
+        self, client, home_page, image_value
+    ):
+        page = self._page(home_page, ("carousel", {"slides": _slides(image_value)}))
+
+        html = self._html(client, page)
+        head, main = html.split("<main", 1)
+        images = _tags(main, "img")
+        assert 'fetchpriority="high"' in images[0]
+        assert "loading=" not in images[0]
+        assert 'loading="lazy"' in images[1]
+        assert 'rel="preload" as="image" type="image/avif"' in head
+
+    def test_carousel_further_down_stays_lazy(self, client, home_page, image_value):
+        page = self._page(
+            home_page,
+            ("text", {"body": "<p>Hola</p>"}),
+            ("carousel", {"slides": _slides(image_value)}),
+        )
+
+        html = self._html(client, page)
+        assert 'rel="preload" as="image"' not in html
+        images = _tags(html.split("<main", 1)[1], "img")
+        assert all('loading="lazy"' in tag for tag in images)
+
+    def test_cards_carousel_stays_lazy(self, client, home_page, image_value):
+        page = self._page(
+            home_page,
+            ("carousel", {"layout": "cards", "slides": _slides(image_value)}),
+        )
+
+        images = _tags(self._main(client, page), "img")
+        assert all('loading="lazy"' in tag for tag in images)
+
+
+class TestBlockMigration:
+    def test_migration_only_changes_block_definitions(self):
+        from importlib import import_module
+
+        from django.db import migrations
+
+        migration = import_module(
+            "orion.pages.migrations.0007_video_carousel_blocks"
+        ).Migration
+
+        assert all(isinstance(op, migrations.AlterField) for op in migration.operations)
+        assert {op.name for op in migration.operations} == {"body"}
+
+
 class TestEditor:
     @pytest.mark.parametrize("block_type", BLOCK_TYPES)
     def test_each_block_has_a_description_and_a_preview(self, admin_client, block_type):
@@ -529,6 +788,227 @@ class TestTranslation:
         html = client.get("/en/demo/").content.decode()
 
         assert 'href="/en/services/"' in html
+
+
+class TestNewBlockTranslation:
+    def test_video_and_carousel_texts_are_offered(self, publish, video, image_value):
+        page = publish(
+            (
+                "video",
+                {"video": video.pk, "cover": image_value, "caption": "Pie del video"},
+            ),
+            (
+                "carousel",
+                {"slides": _slides(image_value, title="Título", text="Mensaje")},
+            ),
+        )
+
+        texts = {
+            segment.string.data
+            for segment in extract_segments(page)
+            if hasattr(segment, "string")
+        }
+
+        assert {"Pie del video", "Título", "Mensaje"} <= texts
+
+
+TITLED_BLOCKS = {
+    "hero",
+    "gallery",
+    "image_text",
+    "cards",
+    "stats",
+    "tabs",
+    "accordion",
+    "call_to_action",
+    "logos",
+    "contact",
+    "latest_articles",
+    "map",
+    "form",
+    "video",
+    "carousel",
+}
+
+
+class TestEyebrow:
+    def test_only_blocks_with_a_title_offer_it(self):
+        blocks = ContentStreamBlock().child_blocks
+
+        offering = {
+            name for name, block in blocks.items() if "eyebrow" in block.child_blocks
+        }
+
+        assert offering == TITLED_BLOCKS
+
+    def test_is_shown_above_the_title_as_a_paragraph(self, render):
+        html = render(
+            (
+                "accordion",
+                {
+                    "eyebrow": "Dudas",
+                    "title": "<p>Preguntas</p>",
+                    "items": [{"title": "Uno", "body": "<p>Dos</p>"}],
+                },
+            )
+        )
+
+        assert re.search(r'<p class="orion-eyebrow">Dudas</p>\s*<h2', html)
+
+    def test_block_without_eyebrow_keeps_its_markup(self, render):
+        html = render(
+            (
+                "accordion",
+                {
+                    "title": "<p>Preguntas</p>",
+                    "items": [{"title": "Uno", "body": "<p>Dos</p>"}],
+                },
+            )
+        )
+
+        assert "orion-eyebrow" not in html and "orion-heading" not in html
+
+    def test_without_a_title_there_is_no_empty_heading(self, render):
+        html = render(
+            (
+                "accordion",
+                {
+                    "eyebrow": "Dudas",
+                    "items": [{"title": "Uno", "body": "<p>Dos</p>"}],
+                },
+            )
+        )
+
+        assert "Dudas" in html and "<h2" not in html
+
+    def test_hero_keeps_a_single_h1(self, render):
+        html = render(("hero", {"eyebrow": "Novedad", "title": "<p>Hola</p>"}))
+
+        assert re.search(r'<p class="orion-eyebrow">Novedad</p>\s*<h1', html)
+        assert html.count("<h1") == 1
+
+
+class TestAnchors:
+    TEXT = {"body": "<p>Hola</p>"}
+
+    def _clean(self, *values):
+        stream_block = ContentStreamBlock()
+        raw = [{"type": "text", "value": value} for value in values]
+        return stream_block.clean(stream_block.to_python(raw))
+
+    def test_anchor_is_the_id_of_the_block(self, render):
+        html = render(("text", {**self.TEXT, "anchor": "categorias"}))
+
+        assert '<div class="block-text" id="categorias">' in html
+
+    def test_block_without_anchor_has_no_id(self, render):
+        assert '<div class="block-text">' in render(("text", self.TEXT))
+
+    def test_hidden_block_leaves_no_id(self, render):
+        html = render(("text", {**self.TEXT, "anchor": "oculta", "is_visible": False}))
+
+        assert "oculta" not in html
+
+    @pytest.mark.parametrize(
+        "anchor", ["#categorias", "Categorias", "con espacio", "-inicio", "fin-", "ñu"]
+    )
+    def test_invalid_format_is_rejected(self, anchor):
+        with pytest.raises(StreamBlockValidationError):
+            self._clean({**self.TEXT, "anchor": anchor})
+
+    def test_repeated_anchor_marks_the_second_block(self):
+        with pytest.raises(StreamBlockValidationError) as error:
+            self._clean(
+                {**self.TEXT, "anchor": "requisitos"},
+                {**self.TEXT, "anchor": "requisitos"},
+            )
+
+        assert set(error.value.block_errors) == {1}
+
+    def test_hidden_blocks_count_as_repeated(self):
+        with pytest.raises(StreamBlockValidationError):
+            self._clean(
+                {**self.TEXT, "anchor": "requisitos", "is_visible": False},
+                {**self.TEXT, "anchor": "requisitos"},
+            )
+
+    @pytest.mark.parametrize("anchor", ["main-content", "site-nav-panel"])
+    def test_reserved_anchor_is_rejected(self, anchor):
+        with pytest.raises(StreamBlockValidationError) as error:
+            self._clean({**self.TEXT, "anchor": anchor})
+
+        assert set(error.value.block_errors) == {0}
+
+    def test_project_blocks_inherit_it(self):
+        class ProjectBlock(BaseContentBlock):
+            style_key = "project"
+
+        assert "anchor" in ProjectBlock().child_blocks
+
+    def test_content_saved_before_the_fields_still_renders(self, home_page, client):
+        page = home_page.add_child(
+            instance=ContentPage(
+                title="Vieja",
+                slug="vieja",
+                body=json.dumps(
+                    [
+                        {
+                            "type": "text",
+                            "id": "11111111-1111-1111-1111-111111111111",
+                            "value": {
+                                "body": "<p>Contenido viejo</p>",
+                                "style": "default",
+                                "is_visible": True,
+                            },
+                        }
+                    ]
+                ),
+            )
+        )
+
+        html = client.get(page.url).content.decode()
+
+        assert "Contenido viejo" in html
+        assert '<div class="block-text">' in html
+
+    def test_eyebrow_is_offered_and_anchor_is_not(self, publish, image_value):
+        page = publish(
+            (
+                "cards",
+                {
+                    "eyebrow": "Beneficios",
+                    "anchor": "beneficios",
+                    "cards": [{"title": "Uno"}],
+                },
+            )
+        )
+
+        texts = {
+            segment.string.data
+            for segment in extract_segments(page)
+            if hasattr(segment, "string")
+        }
+
+        assert "Beneficios" in texts and "beneficios" not in texts
+
+
+class TestDefinitionMigrations:
+    @pytest.mark.parametrize(
+        ("module", "field"),
+        [
+            ("orion.pages.migrations.0008_block_eyebrow_and_anchors", "body"),
+            ("orion.navigation.migrations.0003_link_anchors", "items"),
+        ],
+    )
+    def test_they_only_change_block_definitions(self, module, field):
+        from importlib import import_module
+
+        from django.db import migrations
+
+        operations = import_module(module).Migration.operations
+
+        assert all(isinstance(op, migrations.AlterField) for op in operations)
+        assert {op.name for op in operations} == {field}
 
 
 class TestProjectBlocks:

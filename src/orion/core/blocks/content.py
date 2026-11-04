@@ -16,22 +16,26 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.templatetags.static import static
 from django.utils import timezone
-from django.utils.html import format_html_join
+from django.utils.html import format_html, format_html_join
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.admin.telepath import register
 from wagtail.admin.telepath.widgets import WidgetAdapter
 from wagtail.blocks.struct_block import BlockGroup
+from wagtail.documents.blocks import DocumentChooserBlock
 from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageBlock, ImageChooserBlock
 
-from orion.core.blocks.links import LinkBlock
+from orion.core.blocks.links import AnchorBlock, LinkBlock
 from orion.core.forms import LocationField
+from orion.core.uploads import VIDEO_EXTENSIONS
 
 DEFAULT_STYLE = "default"
 RICH_TEXT_FEATURES = ["h2", "h3", "bold", "italic", "link", "ol", "ul"]
 PARAGRAPH_PATTERN = re.compile(r"<p[\s>]")
+# Ids of Orion's own templates, which a block's anchor would duplicate.
+RESERVED_ANCHORS = {"main-content", "site-nav-panel"}
 
 
 SAMPLE_IMAGE_SIZES = {
@@ -121,14 +125,14 @@ class BlockStyleChoiceBlock(blocks.ChoiceBlock):
 
 
 class BaseContentBlock(blocks.StructBlock):
-    """Base of Orion's content blocks: adds the "Style" and "Visible" fields.
+    """Base of Orion's content blocks: adds the "Anchor", "Style" and "Visible" fields.
 
-    Both go last and, in the editor, in the block's collapsible settings area.
+    They go last and, in the editor, in the block's collapsible settings area.
     Subclasses set ``style_key``, the key projects use in ORION_BLOCK_STYLES.
     """
 
     style_key = None
-    settings_block_names = ("style", "is_visible")
+    settings_block_names = ("anchor", "style", "is_visible")
 
     def __init__(self, local_blocks=None, **kwargs):
         style_block = BlockStyleChoiceBlock(
@@ -142,10 +146,15 @@ class BaseContentBlock(blocks.StructBlock):
             label=_("Visible"),
             help_text=_("Turn off to hide the block without deleting it."),
         )
+        anchor_block = AnchorBlock(
+            label=_("Anchor"),
+            help_text=_("Identifies the block so that links can point to it."),
+        )
         # Passed to the constructor, which builds the editor's form layout.
         super().__init__(
             [
                 *(local_blocks or []),
+                ("anchor", anchor_block),
                 ("style", style_block),
                 ("is_visible", visible_block),
             ],
@@ -178,6 +187,17 @@ class BaseContentBlock(blocks.StructBlock):
         return [
             self._with_valid_style(value) for value in super().bulk_to_python(values)
         ]
+
+
+class EyebrowBlock(blocks.CharBlock):
+    """A short text above a block's title."""
+
+    def __init__(self, **kwargs):
+        kwargs.setdefault("label", _("Eyebrow"))
+        kwargs.setdefault("required", False)
+        kwargs.setdefault("max_length", 80)
+        kwargs.setdefault("help_text", _("A short text above the title."))
+        super().__init__(**kwargs)
 
 
 class HighlightedTitleBlock(blocks.RichTextBlock):
@@ -230,6 +250,7 @@ def button_list(min_num=0, max_num=2):
 class HeroBlock(BaseContentBlock):
     style_key = "hero"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock()
     intro = blocks.TextBlock(label=_("Supporting text"), required=False, max_length=300)
     buttons = button_list()
@@ -303,6 +324,7 @@ class GalleryImageBlock(blocks.StructBlock):
 class GalleryBlock(BaseContentBlock):
     style_key = "gallery"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     images = blocks.ListBlock(
         GalleryImageBlock(), label=_("Images"), min_num=2, max_num=24
@@ -328,6 +350,7 @@ class ImageTextBlock(BaseContentBlock):
     style_key = "image_text"
 
     image = ImageBlock(label=_("Image"))
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock()
     body = RichTextBodyBlock(required=False)
     buttons = button_list()
@@ -370,6 +393,7 @@ class CardBlock(blocks.StructBlock):
 class CardsBlock(BaseContentBlock):
     style_key = "cards"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     columns = blocks.ChoiceBlock(
         label=_("Columns"),
@@ -420,6 +444,7 @@ class StatBlock(blocks.StructBlock):
 class StatsBlock(BaseContentBlock):
     style_key = "stats"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     stats = blocks.ListBlock(StatBlock(), label=_("Figures"), min_num=1, max_num=4)
 
@@ -468,6 +493,7 @@ def _with_block_id(context, parent_context):
 class TabsBlock(BaseContentBlock):
     style_key = "tabs"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     tabs = blocks.ListBlock(TabPanelBlock(), label=_("Tabs"), min_num=2, max_num=6)
 
@@ -491,6 +517,7 @@ class TabsBlock(BaseContentBlock):
 class AccordionBlock(BaseContentBlock):
     style_key = "accordion"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     items = blocks.ListBlock(AccordionItemBlock(), label=_("Questions"), min_num=1)
 
@@ -511,6 +538,7 @@ class AccordionBlock(BaseContentBlock):
 class CallToActionBlock(BaseContentBlock):
     style_key = "call_to_action"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock()
     text = blocks.TextBlock(label=_("Text"), required=False, max_length=300)
     buttons = button_list(min_num=1)
@@ -546,6 +574,7 @@ class LogoBlock(blocks.StructBlock):
 class LogosBlock(BaseContentBlock):
     style_key = "logos"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     logos = blocks.ListBlock(LogoBlock(), label=_("Logos"), min_num=1)
 
@@ -587,6 +616,7 @@ class ContactItemBlock(blocks.StructBlock):
 class ContactBlock(BaseContentBlock):
     style_key = "contact"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     show_phone = blocks.BooleanBlock(label=_("Phone"), default=True, required=False)
     show_whatsapp = blocks.BooleanBlock(
@@ -671,6 +701,7 @@ def sample_articles(count):
 class LatestArticlesBlock(BaseContentBlock):
     style_key = "latest_articles"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     count = blocks.IntegerBlock(
         label=_("How many"), default=3, min_value=1, max_value=12
@@ -716,6 +747,7 @@ class LatestArticlesBlock(BaseContentBlock):
 class FormBlock(BaseContentBlock):
     style_key = "form"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     form_page = blocks.PageChooserBlock(
         page_type="orion_forms.FormPage",
@@ -798,6 +830,7 @@ class MapPointBlock(blocks.StructBlock):
 class MapBlock(BaseContentBlock):
     style_key = "map"
 
+    eyebrow = EyebrowBlock()
     title = HighlightedTitleBlock(required=False)
     include_site_location = blocks.BooleanBlock(
         label=_("Include the site location"),
@@ -863,6 +896,120 @@ class MapBlock(BaseContentBlock):
         }
 
 
+class VideoChooserBlock(DocumentChooserBlock):
+    """A document of the library that must be a video."""
+
+    def clean(self, value):
+        value = super().clean(value)
+        if value and value.file_extension.lower() not in VIDEO_EXTENSIONS:
+            raise ValidationError(_("Choose an MP4 or WebM video."))
+        return value
+
+
+class VideoBlock(BaseContentBlock):
+    style_key = "video"
+
+    eyebrow = EyebrowBlock()
+    title = HighlightedTitleBlock(required=False)
+    video = VideoChooserBlock(
+        label=_("Video"),
+        help_text=_(
+            "An MP4 or WebM from the document library, in a public collection."
+        ),
+    )
+    cover = ImageBlock(
+        label=_("Cover image"),
+        help_text=_("Shown until the video plays."),
+    )
+    mode = blocks.ChoiceBlock(
+        label=_("Playback"),
+        choices=[
+            ("controls", _("With controls: the visitor starts it, with sound")),
+            ("ambient", _("Ambient: muted and looping while on screen")),
+        ],
+        default="controls",
+    )
+    orientation = blocks.ChoiceBlock(
+        label=_("Format"),
+        choices=[
+            ("landscape", _("Landscape (16:9)")),
+            ("portrait", _("Vertical (9:16)")),
+        ],
+        default="landscape",
+    )
+    caption = blocks.CharBlock(label=_("Caption"), required=False, max_length=200)
+
+    def get_preview_value(self):
+        return with_sample_images(super().get_preview_value(), cover="landscape-1.webp")
+
+    class Meta:
+        icon = "media"
+        label = _("Video")
+        description = _("A video from the library, with a cover image.")
+        template = "orion/blocks/video.html"
+        preview_value = {"caption": "A video with its caption."}
+
+
+class CarouselSlideBlock(blocks.StructBlock):
+    image = ImageBlock(label=_("Image"))
+    video = VideoChooserBlock(
+        label=_("Video"),
+        required=False,
+        help_text=_("Optional. Plays muted and looping; the image is its cover."),
+    )
+    title = blocks.CharBlock(label=_("Title"), required=False, max_length=120)
+    text = blocks.TextBlock(label=_("Text"), required=False, max_length=300)
+    link = LinkBlock(
+        label=_("Link"),
+        require_destination=False,
+        help_text=_("Optional. The text defaults to the page title."),
+    )
+
+    class Meta:
+        icon = "image"
+        label = _("Slide")
+
+
+class CarouselBlock(BaseContentBlock):
+    style_key = "carousel"
+
+    eyebrow = EyebrowBlock()
+    title = HighlightedTitleBlock(required=False)
+    layout = blocks.ChoiceBlock(
+        label=_("Arrangement"),
+        choices=[
+            ("full", _("One slide across the full width")),
+            ("cards", _("Several cards at a time")),
+        ],
+        default="full",
+    )
+    slides = blocks.ListBlock(
+        CarouselSlideBlock(), label=_("Slides"), min_num=2, max_num=12
+    )
+
+    def get_preview_value(self):
+        return with_sample_images(
+            super().get_preview_value(),
+            slides=["landscape-1.webp", "landscape-2.webp", "landscape-3.webp"],
+        )
+
+    class Meta:
+        icon = "image"
+        label = _("Carousel")
+        description = _(
+            "Slides that the visitor moves through, one or several at a time."
+        )
+        template = "orion/blocks/carousel.html"
+        preview_value = {
+            "layout": "full",
+            "slides": [
+                {"title": "First slide", "text": "A short message."},
+                {"title": "Second slide", "text": "A short message."},
+                {"title": "Third slide", "text": "A short message."},
+            ],
+        }
+
+
 class ContentStreamBlock(blocks.StreamBlock):
     """Every Orion content block, ready to use as a page body.
 
@@ -887,17 +1034,34 @@ class ContentStreamBlock(blocks.StreamBlock):
     latest_articles = LatestArticlesBlock()
     map = MapBlock()
     form = FormBlock()
+    video = VideoBlock()
+    carousel = CarouselBlock()
 
     def clean(self, value):
         # The hero holds the page's h1, so it can only open the body.
         value = super().clean(value)
-        misplaced_heroes = {
+        block_errors = {
             index: ValidationError(_("The hero must be the first block."))
             for index, child in enumerate(value)
             if child.block_type == "hero" and index > 0
         }
-        if misplaced_heroes:
-            raise blocks.StreamBlockValidationError(block_errors=misplaced_heroes)
+        # Hidden blocks count too: they can be shown again.
+        seen_anchors = set()
+        for index, child in enumerate(value):
+            anchor = get_anchor(child.value)
+            if not anchor:
+                continue
+            if anchor in RESERVED_ANCHORS:
+                block_errors[index] = ValidationError(
+                    _("This anchor is reserved by the site. Choose another one.")
+                )
+            elif anchor in seen_anchors:
+                block_errors[index] = ValidationError(
+                    _("Another block of this page already uses this anchor.")
+                )
+            seen_anchors.add(anchor)
+        if block_errors:
+            raise blocks.StreamBlockValidationError(block_errors=block_errors)
         return value
 
     def render_basic(self, value, context=None):
@@ -905,18 +1069,29 @@ class ContentStreamBlock(blocks.StreamBlock):
         rendered_children = [
             (
                 child.block_type,
+                get_anchor(child.value),
                 child.block.render(
-                    child.value, context={**parent_context, "block_id": child.id}
+                    child.value,
+                    context={
+                        **parent_context,
+                        "block_id": child.id,
+                        "is_leading_block": position == 0,
+                    },
                 ),
             )
-            for child in value
-            if is_visible(child.value)
+            for position, child in enumerate(
+                child for child in value if is_visible(child.value)
+            )
         ]
         # A block may render nothing, such as latest articles without articles.
         return format_html_join(
             "\n",
-            '<div class="block-{}">{}</div>',
-            [(name, html) for name, html in rendered_children if html.strip()],
+            '<div class="block-{}"{}>{}</div>',
+            [
+                (name, format_html(' id="{}"', anchor) if anchor else "", html)
+                for name, anchor, html in rendered_children
+                if html.strip()
+            ],
         )
 
 
@@ -944,6 +1119,11 @@ class BodyStreamField(StreamField):
             ContentStreamBlock()
         ).deconstruct()
         return name, path, args, {**kwargs, **plain_kwargs}
+
+
+def get_anchor(value):
+    """A block value's anchor; blocks without the field have none."""
+    return getattr(value, "get", lambda *_args: None)("anchor")
 
 
 def is_visible(value):

@@ -1,0 +1,9 @@
+<figure class="orion-block block-video--{{ value.style }} mx-auto space-y-4 px-4 py-10 {% if value.orientation == 'portrait' %}max-w-sm{% else %}max-w-6xl{% endif %}">
+  {% include "orion/blocks/includes/title.html" with title=value.title %}
+  {% if value.orientation == 'portrait' %}
+    {% include "orion/blocks/includes/video.html" with video=value.video cover=value.cover size="image" mode=value.mode class_name="aspect-9/16 rounded-lg" %}
+  {% else %}
+    {% include "orion/blocks/includes/video.html" with video=value.video cover=value.cover size="image" mode=value.mode class_name="aspect-video rounded-lg" %}
+  {% endif %}
+  {% if value.caption %}<figcaption class="text-sm text-ink-muted">{{ value.caption }}</figcaption>{% endif %}
+</figure>

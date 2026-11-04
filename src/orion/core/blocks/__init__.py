@@ -8,8 +8,10 @@ from orion.core.blocks.content import (
     ButtonsBlock,
     CallToActionBlock,
     CardsBlock,
+    CarouselBlock,
     ContactBlock,
     ContentStreamBlock,
+    EyebrowBlock,
     GalleryBlock,
     HeroBlock,
     HighlightedTitleBlock,
@@ -24,10 +26,17 @@ from orion.core.blocks.content import (
     StatsBlock,
     TabsBlock,
     TextContentBlock,
+    VideoBlock,
 )
-from orion.core.blocks.links import LinkBlock, LinkValue, normalize_phone
+from orion.core.blocks.links import (
+    AnchorBlock,
+    LinkBlock,
+    LinkValue,
+    normalize_phone,
+)
 
 __all__ = [
+    "AnchorBlock",
     "AccordionBlock",
     "BaseContentBlock",
     "BodyStreamField",
@@ -35,8 +44,10 @@ __all__ = [
     "ButtonsBlock",
     "CallToActionBlock",
     "CardsBlock",
+    "CarouselBlock",
     "ContactBlock",
     "ContentStreamBlock",
+    "EyebrowBlock",
     "GalleryBlock",
     "HeroBlock",
     "HighlightedTitleBlock",
@@ -53,5 +64,6 @@ __all__ = [
     "StatsBlock",
     "TabsBlock",
     "TextContentBlock",
+    "VideoBlock",
     "normalize_phone",
 ]

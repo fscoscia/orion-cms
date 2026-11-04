@@ -351,9 +351,9 @@ no registra el admin, los archivos estáticos ni los de medios.
 
 ## Bloques de contenido
 
-Orion trae quince bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y
+Orion trae diecisiete bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y
 texto, Tarjetas, Cifras, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de contacto,
-Botones, Últimas novedades y Mapa. Los tipos de página de Orion ya los usan; para un tipo de
+Botones, Últimas novedades, Mapa, Video y Carrusel. Los tipos de página de Orion ya los usan; para un tipo de
 página propio del proyecto, `ContentStreamBlock` los reúne a todos:
 
 ```python
@@ -406,6 +406,47 @@ ORION_PROJECT_BLOCKS = {"testimonial": "home.blocks.TestimonialBlock"}
 
 Los bloques también se importan sueltos (`HeroBlock`, `CardsBlock`, `TextContentBlock`…,
 desde `orion.core.blocks`) para usarlos en otros `StreamBlock` o `StructBlock`.
+
+### Antetítulo y anclas
+
+Los bloques con título tienen un **antetítulo** opcional, que se muestra sobre el título
+con la clase `orion-eyebrow`. Se traduce con el resto del contenido.
+
+Todos los bloques tienen un **ancla** opcional en sus ajustes. Es el `id` del bloque en la
+página: solo minúsculas, números y guiones, sin repetirse en la página. No se traduce, así
+que sirve para todos los idiomas. Para enlazarla, un botón, una tarjeta o un ítem de menú
+elige la página y escribe el ancla en **Sección de la página**: el enlace funciona desde
+cualquier parte del sitio. No se comprueba que el ancla exista: si no está, el enlace lleva
+al inicio de la página. Un ítem con ancla no se marca como página actual.
+
+Un proyecto con encabezado fijo compensa su altura con `scroll-padding-top` en `html`. El
+ancla se dibuja al mostrar el cuerpo con `ContentStreamBlock`; un cuerpo armado con otro
+`StreamBlock` no la muestra. Un `id` propio de una plantilla del proyecto no debe coincidir
+con un ancla.
+
+### Video y carrusel
+
+El bloque **Video** usa un MP4 o WebM de la biblioteca de documentos, con imagen de portada
+obligatoria. Con controles, lo inicia el visitante y tiene sonido. En modo ambiente va sin
+sonido y en bucle mientras está en pantalla, con un botón de pausa, y no se reproduce si el
+visitante pidió reducir el movimiento. El archivo no se descarga al abrir la página.
+
+Conviene exportar los videos en H.264 a 1080p como máximo y por debajo de 30 MB: es lo que
+descarga un celular. Ocupan disco y agrandan los respaldos, porque estos incluyen
+`MEDIA_ROOT`. El reproductor usa la URL directa del archivo, para que el servidor web
+atienda los pedidos de rango que necesitan Safari y el adelantado. Por eso un video de una
+colección privada queda igual accesible por su URL: los videos van en colecciones públicas.
+`runserver` no atiende esos pedidos, así que en desarrollo Safari puede no reproducirlos.
+
+El bloque **Carrusel** tiene dos disposiciones: una diapositiva a todo el ancho, o varias
+tarjetas a la vez. Se recorre con flechas, puntos, teclado y gesto táctil, y sin JavaScript
+con scroll. Una diapositiva con video lo reproduce en modo ambiente. Una página que abre con
+un carrusel a todo el ancho no muestra el título en pantalla: queda como `h1` para lectores
+de pantalla.
+
+Si el proyecto define `ORION_DOCUMENT_EXTENSIONS`, debe sumar `mp4` y `webm`. Quien tenga
+tipos de página propios sobre `BodyPage` debe ejecutar `makemigrations` al actualizar Orion:
+la definición de los bloques cambia, el contenido no.
 
 ### Estilos de los bloques
 
@@ -820,8 +861,9 @@ Cada proyecto cambia o quita directivas con `ORION_CSP` (por ejemplo
 `ORION_CSP_REPORT_ONLY=true` manda la política en modo informe, sin bloquear, para ver en
 la consola del navegador qué rompería.
 
-La biblioteca de documentos acepta PDF, Word, Excel, PowerPoint, OpenDocument, TXT y CSV
-(`ORION_DOCUMENT_EXTENSIONS`) hasta 20 MB (`ORION_DOCUMENT_MAX_UPLOAD_MB`). Documentos y
+La biblioteca de documentos acepta PDF, Word, Excel, PowerPoint, OpenDocument, TXT, CSV,
+MP4 y WebM (`ORION_DOCUMENT_EXTENSIONS`) hasta 20 MB (`ORION_DOCUMENT_MAX_UPLOAD_MB`), y
+los videos hasta 100 MB (`ORION_VIDEO_MAX_UPLOAD_MB`). Documentos y
 adjuntos de formularios se rechazan si el contenido no corresponde a la extensión (un
 programa renombrado a `.pdf`). Los documentos ya subidos no se tocan.
 
@@ -987,6 +1029,8 @@ Con Python, PostgreSQL, Nginx y Gunicorn instalados en el servidor:
    server {
        listen 80;
        server_name mi-sitio.com;
+       # Por defecto Nginx rechaza las subidas de más de 1 MB.
+       client_max_body_size 120m;
 
        location /media/ {
            alias /ruta/al/proyecto/media/;

@@ -18,7 +18,12 @@ SIGNATURES = {
     "jpg": (b"\xff\xd8\xff",),
     "jpeg": (b"\xff\xd8\xff",),
     "png": (b"\x89PNG\r\n\x1a\n",),
+    "webm": (b"\x1a\x45\xdf\xa3",),
 }
+VIDEO_EXTENSIONS = {"mp4", "webm"}
+# An MP4 starts with the size of its first box, so its signature comes after it.
+MP4_SIGNATURE = b"ftyp"
+MP4_SIGNATURE_OFFSET = 4
 TEXT_EXTENSIONS = {"txt", "csv"}
 TEXT_SAMPLE_SIZE = 8192
 
@@ -39,6 +44,9 @@ def matches_extension(file, extension):
     extension = extension.lower().lstrip(".")
     if extension in TEXT_EXTENSIONS:
         return b"\x00" not in _read_start(file, TEXT_SAMPLE_SIZE)
+    if extension == "mp4":
+        end = MP4_SIGNATURE_OFFSET + len(MP4_SIGNATURE)
+        return _read_start(file, end)[MP4_SIGNATURE_OFFSET:] == MP4_SIGNATURE
     signatures = SIGNATURES.get(extension)
     if signatures is None:
         return True

@@ -12,6 +12,8 @@ from wagtail.models import Site
 
 DESTINATION_FIELDS = ("page", "url", "email", "phone")
 PHONE_PATTERN = re.compile(r"^\+?[\d\s().-]{6,30}$")
+ANCHOR_PATTERN = r"^[a-z0-9]+(-[a-z0-9]+)*$"
+ANCHOR_MAX_LENGTH = 60
 
 
 def normalize_phone(phone: str) -> str:
@@ -24,6 +26,25 @@ def get_site_hostnames() -> set[str]:
     return {
         hostname.lower() for hostname in Site.objects.values_list("hostname", flat=True)
     }
+
+
+class AnchorBlock(blocks.RegexBlock):
+    """The id of a section of a page. Not translated: links rely on it in every
+    language."""
+
+    def __init__(self, **kwargs):
+        kwargs.setdefault("required", False)
+        kwargs.setdefault("max_length", ANCHOR_MAX_LENGTH)
+        super().__init__(
+            regex=ANCHOR_PATTERN,
+            error_messages={
+                "invalid": _(
+                    "Use only lowercase letters, numbers and hyphens, without # or "
+                    "spaces."
+                )
+            },
+            **kwargs,
+        )
 
 
 class LinkValue(blocks.StructValue):
@@ -48,7 +69,12 @@ class LinkValue(blocks.StructValue):
     @cached_property
     def href(self) -> str | None:
         if self.get("page") is not None:
-            return self.linked_page.url if self.linked_page is not None else None
+            if self.linked_page is None:
+                return None
+            anchor = self.get("anchor")
+            return (
+                f"{self.linked_page.url}#{anchor}" if anchor else self.linked_page.url
+            )
         if self.get("url"):
             return self["url"]
         if self.get("email"):
@@ -100,6 +126,10 @@ class LinkBlock(blocks.StructBlock):
         help_text=_("Leave empty to use the page title, email or phone."),
     )
     page = blocks.PageChooserBlock(label=_("Page"), required=False)
+    anchor = AnchorBlock(
+        label=_("Section of the page"),
+        help_text=_("Optional. The anchor of a block of the chosen page."),
+    )
     url = blocks.URLBlock(label=_("External URL"), required=False)
     email = blocks.EmailBlock(label=_("Email"), required=False)
     phone = blocks.CharBlock(label=_("Phone"), required=False, max_length=30)
@@ -138,6 +168,10 @@ class LinkBlock(blocks.StructBlock):
                 ]
             )
 
+        if value.get("anchor") and not value.get("page"):
+            block_errors["anchor"] = ValidationError(
+                _("Choose the page that has this section.")
+            )
         if value.get("url"):
             hostname = (urlsplit(value["url"]).hostname or "").lower()
             if hostname in get_site_hostnames():

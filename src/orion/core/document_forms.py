@@ -6,11 +6,11 @@ from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext_lazy as _
 from wagtail.documents.forms import BaseDocumentForm
 
-from orion.core.uploads import matches_extension
+from orion.core.uploads import VIDEO_EXTENSIONS, matches_extension
 
 
 class DocumentForm(BaseDocumentForm):
-    """Wagtail's document form with a maximum size and the file's real type checked.
+    """Wagtail's document form with maximum sizes and the file's real type checked.
 
     Wagtail itself checks the extension against WAGTAILDOCS_EXTENSIONS.
     """
@@ -19,14 +19,20 @@ class DocumentForm(BaseDocumentForm):
         file = self.cleaned_data.get("file")
         if not file or "file" not in self.changed_data:
             return file
-        maximum = settings.ORION_DOCUMENT_MAX_UPLOAD_MB * 1024 * 1024
+        extension = os.path.splitext(file.name)[1]
+        is_video = extension.lower().lstrip(".") in VIDEO_EXTENSIONS
+        maximum_mb = (
+            settings.ORION_VIDEO_MAX_UPLOAD_MB
+            if is_video
+            else settings.ORION_DOCUMENT_MAX_UPLOAD_MB
+        )
+        maximum = maximum_mb * 1024 * 1024
         if file.size > maximum:
             raise ValidationError(
                 _("The file is too large. The maximum is %(size)s.")
                 % {"size": filesizeformat(maximum)},
                 code="file_too_large",
             )
-        extension = os.path.splitext(file.name)[1]
         if not matches_extension(file, extension):
             raise ValidationError(
                 _("The file's content does not match its type (%(extension)s).")

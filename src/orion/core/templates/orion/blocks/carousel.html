@@ -1,0 +1,28 @@
+{% load i18n %}
+{# Without JavaScript the slides scroll sideways; the carousel component adds the controls. #}
+<section class="orion-block orion-carousel orion-carousel--{{ value.layout }} block-carousel--{{ value.style }}" x-data="carousel" x-on:keydown="onKeydown" aria-roledescription="{% translate 'carousel' %}" aria-label="{% translate 'Slides' %}" data-status="{% translate 'Slide {current} of {total}' %}">
+  {% if value.title %}<div class="mx-auto max-w-6xl px-4 pt-12 pb-6">{% include "orion/blocks/includes/title.html" with title=value.title %}</div>{% endif %}
+  <ul class="orion-carousel__track" x-ref="track" x-on:scroll.debounce.100ms="update" tabindex="0" aria-label="{% translate 'Slides' %}">
+    {% for slide in value.slides %}
+      {% if forloop.first and is_leading_block and value.layout == 'full' %}
+        {% include "orion/blocks/includes/carousel_slide.html" with layout=value.layout heading=value.title|yesno:"h3,h2" is_main=True %}
+      {% else %}
+        {% include "orion/blocks/includes/carousel_slide.html" with layout=value.layout heading=value.title|yesno:"h3,h2" %}
+      {% endif %}
+    {% endfor %}
+  </ul>
+  <div class="orion-carousel__controls" x-ref="controls" hidden>
+    <button type="button" class="orion-carousel__arrow" x-ref="previous" x-on:click="previous" aria-label="{% translate 'Previous slide' %}">
+      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+    </button>
+    <div class="flex flex-wrap items-center gap-1" x-ref="dots">
+      {% for slide in value.slides %}
+        <button type="button" class="orion-carousel__dot" data-index="{{ forloop.counter0 }}" x-on:click="goToDot" aria-label="{% blocktranslate with number=forloop.counter %}Go to slide {{ number }}{% endblocktranslate %}"></button>
+      {% endfor %}
+    </div>
+    <button type="button" class="orion-carousel__arrow" x-ref="next" x-on:click="next" aria-label="{% translate 'Next slide' %}">
+      <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+    </button>
+  </div>
+  <p class="sr-only" x-ref="status" aria-live="polite"></p>
+</section>

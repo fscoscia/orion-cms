@@ -73,12 +73,25 @@ class BodyPage(SeoMixin, DesktopPreviewMixin, Page):
         return super().get_social_image() or get_leading_hero_image(self)
 
     @property
+    def _first_visible_block(self):
+        return next((block for block in self.body if is_visible(block.value)), None)
+
+    @property
     def starts_with_hero(self):
         """Whether the first visible block is a hero, which then holds the h1."""
-        first_block = next(
-            (block for block in self.body if is_visible(block.value)), None
-        )
+        first_block = self._first_visible_block
         return first_block is not None and first_block.block_type == "hero"
+
+    @property
+    def starts_with_full_carousel(self):
+        """Whether the first visible block is a full-width carousel: the page title
+        stays as the h1, for screen readers only."""
+        first_block = self._first_visible_block
+        return (
+            first_block is not None
+            and first_block.block_type == "carousel"
+            and first_block.value["layout"] == "full"
+        )
 
 
 class HomePage(BodyPage):

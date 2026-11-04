@@ -19,7 +19,9 @@ def _link_data(link):
         "text": link.text,
         "opens_in_new_tab": link.opens_in_new_tab,
         "is_visible": link.is_visible,
-        "page_path": page.path if page is not None else None,
+        # A link to a section does not stand for its page: on a landing, every item
+        # would be marked.
+        "page_path": page.path if page is not None and not link.get("anchor") else None,
     }
 
 

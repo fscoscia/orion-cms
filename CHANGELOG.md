@@ -209,6 +209,17 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 
 - `ORION_PROJECT_BLOCKS` suma bloques del proyecto a las páginas de Orion, sin tipos de
   página propios ni migraciones en el paquete.
+- Bloques **Video** (MP4 o WebM de la biblioteca de documentos, con portada, modo con
+  controles o ambiente, y formato horizontal o vertical) y **Carrusel** (diapositivas con
+  imagen, video, título, texto y enlace; a todo el ancho o en tarjetas).
+- `ORION_VIDEO_MAX_UPLOAD_MB` (100 por defecto) y comprobación del contenido de MP4 y WebM.
+  Quien define `ORION_DOCUMENT_EXTENSIONS` debe sumar `mp4` y `webm`.
+- `client_max_body_size` en la guía de Nginx: sin esa línea se rechazan las subidas de más
+  de 1 MB.
+- Antetítulo opcional en los bloques con título, y ancla opcional en todos los bloques.
+  Los enlaces a una página pueden apuntar a una de sus secciones, y un ítem de menú con
+  ancla no se marca como actual. Un proyecto que reemplazó `hero.html` debe sumar el
+  antetítulo, y uno con un campo `anchor` propio no debe repetir el `id` en su plantilla.
 
 ### Changed
 

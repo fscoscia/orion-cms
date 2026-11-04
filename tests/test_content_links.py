@@ -46,6 +46,64 @@ class TestDestinations:
             _clean(LinkBlock(), phone="llamanos")
 
 
+class TestAnchors:
+    @pytest.fixture(autouse=True)
+    def _english_messages(self):
+        with translation.override("en"):
+            yield
+
+    def test_anchor_is_added_to_the_page_url(self, services_page):
+        value = _clean(LinkBlock(), page=services_page.pk, anchor="precios")
+
+        assert value.href == "/servicios/#precios"
+
+    def test_home_page_section(self, home_page):
+        value = _clean(LinkBlock(), page=home_page.pk, anchor="categorias")
+
+        assert value.href == "/#categorias"
+
+    def test_link_without_anchor_keeps_its_url(self, services_page):
+        assert _clean(LinkBlock(), page=services_page.pk).href == "/servicios/"
+
+    def test_unpublished_page_hides_the_link(self, services_page):
+        services_page.unpublish()
+        value = LinkBlock().to_python({"page": services_page.pk, "anchor": "precios"})
+
+        assert value.is_visible is False
+
+    def test_translated_page(
+        self,
+        home_page,
+        services_page,
+        english_locale,
+        make_language_public,
+        translate_page,
+    ):
+        make_language_public(english_locale)
+        translate_page(home_page, english_locale)
+        translate_page(services_page, english_locale, slug="services")
+        value = LinkBlock().to_python({"page": services_page.pk, "anchor": "precios"})
+
+        with translation.override("en"):
+            assert value.href == "/en/services/#precios"
+
+    @pytest.mark.parametrize(
+        "destination",
+        [{}, {"url": "https://example.org/"}, {"phone": "+595 21 000 000"}],
+    )
+    def test_anchor_needs_a_page(self, destination):
+        block = LinkBlock(require_destination=False)
+
+        with pytest.raises(StructBlockValidationError) as error:
+            _clean(block, anchor="precios", **destination)
+
+        assert "anchor" in error.value.block_errors
+
+    def test_invalid_anchor_is_rejected(self, services_page):
+        with pytest.raises(StructBlockValidationError):
+            _clean(LinkBlock(), page=services_page.pk, anchor="#precios")
+
+
 class TestResolution:
     def test_page_link_follows_the_active_language(
         self,

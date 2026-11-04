@@ -2,7 +2,7 @@
 
 Para quien construye un sitio sobre Orion y necesita un bloque que no está entre los
 que trae el paquete (ver "Bloques de contenido" en el README). Antes de escribir uno,
-revisar si alguno de los quince bloques de Orion ya alcanza, combinado con sus estilos
+revisar si alguno de los diecisiete bloques de Orion ya alcanza, combinado con sus estilos
 (`ORION_BLOCK_STYLES`) o con un template propio que reemplace el suyo.
 
 ## 1. Elegir la base
@@ -50,8 +50,11 @@ Notas:
 - `style_key` es la clave con la que el proyecto ofrece variantes en
   `ORION_BLOCK_STYLES` (ver README, "Estilos de los bloques"). Si el bloque no va a
   tener variantes, elegir la clave igual: queda lista para el día que se necesite una.
-- `BaseContentBlock` ya agrega los campos "Estilo" y "Visible" al final, en el área de
-  ajustes del bloque; no hace falta declararlos.
+- `BaseContentBlock` ya agrega los campos "Ancla", "Estilo" y "Visible" al final, en el
+  área de ajustes del bloque; no hace falta declararlos. El ancla se dibuja como `id` del
+  contenedor del bloque, así que el template no debe repetirla.
+- Si el bloque tiene título, sumar `eyebrow = EyebrowBlock()` antes del título y mostrarlo
+  con `orion/blocks/includes/title.html`, que dibuja los dos.
 - `Meta.preview_value` es lo que se ve en el selector de bloques del editor, antes de
   agregarlo a una página: siempre conviene completarlo con un ejemplo real.
 - Los íconos disponibles son los que trae Wagtail (ver su documentación de

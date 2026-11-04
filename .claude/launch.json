@@ -4,8 +4,20 @@
     {
       "name": "intervita",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "cd ../intervita && pipenv run manage runserver 8010 --noreload"],
+      "runtimeArgs": [
+        "-c",
+        "cd ../intervita && pipenv run manage runserver 8010 --noreload"
+      ],
       "port": 8010
+    },
+    {
+      "name": "bolt-emprende",
+      "runtimeExecutable": "sh",
+      "runtimeArgs": [
+        "-c",
+        "cd ../bolt-emprende && pipenv run manage runserver 8020 --noreload"
+      ],
+      "port": 8020
     }
   ]
 }

@@ -266,6 +266,8 @@ class TestAddNonce:
 
 PDF = b"%PDF-1.7\n%\xe2\xe3\xcf\xd3\n"
 EXECUTABLE = b"MZ\x90\x00\x03\x00\x00\x00\x04\x00\x00\x00\xff\xff"
+MP4 = b"\x00\x00\x00\x18ftypmp42"
+WEBM = b"\x1a\x45\xdf\xa3\x01\x00\x00\x00"
 
 
 def _file(name, content):
@@ -349,6 +351,53 @@ class TestDocuments:
 
         assert response.status_code == 200
         assert "1,0" in response.content.decode() or "1.0" in response.content.decode()
+        assert not Document.objects.exists()
+
+    @pytest.mark.parametrize(
+        ("name", "content"), [("clip.mp4", MP4), ("clip.webm", WEBM)]
+    )
+    def test_videos_are_accepted(self, admin_client, media_root, name, content):
+        response = self._upload(admin_client, name, content)
+
+        assert response.status_code == 302
+        assert Document.objects.count() == 1
+
+    @pytest.mark.parametrize("name", ["clip.mp4", "clip.webm"])
+    def test_renamed_executable_is_not_a_video(self, admin_client, media_root, name):
+        response = self._upload(admin_client, name, EXECUTABLE)
+
+        assert response.status_code == 200
+        assert "no corresponde a su tipo" in response.content.decode()
+        assert not Document.objects.exists()
+
+    def test_video_above_the_document_limit_is_accepted(
+        self, admin_client, media_root, settings
+    ):
+        settings.ORION_DOCUMENT_MAX_UPLOAD_MB = 1
+        settings.ORION_VIDEO_MAX_UPLOAD_MB = 2
+
+        response = self._upload(
+            admin_client, "clip.mp4", MP4 + b"x" * (1024 * 1024 + 1)
+        )
+
+        assert response.status_code == 302
+
+    def test_video_too_large(self, admin_client, media_root, settings):
+        settings.ORION_VIDEO_MAX_UPLOAD_MB = 1
+
+        response = self._upload(admin_client, "clip.mp4", MP4 + b"x" * 1024 * 1024)
+
+        assert response.status_code == 200
+        assert "1,0" in response.content.decode() or "1.0" in response.content.decode()
+        assert not Document.objects.exists()
+
+    def test_pdf_keeps_the_document_limit(self, admin_client, media_root, settings):
+        settings.ORION_DOCUMENT_MAX_UPLOAD_MB = 1
+        settings.ORION_VIDEO_MAX_UPLOAD_MB = 100
+
+        response = self._upload(admin_client, "informe.pdf", PDF + b"x" * 1024 * 1024)
+
+        assert response.status_code == 200
         assert not Document.objects.exists()
 
 

@@ -1,0 +1,18 @@
+{% load i18n orion_core %}{# A video over its cover: the <picture> is lazy and responsive, which `poster` is not, and the video shows once it plays (browsers paint a video with controls and no poster as a dark panel, so that one waits for a play button; without JavaScript it stays, usable). Pass `video`, `cover`, `size`, `mode` ("controls" or "ambient"), `class_name` and optionally `is_main`. #}
+<div class="orion-video {{ class_name }}"{% if video %} x-data="video"{% if mode == 'ambient' %} data-ambient{% endif %}{% endif %}>
+  {% responsive_image cover size alt=cover.contextual_alt_text class_name="absolute inset-0 size-full object-cover" is_main=is_main %}
+  {% if video %}
+    <video class="absolute inset-0 size-full object-cover" x-ref="player" preload="none" playsinline{% if mode == 'ambient' %} muted loop aria-hidden="true"{% else %} controls aria-label="{{ cover.contextual_alt_text }}"{% endif %}>
+      <source src="{{ video.file.url }}" type="video/{{ video.file_extension|lower }}">
+    </video>
+    {% if mode != 'ambient' %}
+      <button type="button" class="orion-video__play" x-ref="start" x-on:click="start" aria-label="{% translate 'Play video' %}" hidden>
+        <svg class="size-8" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+    {% else %}
+      <button type="button" class="orion-video__toggle" x-ref="toggle" x-on:click="toggle" aria-label="{% translate 'Pause video' %}" aria-pressed="false" hidden>
+        <svg class="size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+      </button>
+    {% endif %}
+  {% endif %}
+</div>

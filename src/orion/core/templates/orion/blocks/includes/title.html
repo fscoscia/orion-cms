@@ -1,2 +1,2 @@
-{% load orion_core %}{# A block title as an h2. Pass `title` and optionally `class_name`. #}
-{% if title %}<h2 class="orion-title text-3xl font-bold tracking-tight md:text-4xl{% if class_name %} {{ class_name }}{% endif %}">{{ title|highlighted_title }}</h2>{% endif %}
+{% load orion_core %}{# A block title as an h2, under the eyebrow of the block in `value`, if any. Pass `title` and optionally `class_name`. #}
+{% if value.eyebrow %}<div class="orion-heading space-y-2{% if class_name %} {{ class_name }}{% endif %}"><p class="orion-eyebrow">{{ value.eyebrow }}</p>{% endif %}{% if title %}<h2 class="orion-title text-3xl font-bold tracking-tight md:text-4xl{% if class_name %} {{ class_name }}{% endif %}">{{ title|highlighted_title }}</h2>{% endif %}{% if value.eyebrow %}</div>{% endif %}

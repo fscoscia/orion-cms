@@ -205,6 +205,166 @@ document.addEventListener("alpine:init", () => {
     },
   }));
 
+  /*
+   * A video over its cover. It stops when it leaves the screen, which also covers a
+   * slide moving away; an ambient video plays while on screen, unless the visitor
+   * prefers reduced motion or paused it.
+   */
+  window.Alpine.data("video", () => ({
+    isPausedByVisitor: false,
+
+    init() {
+      const isAmbient = "ambient" in this.$root.dataset;
+      if (!isAmbient) {
+        this.$refs.player.hidden = true;
+        this.$refs.start.hidden = false;
+      }
+      if (!("IntersectionObserver" in window)) {
+        return;
+      }
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      const canAutoplay = isAmbient && !prefersReducedMotion;
+      if (canAutoplay) {
+        this.$refs.toggle.hidden = false;
+      }
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const isOnScreen = entries[entries.length - 1].isIntersecting;
+          if (!isOnScreen) {
+            this.$refs.player.pause();
+          } else if (canAutoplay && !this.isPausedByVisitor) {
+            this.play();
+          }
+        },
+        { threshold: 0.25 },
+      );
+      observer.observe(this.$root);
+    },
+
+    play() {
+      // The browser may refuse; the cover stays in place.
+      this.$refs.player.play().catch(() => {});
+    },
+
+    /* The cover's play button gives way to the video and its native controls. */
+    start() {
+      this.$refs.start.hidden = true;
+      this.$refs.player.hidden = false;
+      this.$refs.player.focus();
+      this.play();
+    },
+
+    toggle() {
+      this.isPausedByVisitor = !this.isPausedByVisitor;
+      this.$refs.toggle.setAttribute(
+        "aria-pressed",
+        this.isPausedByVisitor ? "true" : "false",
+      );
+      if (this.isPausedByVisitor) {
+        this.$refs.player.pause();
+      } else {
+        this.play();
+      }
+    },
+  }));
+
+  /*
+   * Controls over a track that scrolls natively, so touch gestures work by themselves
+   * and without JavaScript the slides can still be scrolled. The arrows use
+   * aria-disabled, not disabled, so that the keyboard focus stays on them at the ends.
+   */
+  window.Alpine.data("carousel", () => ({
+    init() {
+      this.$refs.controls.hidden = false;
+      this.$root.classList.add("is-enhanced");
+      this.update();
+    },
+
+    slides() {
+      return Array.from(this.$refs.track.children);
+    },
+
+    /* Scroll position of a slide, measured from the first one. */
+    positionOf(slide) {
+      return slide.offsetLeft - this.slides()[0].offsetLeft;
+    },
+
+    /* The slide closest to the start of the track. */
+    nearestIndex() {
+      const { scrollLeft } = this.$refs.track;
+      const distances = this.slides().map((slide) =>
+        Math.abs(this.positionOf(slide) - scrollLeft),
+      );
+      return distances.indexOf(Math.min(...distances));
+    },
+
+    isAtEnd() {
+      const track = this.$refs.track;
+      return track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+    },
+
+    update() {
+      const last = this.slides().length - 1;
+      const isAtEnd = this.isAtEnd();
+      const current = isAtEnd ? last : this.nearestIndex();
+      this.$refs.previous.setAttribute(
+        "aria-disabled",
+        current === 0 ? "true" : "false",
+      );
+      this.$refs.next.setAttribute("aria-disabled", isAtEnd ? "true" : "false");
+      Array.from(this.$refs.dots.children).forEach((dot, index) => {
+        if (index === current) {
+          dot.setAttribute("aria-current", "true");
+        } else {
+          dot.removeAttribute("aria-current");
+        }
+      });
+      this.$refs.status.textContent = this.$root.dataset.status
+        .replace("{current}", current + 1)
+        .replace("{total}", last + 1);
+    },
+
+    goTo(index) {
+      const slides = this.slides();
+      const slide = slides[Math.max(0, Math.min(index, slides.length - 1))];
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      this.$refs.track.scrollTo({
+        left: this.positionOf(slide),
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+      });
+    },
+
+    previous() {
+      this.goTo(this.nearestIndex() - 1);
+    },
+
+    next() {
+      this.goTo(this.nearestIndex() + 1);
+    },
+
+    goToDot(event) {
+      this.goTo(Number(event.currentTarget.dataset.index));
+    },
+
+    onKeydown(event) {
+      // A video with controls uses the arrows to seek.
+      if (event.target.closest("video")) {
+        return;
+      }
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        this.next();
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        this.previous();
+      }
+    },
+  }));
+
   window.Alpine.data("counter", () => ({
     display: "",
 

@@ -26,6 +26,10 @@ IMAGE_SIZES = {
         "filters": "fill-{480x300,800x500}",
         "sizes": "(min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 100vw",
     },
+    "carousel_card": {
+        "filters": "width-{400,800}",
+        "sizes": "(min-width: 48rem) 25vw, 70vw",
+    },
     "logo": {"filters": "max-{240x96,480x192}", "sizes": "240px"},
     "article": {
         "filters": "width-{480,800,1200,1600}",
@@ -80,7 +84,18 @@ def get_leading_hero_image(page):
     first = body[0] if body else None
     if first is None or first.block_type != "hero":
         return None
-    image = first.value.get("image")
+    return _preloadable(first.value.get("image"))
+
+
+def get_leading_carousel_image(page):
+    """The first image of the full-width carousel that opens the page, if any."""
+    if not getattr(page, "starts_with_full_carousel", False):
+        return None
+    first = next(block for block in page.body if block.block_type == "carousel")
+    return _preloadable(first.value["slides"][0].get("image"))
+
+
+def _preloadable(image):
     if not image or getattr(image, "is_sample", False) or image.is_svg():
         return None
     return image
