@@ -3,7 +3,7 @@
 Hoy una página de Orion solo tiene `<title>` y, si el editor la carga, la descripción. No
 hay imagen para redes, URL canónica, sitemap, robots.txt, favicon, datos estructurados ni
 redirecciones: un sitio nuevo se indexa mal y una URL vieja da 404. La especificación pide
-igualar a ruweb y superarlo con JSON-LD, `noindex` por página y un monitor de 404. Es el
+cubrir lo esencial y sumar JSON-LD, `noindex` por página y un monitor de 404. Es el
 cambio 2 de la Fase 3.
 
 ## What Changes

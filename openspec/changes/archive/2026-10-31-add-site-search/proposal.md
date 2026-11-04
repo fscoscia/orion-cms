@@ -1,6 +1,6 @@
 ## Why
 
-Un sitio Orion no tiene buscador público (ruweb tampoco). La especificación pide uno sobre
+Un sitio Orion no tiene buscador público. La especificación pide uno sobre
 la propia base de datos, sin servicios externos, que entienda el español en PostgreSQL,
 respete idioma y estado publicado, permita al editor destacar resultados y le muestre qué
 busca la gente y qué no encuentra. Hoy el índice de Wagtail solo guarda el título de las

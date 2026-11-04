@@ -1,6 +1,6 @@
 ## Why
 
-La especificación pide doble factor para entrar al admin, como ruweb; se decidió que sea
+La especificación pide doble factor para entrar al admin; se decidió que sea
 obligatorio para todos los usuarios del admin. Una contraseña filtrada hoy alcanza para
 publicar o borrar contenido. Es el cambio 4 de la Fase 2.
 

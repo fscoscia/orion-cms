@@ -1,8 +1,8 @@
 # Orion: especificación funcional
 
 Especificación funcional del CMS base Orion, sobre Wagtail 7.4 LTS y Django 5.2 LTS. Toma
-como punto de partida el prototipo "opción 1" (Wagtail amigable), iguala lo que ofrece
-ruweb-cms y lo supera en rendimiento, SEO y seguridad. Cada funcionalidad indica si entra
+como punto de partida el prototipo "opción 1" (Wagtail amigable), ofrece un conjunto completo de funciones
+y destaca en rendimiento, SEO y seguridad. Cada funcionalidad indica si entra
 en la versión 1 (v1) o queda a futuro. Todo lo que depende de una plataforma externa está
 marcado a futuro, salvo los mapas de OpenStreetMap, que entran por decisión expresa.
 
@@ -30,12 +30,12 @@ de prueba. Estas decisiones ya están tomadas:
 
 | Decisión | Elección | Motivo |
 | --- | --- | --- |
-| Producto | CMS base reutilizable, distribuido como paquete versionado en GitHub (se instala desde el repositorio, sin publicarlo en PyPI) más una plantilla de proyecto | Cada sitio se construye encima y se actualiza cambiando la versión, sin copiar código entre proyectos como en ruweb |
+| Producto | CMS base reutilizable, distribuido como paquete versionado en GitHub (se instala desde el repositorio, sin publicarlo en PyPI) más una plantilla de proyecto | Cada sitio se construye encima y se actualiza cambiando la versión, sin copiar código entre proyectos |
 | Stack | Python 3.12, Django 5.2 LTS, Wagtail 7.4 LTS | Versiones con soporte largo y parches de seguridad |
 | Base de datos | PostgreSQL como principal; MySQL 8 / MariaDB 10.5+ también soportado (por ejemplo, en cPanel) | PostgreSQL da mejor búsqueda en español y migraciones más seguras |
 | Entrega del sitio público | Dinámica, con caché de página completa que se borra al publicar | Formularios y buscador funcionan sin servicios externos |
 | Front | HTML generado en el servidor (templates de Django), estilos con Tailwind 4 y JS sin framework o Alpine.js | Libertad total de diseño sin una segunda aplicación |
-| Multi-idioma | Entra en v1, con el modelo de ruweb | Pedido explícito |
+| Multi-idioma | Entra en v1: idiomas ilimitados activables desde el admin | Pedido explícito |
 | Flujo de aprobación | El que trae Wagtail (workflows) | Suficiente; no se construye uno propio |
 | Formularios | Armados por el editor con el constructor de Wagtail; antispam, consentimiento y límites fijados por la base | Decisión del equipo |
 | MCP y API para agentes | A futuro | Se deja la arquitectura preparada |
@@ -70,14 +70,14 @@ reemplazan a los de la base con el mismo nombre, sin tocar el paquete.
 ## Contenido y páginas
 
 Las páginas se arman con bloques que el editor agrega, reordena y oculta; es la principal
-ventaja sobre las secciones fijas de ruweb. En "Cómo": *Wagtail* = viene incluido,
+ventaja sobre las secciones fijas. En "Cómo": *Wagtail* = viene incluido,
 *Paquete* = librería existente, *A construir* = código propio de la base.
 
 | Funcionalidad | Detalle | Cómo | Versión |
 | --- | --- | --- | --- |
 | Tipos de página base | Portada, Página libre, Página de contacto, Listado de artículos y Artículo, con reglas de dónde puede ir cada una | A construir | v1 |
 | Biblioteca de bloques | Hero, Texto, Imagen, Galería, Imagen + texto, Tarjetas, Cifras animadas, Pestañas, Acordeón (FAQ), Llamada a la acción, Logos, Datos de contacto, Botón | A construir sobre StreamField | v1 |
-| Ocultar un bloque sin borrarlo | Interruptor "Visible" en cada bloque, como `is_visible` de ruweb | A construir | v1 |
+| Ocultar un bloque sin borrarlo | Interruptor "Visible" en cada bloque, con un campo `is_visible` | A construir | v1 |
 | Títulos con palabras resaltadas | La negrita en un título se pinta con el color de acento | A construir (ya está en la opción 1) | v1 |
 | Destino de botón semántico | Elegir una página interna, una URL, un email o un teléfono; nunca la URL absoluta del propio sitio | A construir | v1 |
 | Colección de artículos (blog o novedades) | Listado paginado, artículo con fecha, resumen, imagen y categorías; RSS | A construir | v1 |
@@ -91,7 +91,7 @@ ventaja sobre las secciones fijas de ruweb. En "Cómo": *Wagtail* = viene inclui
 ## Experiencia del editor
 
 El objetivo es que un editor sin capacitación cargue contenido el primer día. Toma lo que
-ya funciona en la opción 1 y suma el contrato de UX del editor de ruweb.
+ya funciona en la opción 1 y suma un contrato de UX del editor.
 
 | Funcionalidad | Detalle | Cómo | Versión |
 | --- | --- | --- | --- |
@@ -109,7 +109,7 @@ ya funciona en la opción 1 y suma el contrato de UX del editor de ruweb.
 
 ## Flujo editorial
 
-Casi todo lo trae Wagtail 7.4 y cubre lo que ofrece ruweb; solo hay que configurarlo y
+Casi todo lo trae Wagtail 7.4 y cubre lo necesario; solo hay que configurarlo y
 traducirlo. Lo único que falta es compartir una vista previa con alguien sin cuenta.
 
 | Funcionalidad | Detalle | Cómo | Versión |
@@ -128,7 +128,7 @@ traducirlo. Lo único que falta es compartir una vista previa con alguien sin cu
 
 ## Multi-idioma
 
-Mismo modelo que ruweb: idiomas ilimitados que se activan desde el admin, una página por
+Idiomas ilimitados que se activan desde el admin, una página por
 idioma vinculada a sus traducciones y el sitio arranca en un solo idioma. La traducción la
 hace una persona; la automática queda a futuro.
 
@@ -148,7 +148,7 @@ hace una persona; la automática queda a futuro.
 ## Medios
 
 Las imágenes se sirven en AVIF con WebP de respaldo y en el tamaño justo para cada
-pantalla. ruweb solo usa WebP: acá está la mayor ganancia de peso de página.
+pantalla. Acá está la mayor ganancia de peso de página.
 
 | Funcionalidad | Detalle | Cómo | Versión |
 | --- | --- | --- | --- |
@@ -168,8 +168,7 @@ pantalla. ruweb solo usa WebP: acá está la mayor ganancia de peso de página.
 
 ## SEO y redirecciones
 
-Iguala lo de ruweb y suma datos estructurados y control de indexación por página, que su
-`reqs.md` marca como faltantes. Las conexiones con Google y Meta quedan a futuro; mientras
+Incluye datos estructurados y control de indexación por página. Las conexiones con Google y Meta quedan a futuro; mientras
 tanto se cargan con "Scripts desde el admin".
 
 | Funcionalidad | Detalle | Cómo | Versión |
@@ -180,8 +179,8 @@ tanto se cargan con "Scripts desde el admin".
 | Sitemap | `sitemap.xml` con todas las páginas publicadas y sus idiomas | Wagtail contrib sitemaps | v1 |
 | robots.txt editable | Desde Datos del sitio | A construir | v1 |
 | Favicon | Desde Datos del sitio, con todos los tamaños | A construir | v1 |
-| Datos estructurados (JSON-LD) | Organización, sitio web, artículo y migas de pan; supera a ruweb | A construir | v1 |
-| No indexar por página | Casilla `noindex` / `nofollow` en cada página; supera a ruweb | A construir | v1 |
+| Datos estructurados (JSON-LD) | Organización, sitio web, artículo y migas de pan | A construir | v1 |
+| No indexar por página | Casilla `noindex` / `nofollow` en cada página | A construir | v1 |
 | Verificación de Search Console | Campo para la etiqueta meta de verificación | A construir | v1 |
 | Redirecciones 301 y 302 | Desde el admin, con importación CSV | Wagtail contrib redirects | v1 |
 | Redirección automática al cambiar una URL | Si se cambia el slug de una página publicada, se crea la redirección sola | Wagtail (`WAGTAILREDIRECTS_AUTO_CREATE`) | v1 |
@@ -217,7 +216,7 @@ a futuro porque dependen de Google o Cloudflare.
 ## Buscador del sitio
 
 Usa la propia base de datos, sin servicios externos; en PostgreSQL entiende el español y
-ordena por relevancia. ruweb no tiene buscador público.
+ordena por relevancia.
 
 | Funcionalidad | Detalle | Cómo | Versión |
 | --- | --- | --- | --- |
@@ -231,7 +230,7 @@ ordena por relevancia. ruweb no tiene buscador público.
 ## Scripts desde el admin
 
 Permite pegar código de terceros (analytics, píxeles, chats) sin tocar el repositorio, con
-los mismos resguardos que ruweb. Es la vía para usar Google o Meta mientras sus
+resguardos de seguridad. Es la vía para usar Google o Meta mientras sus
 integraciones dedicadas están a futuro.
 
 | Funcionalidad | Detalle | Cómo | Versión |
@@ -248,12 +247,11 @@ integraciones dedicadas están a futuro.
 
 Meta de la v1: Lighthouse 95 o más en celular y LCP menor a 2,5 s en la portada de
 ejemplo, con las páginas en caché respondiendo en menos de 20 ms. La caché de página
-completa, AVIF y los headers de caché son justo lo que el `reqs.md` de ruweb marca como
-faltante.
+completa, AVIF y los headers de caché son la base de ese rendimiento.
 
 | Punto | Funcionalidad | Detalle | Versión |
 | --- | --- | --- | --- |
-| Velocidad | Caché de página completa | El HTML se arma una vez y se guarda; al publicar, se borra solo lo afectado (la página, sus listados, la portada si muestra novedades). Supera a ruweb | v1 |
+| Velocidad | Caché de página completa | El HTML se arma una vez y se guarda; al publicar, se borra solo lo afectado (la página, sus listados, la portada si muestra novedades) | v1 |
 | Velocidad | Caché de encabezado, pie y menús | Se calculan una vez por idioma y se invalidan al editar menús o datos del sitio | v1 |
 | Velocidad | Consultas optimizadas | Sin consultas repetidas por bloque; prueba automática que limita la cantidad de consultas por página | v1 |
 | Velocidad | Conexiones persistentes a la base | `CONN_MAX_AGE` en producción (ya configurado en la Fase 0) | v1 |
@@ -271,8 +269,8 @@ faltante.
 
 ## Seguridad
 
-Iguala a ruweb (2FA, URL de login configurable, límite de intentos) y suma headers de
-seguridad y HTTPS forzado, que ruweb no tiene en la aplicación.
+Incluye 2FA, URL de login configurable, límite de intentos, headers de
+seguridad y HTTPS forzado en la aplicación.
 
 | Funcionalidad | Detalle | Cómo | Versión |
 | --- | --- | --- | --- |
@@ -282,8 +280,8 @@ seguridad y HTTPS forzado, que ruweb no tiene en la aplicación.
 | Recuperar contraseña | Por email, con enlace de un solo uso | Wagtail | v1 |
 | Política de contraseñas | Largo mínimo, contraseñas comunes bloqueadas | Django | v1 |
 | Cerrar sesiones | Al cambiar la contraseña o el email se cierran las demás sesiones | Django + a construir | v1 |
-| Headers de seguridad | HSTS, Content-Security-Policy, X-Content-Type-Options, Referrer-Policy, X-Frame-Options; supera a ruweb | Django + django-csp | v1 |
-| HTTPS forzado y cookies seguras | Redirección a HTTPS y cookies `Secure`/`HttpOnly` en producción (las cookies ya están desde la Fase 0); supera a ruweb | Django | v1 |
+| Headers de seguridad | HSTS, Content-Security-Policy, X-Content-Type-Options, Referrer-Policy, X-Frame-Options | Django + django-csp | v1 |
+| HTTPS forzado y cookies seguras | Redirección a HTTPS y cookies `Secure`/`HttpOnly` en producción (las cookies ya están desde la Fase 0) | Django | v1 |
 | HTML de contenido saneado | Todo HTML que escriben los editores pasa por un filtro de etiquetas permitidas | Wagtail + a construir | v1 |
 | Subidas validadas | Tipo real del archivo (no solo la extensión), peso y SVG limpios | A construir | v1 |
 | Registro de actividad | Ver Flujo editorial | Wagtail | v1 |
@@ -292,7 +290,7 @@ seguridad y HTTPS forzado, que ruweb no tiene en la aplicación.
 ## Operación, deploy y calidad
 
 Un sitio nuevo se instala con un comando y se actualiza cambiando la versión de la base,
-sin copiar código a mano entre proyectos como pasa con ruweb.
+sin copiar código a mano entre proyectos.
 
 | Funcionalidad | Detalle | Cómo | Versión |
 | --- | --- | --- | --- |
@@ -330,7 +328,7 @@ invitado.
 | Checklist de alta de cliente | Guía con las cuentas que crea el cliente, cómo invita a la agencia y qué datos pasa | v1 |
 | Email por SMTP configurable | Servidor, puerto, usuario, contraseña, SSL o TLS y remitente por variables de entorno (`EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `EMAIL_USE_SSL`, `EMAIL_USE_TLS`, `DEFAULT_FROM_EMAIL`, `EMAIL_TIMEOUT`). Sirve con el email del hosting, Google Workspace, Microsoft 365 o el SMTP de Brevo, SES o Mailgun. Nombre del remitente, respuesta y destinatarios se editan en el admin; prueba de envío en Integraciones; SSL y TLS juntos se rechazan al arrancar (hecho en la Fase 0) | v1 |
 | Casilla de cPanel como opción por defecto | El checklist recomienda crear una casilla para el sitio en cPanel (por ejemplo `no-responder@dominio`) y usar sus datos SMTP. Un proveedor dedicado (Brevo, SES) queda para mucho volumen o problemas de spam. La guía advierte sobre los límites de envío del hosting, la reputación compartida, SPF y DKIM si el DNS está en otro lado, y hostings que obligan a usar localhost | v1 |
-| Guía dentro de cada integración | Cada integración trae en su pantalla los pasos para activarla, con enlaces al servicio: crear la casilla en cPanel, obtener las claves de Turnstile, el ID de Analytics, etc. Indica qué dato va en el admin y cuál en las variables de entorno. Tomado de ruweb, que lo hace para Brevo | v1 |
+| Guía dentro de cada integración | Cada integración trae en su pantalla los pasos para activarla, con enlaces al servicio: crear la casilla en cPanel, obtener las claves de Turnstile, el ID de Analytics, etc. Indica qué dato va en el admin y cuál en las variables de entorno. | v1 |
 
 Qué pasa con cada integración si el cliente no la tiene:
 
@@ -377,7 +375,7 @@ pago es el hosting gestionado.
   cliente es cambiar una versión.
 - **Base de datos:** PostgreSQL como principal, con MySQL 8 / MariaDB 10.5+ también
   soportado y probado.
-- **Mapas:** entran en la v1, con Leaflet y teselas de OpenStreetMap, como ruweb.
+- **Mapas:** entran en la v1, con Leaflet y teselas de OpenStreetMap.
 - **CSS:** Tailwind 4, desde la Fase 1 (cada bloque nace con estilos base).
 - **Datos del sitio por idioma:** lo que no cambia por idioma (logos, teléfonos, email,
   redes, ubicación) en ajustes del sitio; lo traducible (texto legal, eslogan, etiquetas
@@ -390,6 +388,3 @@ pago es el hosting gestionado.
   (`opcion1-wagtail`) es la réplica de Intervita sobre Wagtail: de ahí se reutilizan los
   bloques, los hooks del admin (panel de inicio, menú, vista previa abierta por defecto),
   el componente de íconos y los templates, reescritos dentro de la estructura de Orion.
-- **ruweb-cms:** el CMS en Laravel con el que se comparó Orion. De ruweb se toman el
-  modelo multi-idioma, la visibilidad por sección, el contrato de UX del editor, las guías
-  dentro de cada integración y el antispam obligatorio.

@@ -1,7 +1,7 @@
 ## Why
 
 Las imágenes son la mayor parte del peso de una página, y la especificación pide servirlas
-en AVIF con WebP de respaldo (ruweb solo usa WebP). Hoy Orion sirve WebP: cada plantilla
+en AVIF con WebP de respaldo. Hoy Orion sirve WebP: cada plantilla
 repite sus medidas, el Hero no se prioriza ni se precarga, los recortes se generan en la
 primera visita (lenta) y la biblioteca acepta originales de cualquier tamaño, no acepta
 SVG y no hay forma de ver qué imágenes sobran. Es el cambio 1 de la Fase 3.

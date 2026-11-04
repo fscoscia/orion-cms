@@ -1,7 +1,7 @@
 ## Why
 
 Las páginas de Orion se arman con bloques que el editor agrega, reordena y oculta; es la
-principal ventaja sobre las secciones fijas de ruweb. Los tipos de página del cambio 4
+principal ventaja sobre las secciones fijas. Los tipos de página del cambio 4
 necesitan esa biblioteca ya hecha, con estilos base, accesible y traducible (cambio 3 de la
 Fase 1, ver `docs/especificacion.md`).
 

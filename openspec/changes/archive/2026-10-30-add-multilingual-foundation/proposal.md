@@ -9,7 +9,7 @@ Por eso es el primer cambio de la Fase 1.
 
 ## What Changes
 
-- Idiomas del sitio con el modelo de ruweb: un catálogo de idiomas definido en código, los
+- Idiomas del sitio: un catálogo de idiomas definido en código, los
   idiomas que se usan se agregan desde el admin y el sitio arranca con uno solo, el idioma
   base.
 - Cada idioma agregado puede estar **activo** (se edita en el admin) y además **público**
