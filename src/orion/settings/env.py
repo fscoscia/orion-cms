@@ -5,16 +5,29 @@ misconfigured deployment fails at startup rather than running with surprising va
 """
 
 import os
+from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 TRUE_VALUES = frozenset({"1", "true", "yes", "on"})
 FALSE_VALUES = frozenset({"0", "false", "no", "off"})
 
 
+def load_env_file(path: Path) -> None:
+    """Load a ``.env`` file into the environment, if it exists.
+
+    Variables already set keep their value. Interpolation stays off: generated secret
+    keys contain ``$``.
+    """
+    load_dotenv(path, override=False, interpolate=False)
+
+
 def env_str(name: str, default: str = "") -> str:
-    """Return the variable stripped of surrounding whitespace, or ``default``."""
-    return os.environ.get(name, default).strip()
+    """Return the variable stripped of surrounding whitespace, or ``default`` when
+    absent or empty."""
+    raw_value = os.environ.get(name, "").strip()
+    return raw_value or default
 
 
 def env_bool(name: str, default: bool = False) -> bool:

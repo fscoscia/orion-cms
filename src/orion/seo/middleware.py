@@ -5,6 +5,7 @@ from django.db import DatabaseError, IntegrityError, transaction
 from django.db.models import F
 from django.utils import timezone
 
+from orion.core.paths import is_internal_request
 from orion.seo.meta import get_site
 from orion.seo.models import NotFoundPath
 
@@ -32,15 +33,7 @@ class NotFoundMiddleware:
     def _is_recorded(request):
         if request.method != "GET" or len(request.path) > MAX_PATH_LENGTH:
             return False
-        ignored = (
-            f"/{settings.ORION_ADMIN_PATH}",
-            settings.STATIC_URL,
-            settings.MEDIA_URL,
-            "/_preview/",
-        )
-        return not request.path.startswith(
-            tuple("/" + prefix.lstrip("/") for prefix in ignored if prefix)
-        )
+        return not is_internal_request(request)
 
     @staticmethod
     def _record(request):

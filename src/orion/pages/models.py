@@ -34,7 +34,7 @@ from wagtail.search import index
 from wagtail.snippets.models import register_snippet
 from wagtail_localize.fields import SynchronizedField
 
-from orion.core.blocks import ContentStreamBlock
+from orion.core.blocks import BodyStreamField, ContentStreamBlock, SiteStreamBlock
 from orion.core.blocks.content import is_visible
 from orion.core.images import get_leading_hero_image
 from orion.seo.models import SeoMixin
@@ -61,7 +61,7 @@ class DesktopPreviewMixin:
 class BodyPage(SeoMixin, DesktopPreviewMixin, Page):
     """A page whose content is a body of Orion's content blocks."""
 
-    body = StreamField(ContentStreamBlock(), blank=True, verbose_name=_("body"))
+    body = BodyStreamField(SiteStreamBlock(), blank=True, verbose_name=_("body"))
 
     content_panels = [*Page.content_panels, FieldPanel("body")]
     search_fields = [*SeoMixin.search_fields, index.SearchField("body")]

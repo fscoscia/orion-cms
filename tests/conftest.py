@@ -1,8 +1,17 @@
 import pytest
 from django.core.cache import cache
+from django.urls import set_script_prefix
 from wagtail.models import Locale, Page, Site
 
 from orion.localization.models import LanguageSettings
+
+
+@pytest.fixture
+def url_prefix():
+    """Serve a test's requests under /sub, as a deployment in a subfolder does."""
+    set_script_prefix("/sub/")
+    yield {"SCRIPT_NAME": "/sub"}
+    set_script_prefix("/")
 
 
 @pytest.fixture

@@ -10,6 +10,8 @@ import secrets
 from django.conf import settings
 from django.utils.http import quote_etag
 
+from orion.core.paths import is_admin_request, is_asset_request
+
 NONCE = "'nonce'"
 HEADER = "Content-Security-Policy"
 REPORT_ONLY_HEADER = "Content-Security-Policy-Report-Only"
@@ -59,17 +61,6 @@ def get_header_name():
     return HEADER
 
 
-def is_public_path(path):
-    excluded = (
-        f"/{settings.ORION_ADMIN_PATH}",
-        settings.STATIC_URL,
-        settings.MEDIA_URL,
-    )
-    return not path.startswith(
-        tuple("/" + prefix.lstrip("/") for prefix in excluded if prefix)
-    )
-
-
 OPENING_TAG = re.compile(r"<(script|style)\b(?![^>]*\bnonce=)", re.IGNORECASE)
 
 
@@ -91,7 +82,7 @@ class ContentSecurityPolicyMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if not is_public_path(request.path):
+        if is_admin_request(request) or is_asset_request(request):
             return self.get_response(request)
         request.csp_nonce = new_nonce()
         response = self.get_response(request)

@@ -1,7 +1,13 @@
 import pytest
 from django.core.exceptions import ImproperlyConfigured
 
-from orion.settings.env import env_bool, env_int, env_list, env_str
+from orion.settings.env import (
+    env_bool,
+    env_int,
+    env_list,
+    env_str,
+    load_env_file,
+)
 
 
 class TestEnvStr:
@@ -11,6 +17,10 @@ class TestEnvStr:
 
     def test_returns_default_when_absent(self, monkeypatch):
         monkeypatch.delenv("ORION_TEST_VALUE", raising=False)
+        assert env_str("ORION_TEST_VALUE", "fallback") == "fallback"
+
+    def test_returns_default_when_present_and_empty(self, monkeypatch):
+        monkeypatch.setenv("ORION_TEST_VALUE", "")
         assert env_str("ORION_TEST_VALUE", "fallback") == "fallback"
 
 
@@ -63,3 +73,40 @@ class TestEnvList:
         hosts = env_list("ORION_TEST_LIST", default_hosts)
         assert hosts == ["localhost"]
         assert hosts is not default_hosts
+
+
+class TestLoadEnvFile:
+    @pytest.fixture
+    def env_file(self, tmp_path, monkeypatch):
+        # Registers the variable so that monkeypatch removes it afterwards.
+        monkeypatch.setenv("ORION_TEST_VALUE", "")
+        monkeypatch.delenv("ORION_TEST_VALUE")
+        return tmp_path / ".env"
+
+    def test_loads_a_variable_only_in_the_file(self, env_file):
+        env_file.write_text("ORION_TEST_VALUE=from-file\n")
+
+        load_env_file(env_file)
+
+        assert env_str("ORION_TEST_VALUE") == "from-file"
+
+    def test_environment_wins_over_the_file(self, env_file, monkeypatch):
+        env_file.write_text("ORION_TEST_VALUE=from-file\n")
+        monkeypatch.setenv("ORION_TEST_VALUE", "from-environment")
+
+        load_env_file(env_file)
+
+        assert env_str("ORION_TEST_VALUE") == "from-environment"
+
+    def test_missing_file_is_not_an_error(self, env_file):
+        load_env_file(env_file)
+
+        assert env_str("ORION_TEST_VALUE") == ""
+
+    def test_keeps_special_characters(self, env_file):
+        secret = "a#b$c(d)=e${HOME}%f"
+        env_file.write_text(f"ORION_TEST_VALUE={secret}\n")
+
+        load_env_file(env_file)
+
+        assert env_str("ORION_TEST_VALUE") == secret

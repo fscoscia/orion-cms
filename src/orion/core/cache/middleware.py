@@ -6,6 +6,7 @@ from django.utils.http import http_date, parse_http_date_safe
 
 from orion.core.cache import generation_key
 from orion.core.csp import new_nonce
+from orion.core.paths import is_internal_request
 
 # Headers that belong to one visitor or to this cache, never stored.
 SKIPPED_HEADERS = {"set-cookie", "x-orion-cache"}
@@ -54,15 +55,7 @@ class PageCacheMiddleware:
             return False
         if settings.SESSION_COOKIE_NAME in request.COOKIES:
             return False
-        excluded = (
-            f"/{settings.ORION_ADMIN_PATH}",
-            settings.STATIC_URL,
-            settings.MEDIA_URL,
-            "/_preview/",
-        )
-        return not request.path.startswith(
-            tuple("/" + prefix.lstrip("/") for prefix in excluded if prefix)
-        )
+        return not is_internal_request(request)
 
     @staticmethod
     def _is_cacheable_response(request, response):

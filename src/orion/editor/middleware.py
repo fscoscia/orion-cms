@@ -8,6 +8,8 @@ from django.utils.crypto import constant_time_compare, salted_hmac
 from django_otp import user_has_device
 from django_otp.middleware import OTPMiddleware
 
+from orion.core.paths import is_admin_request
+
 # Admin URLs that stay open before the second factor is verified.
 UNVERIFIED_URL_NAMES = {
     "wagtailadmin_login",
@@ -52,7 +54,7 @@ class TwoFactorMiddleware(OTPMiddleware):
     def _needs_second_factor(request):
         if not getattr(settings, "ORION_2FA_REQUIRED", True):
             return False
-        if not request.path.startswith(f"/{settings.ORION_ADMIN_PATH}"):
+        if not is_admin_request(request):
             return False
         user = request.user
         if not has_admin_access(user) or user.is_verified():

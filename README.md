@@ -100,9 +100,14 @@ En los ajustes del proyecto, importar la base y agregar lo propio:
 ```python
 from pathlib import Path
 
-from orion.settings.base import *
+from orion.settings.env import load_env_file
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Before Orion's settings, which read the environment when imported.
+load_env_file(BASE_DIR / ".env")
+
+from orion.settings.base import *  # noqa: E402, F403
+
 ROOT_URLCONF = "mi_sitio.urls"
 WSGI_APPLICATION = "mi_sitio.wsgi.application"
 STATIC_ROOT = BASE_DIR / "static"
@@ -130,8 +135,10 @@ urlpatterns = [
 urlpatterns += orion_urlpatterns
 ```
 
-La configuración se lee de variables de entorno; ver `.env.example`. Sin `SECRET_KEY` y
-con `DEBUG` apagado, el sitio no arranca.
+La configuración se lee de variables de entorno; ver `.env.example`. Los ajustes cargan el
+`.env` de la raíz del proyecto, así que `manage.py`, Gunicorn y Passenger lo reciben sin
+`pipenv`; una variable ya definida en el entorno tiene prioridad sobre el archivo. Sin
+`SECRET_KEY` y con `DEBUG` apagado, el sitio no arranca.
 
 Con `.env` completo (al menos `DATABASE_URL`), dejar el sitio funcionando:
 
@@ -290,8 +297,9 @@ ORION_IMAGE_SIZES = {
 (`{% main_image_preload page %}`, también disponible para otras plantillas base).
 
 Al subir una imagen o cambiar su punto focal, sus recortes de todas las medidas se crean
-en segundo plano, así ningún visitante espera a que se generen. Después de actualizar
-Orion o de importar imágenes:
+en segundo plano, así ningún visitante espera a que se generen. Si la imagen se guarda desde
+un comando, los recortes se crean en el momento y el comando espera a que estén. Después de
+actualizar Orion o de importar imágenes:
 
 ```bash
 pipenv run manage orion_generate_renditions   # crea los recortes que falten
@@ -387,6 +395,13 @@ class LandingStreamBlock(ContentStreamBlock):
     gallery = None
     logos = None
     quote = blocks.BlockQuoteBlock()  # un bloque propio del proyecto
+```
+
+Para sumar bloques propios a las páginas de Orion (portada, contenido y contacto), sin crear
+un tipo de página, declararlos en los ajustes. No generan migraciones en Orion:
+
+```python
+ORION_PROJECT_BLOCKS = {"testimonial": "home.blocks.TestimonialBlock"}
 ```
 
 Los bloques también se importan sueltos (`HeroBlock`, `CardsBlock`, `TextContentBlock`…,
@@ -626,6 +641,20 @@ Para recompilar mientras se editan templates, `pipenv run css-watch` (deja el CS
 minificar: correr `css-build` antes de versionarlo). La fuente es
 `src/orion/core/static_src/orion.css`.
 
+### Compilar el CSS del proyecto
+
+Las clases de Tailwind de los templates propios se compilan con el CSS del proyecto, no con
+el de Orion. Es el mismo flujo: al cambiar clases, compilar y commitear el resultado,
+`assets/project/css/project.css`. El deploy no compila CSS: solo necesita ese archivo, que
+`collectstatic` recoge como cualquier otro.
+
+```bash
+pipenv run css-build
+```
+
+La fuente es `static_src/project.css`. Su `@import` apunta a Orion en la máquina donde se
+generó el proyecto: en otra máquina hay que corregir esa ruta antes de compilar.
+
 ## Buscador
 
 El sitio tiene un buscador en `/buscar/` (`/en/search/` en inglés; esas rutas quedan
@@ -721,7 +750,11 @@ pipenv run manage orion_create_example_forms
 
 Los envíos de cada formulario están en **Formularios**, para quien puede editar esa
 página. La lista muestra el estado (nuevo, leído o respondido), filtra por estado y por
-fecha, busca en los datos y exporta a CSV o Excel (los adjuntos, como nombre de archivo).
+fecha, busca en los datos y exporta a CSV o Excel (los adjuntos, como nombre de archivo). En el CSV, lo que una planilla
+leería como fórmula (un valor que empieza con `=`, `@`, `+`, `-`, tabulación o salto de
+línea) sale con un apóstrofo delante, para que no se ejecute lo que escribió un visitante;
+los números y teléfonos conservan su formato original, y Excel guarda esas celdas como
+texto.
 **Abrir** muestra el envío completo, con sus adjuntos para descargar, permite cambiar el
 estado y agregar notas internas con autor y fecha; abrir un envío nuevo lo marca leído.
 Borrar envíos borra también sus archivos.
@@ -896,13 +929,30 @@ Cuatro tareas periódicas, con `crontab -e` del usuario que corre el sitio en un
 - `clearsessions` (diaria, nativo de Django): borra de la base las sesiones ya vencidas;
   sin ella, la tabla de sesiones crece sin límite.
 
+## Registro de errores
+
+Los errores del servidor, con su traza, y los avisos de la aplicación van a la salida de
+errores del proceso; cada guía de deploy indica dónde quedan. Los 404 y demás errores 4xx
+no se registran ahí: casi todos son bots, y los 404 ya se cuentan en el admin. Para
+recibirlos también por email, el proyecto define `ADMINS` y agrega el handler a `LOGGING`:
+
+```python
+ADMINS = [("Soporte", "soporte@example.com")]
+LOGGING["handlers"]["mail_admins"] = {
+    "class": "django.utils.log.AdminEmailHandler",
+    "level": "ERROR",
+}
+LOGGING["root"]["handlers"].append("mail_admins")
+```
+
 ## Deploy en VPS
 
 Con Python, PostgreSQL, Nginx y Gunicorn instalados en el servidor:
 
 1. Clonar el proyecto, `pipenv install` y completar `.env` (`DATABASE_URL` apuntando a
    PostgreSQL, `ALLOWED_HOSTS`, `WAGTAILADMIN_BASE_URL` con el dominio real,
-   `ORION_TRUSTED_PROXIES=1`: Nginx es el único proxy delante del sitio).
+   `ORION_TRUSTED_PROXIES=1`: Nginx es el único proxy delante del sitio). Tiene secretos:
+   protegerlo con `chmod 600 .env`, con el usuario que corre el sitio como dueño.
 2. `pipenv run manage orion_install` deja la base migrada, el administrador creado y el
    idioma base confirmado (ver "Usar Orion en un proyecto" más arriba);
    `pipenv run manage collectstatic`.
@@ -927,7 +977,8 @@ Con Python, PostgreSQL, Nginx y Gunicorn instalados en el servidor:
    WantedBy=multi-user.target
    ```
 
-   `systemctl enable --now mi_sitio`. `gunicorn` no es una dependencia de Orion: se agrega
+   `systemctl enable --now mi_sitio`. Los errores quedan en el journal
+   (`journalctl -u mi_sitio`). `gunicorn` no es una dependencia de Orion: se agrega
    al `Pipfile` del proyecto (`pipenv install gunicorn`).
 4. Nginx como proxy, sirviendo los medios directo (los estáticos ya los sirve Gunicorn a
    través de WhiteNoise, comprimidos y con caché `immutable`):
@@ -959,7 +1010,8 @@ Con **Setup Python App** del panel (Python 3.12) y una base MySQL ya creada:
 
 1. Crear la app con su dominio o subdominio; cPanel arma un entorno virtual propio y un
    `passenger_wsgi.py` de ejemplo en la raíz de la app.
-2. Subir el proyecto (o clonarlo por Git) y completar `.env` (`DATABASE_URL` con los
+2. Subir el proyecto fuera de `public_html` (o clonarlo por Git), completar `.env` y
+   protegerlo con `chmod 600 .env` (`DATABASE_URL` con los
    datos de la base MySQL creada en cPanel, `ALLOWED_HOSTS`, `WAGTAILADMIN_BASE_URL`;
    `ORION_TRUSTED_PROXIES` se deja en 0, el valor por defecto: Passenger ya entrega la IP
    real sin pasar por un proxy propio).
@@ -980,11 +1032,14 @@ Con **Setup Python App** del panel (Python 3.12) y una base MySQL ya creada:
 
    ```bash
    pip install "orion[mysql] @ git+https://github.com/<organizacion>/orion.git@v0.1.0"
+   pip install "django-tailwind-cli==4.8.1"
    python manage.py orion_install
    python manage.py collectstatic
    ```
 
-   Gunicorn no hace falta: Passenger ya es el servidor de aplicación.
+   Gunicorn no hace falta: Passenger ya es el servidor de aplicación. Los errores quedan
+   en el archivo de **Passenger log file** de Setup Python App; si está vacío, en
+   `stderr.log`, en la raíz de la app.
 5. En **Dominios → Documentos**, apuntar la URL de medios (`/media/`) al directorio
    `MEDIA_ROOT` del proyecto para que el panel los sirva directo, igual que Nginx en el
    VPS.

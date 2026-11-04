@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment and secrets
+.env
+.venv/
+
+# Runtime files, only at the project's root: apps keep their own static/ folders
+/media/
+/static/
+/private/
+*.sqlite3
+
+# The CLI binary `css-build` downloads. Its output in assets/ is committed: deploys do
+# not compile CSS.
+.tailwind/
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store

@@ -1,16 +1,19 @@
 import io
 import re
+from types import SimpleNamespace
 
 import pytest
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
+from django.core.signals import request_started
 from django.urls import reverse
 from PIL import Image as PillowImage
 from wagtail.images.models import Image
 from wagtail.images.tests.utils import get_test_image_file, get_test_image_file_svg
 from wagtail.models import Collection
 
+from orion.core import image_library
 from orion.core.image_library import generate_renditions
 from orion.core.images import all_filter_specs
 from orion.pages.models import ArticleIndexPage, ArticlePage, ContentPage
@@ -241,3 +244,61 @@ class TestUnusedImages:
             assert used.title not in output, used.title
         assert "Unused images: 1" in output
         assert Image.objects.count() == 4
+
+
+class TestWhereVariantsAreGenerated:
+    @pytest.fixture
+    def threads(self, settings, monkeypatch):
+        settings.ORION_IMAGE_RENDITIONS_IN_BACKGROUND = True
+        started = []
+
+        class FakeThread:
+            def __init__(self, target, args, daemon):
+                self.args = args
+
+            def start(self):
+                started.append(self.args)
+
+        # Only Orion's module: Wagtail's thread pool needs the real class.
+        monkeypatch.setattr(
+            image_library, "threading", SimpleNamespace(Thread=FakeThread)
+        )
+        return started
+
+    def test_outside_a_request_they_are_ready_when_saving_ends(
+        self, threads, django_capture_on_commit_callbacks
+    ):
+        with django_capture_on_commit_callbacks(execute=True):
+            image = _image()
+
+        assert threads == []
+        assert image.renditions.exists()
+
+    def test_inside_a_request_they_go_to_the_background(
+        self, threads, django_capture_on_commit_callbacks
+    ):
+        # Directly: the real signals also close the test's database connection.
+        image_library._mark_request_started()
+        try:
+            with django_capture_on_commit_callbacks(execute=True):
+                image = _image()
+        finally:
+            image_library._mark_request_finished()
+
+        assert threads == [(image.pk,)]
+        assert not image.renditions.exists()
+
+    def test_the_signals_mark_requests(self, threads, client, home_page):
+        seen = []
+
+        def spy(**kwargs):
+            seen.append(image_library._current.is_in_request)
+
+        request_started.connect(spy, weak=False)
+        try:
+            client.get("/")
+        finally:
+            request_started.disconnect(spy)
+
+        assert seen == [True]
+        assert image_library._current.is_in_request is False

@@ -17,11 +17,13 @@ from django.core.exceptions import ValidationError
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.html import format_html_join
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.admin.telepath import register
 from wagtail.admin.telepath.widgets import WidgetAdapter
 from wagtail.blocks.struct_block import BlockGroup
+from wagtail.fields import StreamField
 from wagtail.images.blocks import ImageBlock, ImageChooserBlock
 
 from orion.core.blocks.links import LinkBlock
@@ -916,6 +918,32 @@ class ContentStreamBlock(blocks.StreamBlock):
             '<div class="block-{}">{}</div>',
             [(name, html) for name, html in rendered_children if html.strip()],
         )
+
+
+class SiteStreamBlock(ContentStreamBlock):
+    """Orion's blocks plus the project's (ORION_PROJECT_BLOCKS), for page bodies."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, path in settings.ORION_PROJECT_BLOCKS.items():
+            block = import_string(path)()
+            block.set_name(name)
+            self.child_blocks[name] = block
+
+
+class BodyStreamField(StreamField):
+    """A StreamField whose migrations ignore the project's blocks.
+
+    It describes itself with Orion's blocks only, so that declaring blocks in a project
+    does not make ``makemigrations`` write inside the installed package.
+    """
+
+    def deconstruct(self):
+        name, _path, _args, kwargs = super().deconstruct()
+        _name, path, args, plain_kwargs = StreamField(
+            ContentStreamBlock()
+        ).deconstruct()
+        return name, path, args, {**kwargs, **plain_kwargs}
 
 
 def is_visible(value):

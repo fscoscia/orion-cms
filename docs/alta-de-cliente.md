@@ -37,8 +37,9 @@ compartido).
 
 ## 4. Variables de entorno del servidor
 
-Las claves secretas van solo acá, nunca en el admin ni en el repositorio (ver
-`.env.example`):
+Las claves secretas van solo en el `.env` del proyecto, protegido con `chmod 600`, nunca
+en el admin ni en el repositorio (ver `.env.example`). Los ajustes del proyecto lo leen
+solos:
 
 - [ ] `SECRET_KEY`, `DATABASE_URL`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS` y
   `WAGTAILADMIN_BASE_URL` con la dirección pública del sitio.

@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.urls import reverse
 from wagtail.blocks import StreamBlockValidationError, StructBlockValidationError
+from wagtail.fields import StreamField
 from wagtail.images.models import Image
 from wagtail.images.tests.utils import get_test_image_file
 from wagtail.models import Page
@@ -13,11 +14,13 @@ from wagtail_localize.segments.extract import extract_segments
 
 from demo.models import DemoPage
 from orion.core.blocks import (
+    BodyStreamField,
     ContentStreamBlock,
     HeroBlock,
     HighlightedTitleBlock,
     ImageContentBlock,
     RichTextBodyBlock,
+    SiteStreamBlock,
 )
 from orion.core.blocks.content import BlockStyleSelect
 from orion.site_data.models import SiteSettings
@@ -526,3 +529,34 @@ class TestTranslation:
         html = client.get("/en/demo/").content.decode()
 
         assert 'href="/en/services/"' in html
+
+
+class TestProjectBlocks:
+    PROJECT_BLOCKS = {"project_text": "orion.core.blocks.TextContentBlock"}
+
+    def test_the_project_block_joins_orions(self, settings):
+        settings.ORION_PROJECT_BLOCKS = self.PROJECT_BLOCKS
+
+        child_blocks = SiteStreamBlock().child_blocks
+
+        assert "project_text" in child_blocks
+        assert child_blocks["project_text"].name == "project_text"
+        assert "hero" in child_blocks
+
+    def test_without_project_blocks_only_orions_are_offered(self):
+        assert list(SiteStreamBlock().child_blocks) == list(
+            ContentStreamBlock().child_blocks
+        )
+
+    def test_migrations_do_not_see_project_blocks(self, settings):
+        settings.ORION_PROJECT_BLOCKS = self.PROJECT_BLOCKS
+        field = BodyStreamField(SiteStreamBlock(), blank=True)
+
+        _name, path, args, kwargs = field.deconstruct()
+        _name, _path, plain_args, plain_kwargs = StreamField(
+            ContentStreamBlock(), blank=True
+        ).deconstruct()
+
+        assert path == "wagtail.fields.StreamField"
+        assert args == plain_args
+        assert kwargs == plain_kwargs

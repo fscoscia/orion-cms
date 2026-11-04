@@ -3,6 +3,7 @@
 from orion.core.blocks.content import (
     AccordionBlock,
     BaseContentBlock,
+    BodyStreamField,
     ButtonBlock,
     ButtonsBlock,
     CallToActionBlock,
@@ -19,6 +20,7 @@ from orion.core.blocks.content import (
     LogosBlock,
     MapBlock,
     RichTextBodyBlock,
+    SiteStreamBlock,
     StatsBlock,
     TabsBlock,
     TextContentBlock,
@@ -28,6 +30,7 @@ from orion.core.blocks.links import LinkBlock, LinkValue, normalize_phone
 __all__ = [
     "AccordionBlock",
     "BaseContentBlock",
+    "BodyStreamField",
     "ButtonBlock",
     "ButtonsBlock",
     "CallToActionBlock",
@@ -46,6 +49,7 @@ __all__ = [
     "LogosBlock",
     "MapBlock",
     "RichTextBodyBlock",
+    "SiteStreamBlock",
     "StatsBlock",
     "TabsBlock",
     "TextContentBlock",

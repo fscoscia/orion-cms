@@ -7,6 +7,7 @@ name = "pypi"
 # Replace <organization> with the GitHub organization or user hosting Orion, and
 # confirm the tag below matches a published release before installing.
 orion = {git = "https://github.com/<organization>/orion.git", ref = "v__ORION_VERSION__", extras = ["postgres"]}
+django-tailwind-cli = "==4.8.1"
 
 [dev-packages]
 
@@ -15,3 +16,5 @@ python_version = "3.12"
 
 [scripts]
 manage = "python manage.py"
+css-build = "python manage.py tailwind build"
+css-watch = "python manage.py tailwind watch"

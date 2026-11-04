@@ -3,13 +3,15 @@ import re
 
 import pytest
 from django.core import checks
-from django.test import override_settings
+from django.test import RequestFactory, override_settings
 from django.urls import reverse
 from wagtail.documents.models import Document
 
 import orion.settings.base
+from orion.core.cache.middleware import PageCacheMiddleware
 from orion.core.csp import add_nonce
 from orion.core.uploads import matches_extension
+from orion.seo.middleware import NotFoundMiddleware
 
 pytestmark = pytest.mark.django_db
 
@@ -200,6 +202,43 @@ class TestContentSecurityPolicy:
         scripts = re.findall(r"<script\b[^>]*\bsrc=[^>]*>", userbar)
         assert any("userbar" in tag for tag in scripts)
         assert all(f'nonce="{_nonce(response)}"' in tag for tag in scripts)
+
+
+class TestUnderUrlPrefix:
+    def test_public_page_has_the_policy(self, client, home_page, url_prefix):
+        response = client.get("/", **url_prefix)
+
+        assert "Content-Security-Policy" in response
+
+    def test_admin_has_no_policy(self, client, url_prefix):
+        response = client.get("/admin/login/", **url_prefix)
+
+        assert response.status_code == 200
+        assert "Content-Security-Policy" not in response
+
+    def test_files_have_no_policy(self, client, home_page, url_prefix):
+        response = client.get("/media/missing.png", **url_prefix)
+
+        assert "Content-Security-Policy" not in response
+
+    @pytest.mark.parametrize(
+        "path", ["/admin/login/", "/static/a.css", "/media/a.png", "/_preview/token/"]
+    )
+    def test_internal_paths_stay_out_of_the_page_cache(
+        self, settings, url_prefix, path
+    ):
+        settings.ORION_PAGE_CACHE = True
+        request = RequestFactory().get(path, **url_prefix)
+
+        assert not PageCacheMiddleware._is_cacheable_request(request)
+        assert not NotFoundMiddleware._is_recorded(request)
+
+    def test_public_pages_stay_in_the_page_cache(self, settings, url_prefix):
+        settings.ORION_PAGE_CACHE = True
+        request = RequestFactory().get("/servicios/", **url_prefix)
+
+        assert PageCacheMiddleware._is_cacheable_request(request)
+        assert NotFoundMiddleware._is_recorded(request)
 
 
 class TestAddNonce:

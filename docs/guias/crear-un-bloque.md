@@ -61,19 +61,37 @@ Notas:
 
 ```django
 {# templates/project_name/blocks/testimonial.html #}
-<figure class="orion-block block-testimonial--{{ value.style }}">
-  <blockquote class="orion-richtext">{{ value.quote }}</blockquote>
-  <figcaption>
-    <strong>{{ value.author }}</strong>
-    {% if value.role %}<span>{{ value.role }}</span>{% endif %}
-  </figcaption>
-</figure>
+<section class="orion-block block-testimonial--{{ value.style }} mx-auto max-w-3xl px-4 py-10">
+  <figure>
+    <blockquote class="orion-richtext">{{ value.quote }}</blockquote>
+    <figcaption class="mt-4">
+      <strong>{{ value.author }}</strong>
+      {% if value.role %}<span class="text-ink-muted">{{ value.role }}</span>{% endif %}
+    </figcaption>
+  </figure>
+</section>
 ```
 
 La clase `block-<style_key>--<estilo>` sigue la misma convención que los bloques de
-Orion (ver README): permite resolver una variante con CSS, sin otro template.
+Orion (ver README): permite resolver una variante con CSS, sin otro template. El
+ancho máximo y el espaciado (`mx-auto max-w-* px-4 py-*`) también siguen la misma
+convención que cada bloque de Orion (ver `text.html`, `call_to_action.html`…): van en
+el elemento de más afuera del template, no los agrega `orion-block` por sí sola.
 
 ## 4. Sumarlo al cuerpo de las páginas
+
+Para ofrecerlo en las páginas de Orion (portada, contenido y contacto), declararlo en los
+ajustes del proyecto. No hace falta migración:
+
+```python
+ORION_PROJECT_BLOCKS = {"testimonial": "project_name.blocks.TestimonialBlock"}
+```
+
+El módulo de bloques se importa mientras cargan los modelos de Orion: no debe importar esos
+modelos. Para elegir páginas de un tipo propio, usar la ruta como texto, por ejemplo
+`PageChooserBlock(page_type="project_name.ServicePage")`.
+
+Para un tipo de página propio:
 
 Si el proyecto ya tiene un `StreamBlock` propio (ver la guía "Crear un tipo de
 página"), agregar el bloque ahí:

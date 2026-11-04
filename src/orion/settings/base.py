@@ -318,6 +318,9 @@ ORION_PAGE_CACHE_MODELS = []
 ORION_CSP = {}
 ORION_CSP_REPORT_ONLY = env_bool("ORION_CSP_REPORT_ONLY", default=False)
 
+# Project blocks added to the body of Orion's pages: {"name": "app.blocks.ClassName"}.
+ORION_PROJECT_BLOCKS = {}
+
 # Forms (orion.forms). Attachments go to ORION_FORMS_PRIVATE_ROOT, never under
 # MEDIA_ROOT; empty means a "private" folder next to MEDIA_ROOT.
 ORION_FORMS_PRIVATE_ROOT = env_str("ORION_FORMS_PRIVATE_ROOT")
@@ -453,6 +456,31 @@ ORION_SEARCH_MAX_NO_RESULTS = 1000
 ORION_SCRIPTS_DISABLED = env_bool("ORION_SCRIPTS_DISABLED", False)
 # Page editors with many StreamField blocks exceed Django's default of 1000 fields.
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10_000
+
+# Logging: warnings and errors go to the process's stderr, which systemd and Passenger
+# keep; without this, errors outside DEBUG only go to ADMINS, which Orion does not set.
+# Client errors (4xx) stay out: most are bots, and the admin already counts the 404s.
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "plain": {"format": "{asctime} {levelname} {name}: {message}", "style": "{"},
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "WARNING",
+            "formatter": "plain",
+        },
+    },
+    "root": {"handlers": ["console"], "level": "WARNING"},
+    "loggers": {
+        "django": {"handlers": [], "level": "INFO"},
+        "django.request": {"level": "ERROR"},
+        "django.security": {"level": "CRITICAL"},
+    },
+}
 
 # Orion
 

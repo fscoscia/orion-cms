@@ -195,6 +195,21 @@ class TestScope:
             .startswith(reverse("orion_2fa_verify"))
         )
 
+    def test_admin_under_a_url_prefix_asks(self, client, make_user, url_prefix):
+        client.force_login(make_user("ana"))
+
+        response = client.get(ADMIN_HOME, **url_prefix)
+
+        assert response.status_code == 302
+        assert "/2fa/setup/" in response["Location"]
+
+    def test_public_site_under_a_url_prefix_does_not_ask(
+        self, client, make_user, home_page, url_prefix
+    ):
+        client.force_login(make_user("ana"))
+
+        assert client.get("/", **url_prefix).status_code == 200
+
     def test_requirement_can_be_turned_off(
         self, client, settings, make_user, home_page
     ):

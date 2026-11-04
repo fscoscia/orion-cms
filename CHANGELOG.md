@@ -207,6 +207,9 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   propio, crear un tipo de página propio, y una guía editorial para crear un
   formulario desde el constructor del admin.
 
+- `ORION_PROJECT_BLOCKS` suma bloques del proyecto a las páginas de Orion, sin tipos de
+  página propios ni migraciones en el paquete.
+
 ### Changed
 
 - **Atención:** con django-axes, `client.login()` no funciona en las pruebas de los
@@ -240,3 +243,22 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   variable que leen los ajustes base.
 - Documentado que `pipenv run` carga `.env` pisando las variables del shell, y cómo
   apuntar las pruebas a las bases de Docker.
+- Los proyectos generados leen su `.env` sin `pipenv`, en `manage.py`, Gunicorn y Passenger
+  (`orion.settings.env.load_env_file`, con `python-dotenv` como dependencia nueva): las
+  guías de deploy no arrancaban. En un proyecto existente, agregar la carga antes de
+  importar `orion.settings.base` en `settings.py` (ver "Usar Orion en un proyecto").
+- Los errores del servidor y los avisos se registran en la salida de errores del proceso
+  (`LOGGING` en los ajustes base): fuera de `DEBUG` un error 500 no dejaba rastro.
+- El `.gitignore` de los proyectos generados ignora `/static/`, `/media/` y `/assets/` solo
+  en la raíz, sin perder los estáticos de las apps, y excluye `/private/`, con los adjuntos
+  de formularios. En un proyecto existente, corregir esas líneas en su `.gitignore`.
+- El CSS compilado de los proyectos generados se versiona y la plantilla trae uno inicial:
+  sin ese archivo, fuera de `DEBUG` todas las páginas públicas respondían 500. En un
+  proyecto existente, sacar `assets/` de su `.gitignore`, correr `pipenv run css-build` y
+  commitear `assets/project/css/project.css`.
+- Bajo una subruta (`SCRIPT_NAME`) el admin se abría sin el segundo factor: el 2FA, la CSP,
+  la caché de página y el monitor de 404 reconocen ahora las rutas internas
+  (`orion.core.paths`).
+- La exportación CSV de envíos neutraliza lo que una planilla leería como fórmula.
+- Una imagen guardada desde un comando se quedaba sin variantes, o el comando fallaba al
+  terminar: fuera de una petición web ahora se generan en el momento.

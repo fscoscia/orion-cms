@@ -8,6 +8,7 @@ import threading
 
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.signals import request_finished, request_started
 from django.db import close_old_connections, transaction
 from django.db.models.signals import post_save, pre_save
 from PIL import Image as PillowImage
@@ -19,6 +20,9 @@ from orion.core.images import all_filter_specs
 from orion.core.svg import clean_svg
 
 logger = logging.getLogger(__name__)
+
+# Whether this thread is answering a request: only then someone waits for the response.
+_current = threading.local()
 
 # Saving options for the formats a reduced original keeps.
 SAVE_OPTIONS = {
@@ -98,12 +102,22 @@ def _generate_in_thread(image_pk):
         close_old_connections()
 
 
+def _mark_request_started(**kwargs):
+    _current.is_in_request = True
+
+
+def _mark_request_finished(**kwargs):
+    _current.is_in_request = False
+
+
 def schedule_renditions(sender, instance, **kwargs):
     if kwargs.get("raw"):
         return
 
     def start():
-        if settings.ORION_IMAGE_RENDITIONS_IN_BACKGROUND:
+        # A background thread dies with the process, so a command must not use one.
+        is_in_request = getattr(_current, "is_in_request", False)
+        if settings.ORION_IMAGE_RENDITIONS_IN_BACKGROUND and is_in_request:
             threading.Thread(
                 target=_generate_in_thread, args=(instance.pk,), daemon=True
             ).start()
@@ -118,4 +132,8 @@ def connect():
     pre_save.connect(prepare_upload, sender=image_model, dispatch_uid="orion_prepare")
     post_save.connect(
         schedule_renditions, sender=image_model, dispatch_uid="orion_renditions"
+    )
+    request_started.connect(_mark_request_started, dispatch_uid="orion_request_started")
+    request_finished.connect(
+        _mark_request_finished, dispatch_uid="orion_request_finished"
     )

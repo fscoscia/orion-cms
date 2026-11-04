@@ -776,6 +776,14 @@
             "markers": "python_version >= '3.10'",
             "version": "==3.3.7"
         },
+        "python-dotenv": {
+            "hashes": [
+                "sha256:42269a8a5b3fd54ffa6f3d84b18abed50064717576b4ecf03dc4a55d8aa04fdc",
+                "sha256:f0d53e69935a851c0dcc78f3ab7aaccd8cabef0b92382b576b824212902873c0"
+            ],
+            "markers": "python_version >= '3.10'",
+            "version": "==1.2.4"
+        },
         "requests": {
             "hashes": [
                 "sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0",
@@ -1294,11 +1302,11 @@
         },
         "virtualenv": {
             "hashes": [
-                "sha256:dbd886e6e5689eb4dde6a9bbc478ad14b4fc8ed0852690d8273ccfb8c467f635",
-                "sha256:fb8c62c7c328e0238061c721068f06b7bc6bd10f7a0f5987195cef1008837ee6"
+                "sha256:105b395ce731f1cd086378037c9e20fadbb2aef98836d19b6d5767f622d21de1",
+                "sha256:a66dfba5f608b3a1778d86ddf6a63a611f394934bb2cffd13ae6962b98b9798f"
             ],
             "markers": "python_version >= '3.9'",
-            "version": "==21.15.2"
+            "version": "==21.15.4"
         }
     }
 }

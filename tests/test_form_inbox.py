@@ -1,3 +1,4 @@
+import csv
 import datetime
 import io
 import re
@@ -219,6 +220,54 @@ class TestList:
         assert "Estado" in rows[0]
         assert "Nuevo" in rows[1]
         assert "cv-ana@example.com.pdf" in rows[1]
+
+
+class TestFormulasInExports:
+    @pytest.fixture
+    def export_value(self, admin_client, jobs):
+        def export(value, export_format):
+            FormSubmission.objects.create(page=jobs, form_data={"email": value})
+            response = admin_client.get(_list_url(jobs, export=export_format))
+            return (
+                b"".join(response.streaming_content)
+                if response.streaming
+                else response.content
+            )
+
+        return export
+
+    @pytest.mark.parametrize(
+        "value",
+        [
+            '=HYPERLINK("http://example.test","x")',
+            "@SUM(A1)",
+            "\t=1+1",
+            "\r=1+1",
+            "+cmd",
+            "-cmd",
+            "+\n=1",
+        ],
+    )
+    def test_csv_neutralizes_formulas(self, export_value, value):
+        content = export_value(value, "csv").decode()
+
+        rows = list(csv.reader(io.StringIO(content, newline="")))
+        assert f"'{value}" in rows[1]
+
+    @pytest.mark.parametrize("value", ["+595 21 729 1444", "-25.5", "(021) 729-1444"])
+    def test_csv_keeps_numbers_and_phones(self, export_value, value):
+        content = export_value(value, "csv").decode()
+
+        rows = list(csv.reader(io.StringIO(content)))
+        assert value in rows[1]
+
+    def test_xlsx_keeps_formulas_as_text(self, export_value):
+        value = '=HYPERLINK("http://example.test","x")'
+        content = export_value(value, "xlsx")
+
+        cells = openpyxl.load_workbook(io.BytesIO(content)).active[2]
+        cell = next(cell for cell in cells if cell.value == value)
+        assert cell.data_type == "s"
 
 
 class TestFilesAndRetention:

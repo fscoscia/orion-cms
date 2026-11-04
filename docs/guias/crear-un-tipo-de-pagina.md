@@ -64,14 +64,20 @@ Notas:
 {% load wagtailcore_tags %}
 
 {% block content %}
-  <h1 class="orion-title">{{ page.title }}</h1>
-  {% if page.intro %}<p class="orion-lead">{{ page.intro }}</p>{% endif %}
+  <header class="mx-auto max-w-6xl px-4 pt-12 md:pt-16">
+    <h1 class="orion-title text-4xl font-bold tracking-tight md:text-5xl">{{ page.title }}</h1>
+    {% if page.intro %}<p class="mt-4 max-w-3xl text-lg text-ink-muted">{{ page.intro }}</p>{% endif %}
+  </header>
   {% include_block page.body %}
 {% endblock %}
 ```
 
 Extender `orion/base.html` da el `<head>`, el header, el footer y los scripts del
-sitio; `{% include_block page.body %}` respeta el campo "Visible" de cada bloque (ver
+sitio, pero no el ancho máximo, el margen ni el tamaño de letra del contenido: eso lo
+pone cada template, igual que `orion/pages/includes/page_header.html` (el que usan los
+tipos de página de Orion) envuelve el título en `mx-auto max-w-6xl px-4 …` y agrega
+`text-4xl font-bold …` al `<h1>` — `orion-title` por sí sola solo define la tipografía.
+`{% include_block page.body %}` respeta el campo "Visible" de cada bloque (ver
 README, "Bloques de contenido").
 
 ## 3. Migración

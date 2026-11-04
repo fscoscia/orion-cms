@@ -78,6 +78,25 @@ interpretarlos en silencio.
 - **WHEN** `DEBUG` vale `ture`
 - **THEN** el arranque falla con un mensaje que nombra la variable y los valores aceptados
 
+### Requirement: A text variable with a default falls back when present but empty
+Cuando una variable de entorno de texto tiene un valor por defecto no vacío, el sistema
+SHALL usar ese default tanto si la variable está ausente como si está presente pero
+vacía (o solo espacios).
+
+#### Scenario: Variable absent
+- **WHEN** `ORION_SEARCH_CONFIG` no está definida y `LANGUAGE_CODE` vale `es`
+- **THEN** la configuración de búsqueda de PostgreSQL es `spanish`
+
+#### Scenario: Variable present and empty
+- **WHEN** `ORION_SEARCH_CONFIG` está definida como cadena vacía y `LANGUAGE_CODE` vale
+  `es`
+- **THEN** la configuración de búsqueda de PostgreSQL es `spanish`, igual que si la
+  variable estuviera ausente
+
+#### Scenario: Variable present with an explicit value
+- **WHEN** `ORION_SEARCH_CONFIG` vale `simple`
+- **THEN** la configuración de búsqueda de PostgreSQL es `simple`
+
 ### Requirement: Email uses TLS unless SSL is chosen
 El sistema SHALL usar TLS para el email cuando ninguna variable de entorno elige otro
 modo, y MUST dejar de usar TLS cuando se activa SSL sin indicar TLS.
@@ -111,3 +130,46 @@ IP.
 - **WHEN** `ORION_TRUSTED_PROXIES` vale 1 y llega `X-Forwarded-For: 9.9.9.9, 1.2.3.4`
 - **THEN** la IP es `1.2.3.4`, la que agregó Nginx, aunque el visitante haya inventado
   `9.9.9.9`
+
+### Requirement: A project's env file is read without pipenv
+El sistema SHALL ofrecer a los proyectos una forma de cargar las variables de un archivo
+`.env` antes de leer los ajustes, sin depender de cómo se lance el proceso. Una variable
+ya definida en el entorno MUST conservar su valor, y la ausencia del archivo MUST NOT ser
+un error.
+
+#### Scenario: Variable only in the file
+- **WHEN** `SECRET_KEY` está en el `.env` y no en el entorno
+- **THEN** los ajustes usan el valor del archivo
+
+#### Scenario: Variable in both places
+- **WHEN** `DEBUG` vale `false` en el entorno y `true` en el `.env`
+- **THEN** los ajustes usan `false`
+
+#### Scenario: No file
+- **WHEN** el proyecto no tiene `.env` y las variables están en el entorno
+- **THEN** los ajustes se cargan sin error
+
+#### Scenario: Values with special characters
+- **WHEN** `SECRET_KEY` en el `.env` contiene `#`, `$`, `(` o `=`
+- **THEN** los ajustes reciben el valor completo y sin cambios
+
+### Requirement: Server errors are logged outside debug
+Fuera de debug, el sistema SHALL escribir en la salida de errores del proceso cada error
+del servidor, con su traza, y los avisos de la aplicación, sin depender de que haya
+destinatarios de email configurados.
+
+#### Scenario: Unhandled error in a request
+- **WHEN** una vista lanza una excepción no controlada con `DEBUG` apagado
+- **THEN** la respuesta es 500 y la traza de la excepción aparece en la salida de errores
+
+#### Scenario: Error logged by Orion
+- **WHEN** falla el envío del aviso de un formulario con `DEBUG` apagado
+- **THEN** el error aparece en la salida de errores
+
+### Requirement: Not-found requests stay out of the error log
+El sistema MUST NOT escribir en la salida de errores las respuestas 404 ni otras
+respuestas 4xx, para que el tráfico de bots no tape los errores reales.
+
+#### Scenario: Missing page
+- **WHEN** una visita pide una ruta inexistente con `DEBUG` apagado
+- **THEN** la salida de errores no registra esa petición

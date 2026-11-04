@@ -1,0 +1,13 @@
+/*
+ * Source of this project's own stylesheet, compiled to assets/project/css/project.css
+ * with `pipenv run css-build`. The compiled file is committed: deploys do not compile
+ * CSS. Imports Orion's stylesheet (theme tokens, the typography
+ * plugin, and its component classes) so templates here can use them, and adds this
+ * project's own template directories so its own classes get compiled too.
+ */
+
+@import "tailwindcss" source(none);
+@import "__ORION_STATIC_SRC__/orion.css";
+
+@source "../home";
+@source "../templates";
