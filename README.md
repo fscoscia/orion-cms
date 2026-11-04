@@ -51,6 +51,8 @@ El admin queda en <http://localhost:8000/admin/> y el chequeo de salud en
 | `pipenv run test` | Pruebas contra la base de `DATABASE_URL` |
 | `pipenv run test-postgres` | Pruebas contra PostgreSQL (`POSTGRES_TEST_URL`) |
 | `pipenv run test-mysql` | Pruebas contra MySQL (`MYSQL_TEST_URL`) |
+| `pipenv run test-e2e-postgres` | Pruebas de punta a punta contra PostgreSQL |
+| `pipenv run test-e2e-mysql` | Pruebas de punta a punta contra MySQL |
 | `pipenv run lint` | Lint con Ruff |
 | `pipenv run format` | Formato con Ruff |
 | `pipenv run manage <comando>` | `manage.py` del proyecto de ejemplo |
@@ -987,6 +989,47 @@ Con **Setup Python App** del panel (Python 3.12) y una base MySQL ya creada:
    `MEDIA_ROOT` del proyecto para que el panel los sirva directo, igual que Nginx en el
    VPS.
 6. "Tareas programadas", arriba, con las rutas de este servidor.
+
+## Chequeo de convenciones
+
+```bash
+pipenv run manage orion_check_conventions
+```
+
+Recorre los templates y los archivos de traducción de las apps propias del proyecto (no
+los de Django, Wagtail ni otras dependencias) y reporta, con archivo y línea: texto fijo
+en un template que no está dentro de `{% trans %}` ni `{% blocktrans %}`; una imagen sin
+texto alternativo (`<img>` sin `alt`, o `{% responsive_image %}` sin `alt` o con
+`alt=""`); y traducciones vacías o marcadas `fuzzy` en los `.po`. Es un heurístico, no un
+análisis completo de HTML ni de gettext: puede dejar pasar casos raros y reportar algún
+falso positivo (un identificador en mayúsculas mostrado a propósito, por ejemplo); sirve
+como punto de partida para revisar a mano, no como una verdad absoluta. Solo informa:
+termina siempre con código de salida 0, así que todavía no sirve como paso que bloquee un
+merge.
+
+## Pruebas de punta a punta
+
+Además de `pytest run test-postgres`/`test-mysql`, hay una suite separada con un
+navegador real (Chromium, vía Playwright), en `tests/e2e/`. Necesita instalar el
+navegador una vez, aparte de `pipenv install --dev`:
+
+```bash
+pipenv run playwright install chromium
+```
+
+Y correr con:
+
+```bash
+pipenv run test-e2e-postgres
+pipenv run test-e2e-mysql
+```
+
+Cubre los flujos principales del admin de Wagtail (iniciar sesión, crear y publicar una
+página) y del sitio público (una página publicada carga con su CSS y su JavaScript bajo
+la CSP estricta, la navegación entre páginas funciona, un formulario se completa y
+envía). Queda fuera de `pipenv run test`/`test-postgres`/`test-mysql`: es más lenta
+(levanta un servidor y un navegador) y necesita el navegador instalado, así que no
+conviene pagar ese costo en cada corrida rápida de la suite funcional.
 
 ## Desarrollo con OpenSpec
 

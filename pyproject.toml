@@ -83,8 +83,9 @@ quote-style = "double"
 DJANGO_SETTINGS_MODULE = "example.settings"
 pythonpath = ["example"]
 testpaths = ["tests"]
-addopts = "--strict-markers"
+addopts = "--strict-markers -m \"not e2e\""
 markers = [
     "two_factor: run with the admin's second factor required",
     "page_cache: run with the full-page cache on",
+    "e2e: end-to-end test with a real browser; excluded by default, see README",
 ]

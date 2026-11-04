@@ -196,6 +196,16 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   programadas con los cuatro cron (`publish_scheduled`, `orion_purge_submissions`,
   `orion_retry_form_emails` y `clearsessions`, nativo de Django); meta de rendimiento de
   la v1 (Lighthouse 95+ en celular, LCP < 2,5 s) y cómo medirla a mano.
+- `orion_check_conventions`: reporta texto fijo sin marcar para traducir, imágenes sin
+  texto alternativo y traducciones vacías o dudosas, en los templates y catálogos de las
+  apps propias del proyecto. Solo informa (nunca falla).
+- Pruebas de punta a punta con Playwright (`tests/e2e/`, `pipenv run test-e2e-postgres` /
+  `test-e2e-mysql`): alta y publicación de una página en el admin, credenciales
+  inválidas, JavaScript bajo la CSP estricta, navegación entre páginas y envío de un
+  formulario, todo con un navegador real.
+- Guías para desarrolladores y agentes en `docs/guias/`: crear un bloque de contenido
+  propio, crear un tipo de página propio, y una guía editorial para crear un
+  formulario desde el constructor del admin.
 
 ### Changed
 

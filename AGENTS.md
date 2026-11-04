@@ -22,11 +22,15 @@ pipenv run manage <comando>     # manage.py del proyecto de ejemplo
   queda a futuro, integraciones, decisiones tomadas) y el plan de fases. Leerla antes de
   proponer una fase o una funcionalidad nueva.
 - Estado: Fases 0 (esqueleto), 1 (contenido y multi-idioma), 2 (experiencia del editor),
-  3 (medios, rendimiento y SEO) y 4 (formularios, buscador, scripts e integraciones)
-  hechas; la siguiente es la Fase 5 (seguridad y operación).
+  3 (medios, rendimiento y SEO), 4 (formularios, buscador, scripts e integraciones), 5
+  (seguridad y operación) y 6 (calidad y documentación) hechas; la siguiente es la Fase 7
+  (validación: construir el sitio de Intervita).
 - Prototipos de referencia en `../orion-prototipos/`, fuera del repositorio. La opción 1
   (`opcion1-wagtail`) tiene bloques, hooks del admin y templates para reescribir dentro de
   Orion; no se copia tal cual.
+- `docs/guias/`: guías paso a paso por tarea para construir un sitio sobre Orion
+  (crear un bloque, un tipo de página, un formulario). Consultarlas antes de estas
+  tareas en el sitio de Intervita (Fase 7) o en cualquier otro proyecto.
 
 ## Flujo de trabajo
 
