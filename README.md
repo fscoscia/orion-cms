@@ -302,7 +302,7 @@ un comando, los recortes se crean en el momento y el comando espera a que estén
 actualizar Orion o de importar imágenes:
 
 ```bash
-pipenv run manage orion_generate_renditions   # crea los recortes que falten
+pipenv run manage orion_generate_renditions   # crea los recortes que falten o cuyo archivo se perdió
 pipenv run manage orion_unused_images         # lista las imágenes que no se usan (no borra)
 ```
 
@@ -351,9 +351,9 @@ no registra el admin, los archivos estáticos ni los de medios.
 
 ## Bloques de contenido
 
-Orion trae diecisiete bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y
+Orion trae veinte bloques para armar páginas: Hero, Texto, Imagen, Galería, Imagen y
 texto, Tarjetas, Cifras, Pestañas, Acordeón, Llamada a la acción, Logos, Datos de contacto,
-Botones, Últimas novedades, Mapa, Video y Carrusel. Los tipos de página de Orion ya los usan; para un tipo de
+Botones, Últimas novedades, Mapa, Video, Carrusel, Pasos, Cuenta regresiva y Cinta. Los tipos de página de Orion ya los usan; para un tipo de
 página propio del proyecto, `ContentStreamBlock` los reúne a todos:
 
 ```python
@@ -443,6 +443,36 @@ tarjetas a la vez. Se recorre con flechas, puntos, teclado y gesto táctil, y si
 con scroll. Una diapositiva con video lo reproduce en modo ambiente. Una página que abre con
 un carrusel a todo el ancho no muestra el título en pantalla: queda como `h1` para lectores
 de pantalla.
+
+### Etiqueta de tarjeta y bandas de color
+
+Cada tarjeta puede llevar una **etiqueta** corta sobre su título, y el bloque Tarjetas elige
+si sus imágenes se **recortan** para llenar el espacio (por defecto) o se muestran
+**completas**, útil para ilustraciones y logos. Para pintar una banda de color de borde a
+borde, la envoltura de cada bloque lleva `data-block-style` con el estilo elegido (no lo
+lleva el estilo por defecto): un proyecto que declaró el estilo `oscuro` en
+`ORION_BLOCK_STYLES` escribe `[data-block-style="oscuro"] { background: … }` en su CSS. Las
+clases `.block-…--oscuro` de la sección interna siguen igual.
+
+### Aparición de los bloques al bajar
+
+`ORION_BLOCK_REVEAL = True` en los ajustes del proyecto hace que los bloques, salvo el
+primero, aparezcan con un fundido y un desplazamiento corto al entrar en pantalla. Viene
+apagado. El contenido nunca queda oculto: sin JavaScript, con movimiento reducido, en la
+vista previa del editor y al imprimir se ve completo y sin animación, y si el navegador no
+responde a los 3 segundos se muestra todo. Solo anima `transform` y `opacity`.
+
+### Pasos, cuenta regresiva y cinta
+
+El bloque **Pasos** muestra de 2 a 12 pasos numerados automáticamente en el orden del editor,
+cada uno con título, texto e imagen opcional. El bloque **Cuenta regresiva** muestra los
+días, horas, minutos y segundos que faltan hasta una fecha límite. La página está en caché,
+así que el tiempo se calcula en el navegador del visitante; sin JavaScript queda la fecha
+escrita. Pasada la fecha, el bloque muestra el mensaje que el editor haya cargado, o ceros.
+El bloque **Cinta** desliza en bucle frases cortas y logos, con velocidad lenta, normal o
+rápida. Está quieta mientras no corre JavaScript y con movimiento reducido; si no, tiene un
+botón de pausa y se detiene también con el puntero encima. Los tres traen estilos base y se
+adaptan con `ORION_BLOCK_STYLES` o con un template propio.
 
 Si el proyecto define `ORION_DOCUMENT_EXTENSIONS`, debe sumar `mp4` y `webm`. Quien tenga
 tipos de página propios sobre `BodyPage` debe ejecutar `makemigrations` al actualizar Orion:

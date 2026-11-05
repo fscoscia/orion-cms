@@ -217,3 +217,65 @@ MUST NOT aparecer, con su ancla incluida.
 #### Scenario: Hidden block
 - **WHEN** el bloque con el ancla `categorias` está oculto
 - **THEN** la página no contiene ese `id`
+
+### Requirement: The block wrapper exposes its style
+La envoltura de cada bloque visible SHALL exponer el estilo elegido por el editor con un
+atributo `data-block-style`, de modo que un proyecto pueda pintar la banda del bloque de
+borde a borde. El estilo por defecto MUST NOT agregar el atributo, y las clases actuales de
+la envoltura y de la sección interna MUST NOT cambiar.
+
+#### Scenario: Style from the project
+- **WHEN** un proyecto declara el estilo "oscuro" para un bloque y un editor lo elige
+- **THEN** la envoltura del bloque lleva `data-block-style="oscuro"`
+
+#### Scenario: Default style
+- **WHEN** un editor deja el estilo por defecto
+- **THEN** la envoltura no lleva el atributo `data-block-style`
+
+#### Scenario: Existing selectors keep working
+- **WHEN** un proyecto estiliza un bloque con `.block-cards--oscuro`
+- **THEN** ese selector sigue aplicándose solo a la sección interna, como antes
+
+### Requirement: Blocks can appear as they enter the screen
+Un proyecto SHALL poder activar con el ajuste `ORION_BLOCK_REVEAL`, apagado por defecto, que
+los bloques aparezcan con un fundido y un desplazamiento corto al entrar en pantalla. Con el
+ajuste apagado, las páginas MUST NOT cambiar. El primer bloque visible de la página MUST
+mostrarse siempre desde el primer momento.
+
+#### Scenario: Setting off
+- **WHEN** el proyecto no activa el ajuste
+- **THEN** ningún bloque lleva el atributo de aparición ni cambia su aspecto
+
+#### Scenario: Setting on
+- **WHEN** el proyecto activa el ajuste y un visitante baja por la página
+- **THEN** cada bloque, salvo el primero, aparece al entrar en pantalla
+
+#### Scenario: Leading block
+- **WHEN** el proyecto activa el ajuste y el primer bloque es un Hero
+- **THEN** el Hero se muestra completo desde que carga la página, sin fundido
+
+### Requirement: Revealing never hides content from the visitor
+Un bloque con aparición al entrar en pantalla SHALL mostrarse completo y sin animación sin
+JavaScript, con movimiento reducido, en la vista previa del editor y al imprimir. Si el
+observador de intersección no está disponible o no responde, el contenido SHALL mostrarse a
+los pocos segundos. La aparición MUST animar solo `transform` y `opacity`.
+
+#### Scenario: Reduced motion
+- **WHEN** el sistema del visitante pide movimiento reducido
+- **THEN** todos los bloques se muestran completos desde el principio
+
+#### Scenario: Without JavaScript
+- **WHEN** la página se abre sin JavaScript
+- **THEN** todos los bloques se muestran completos
+
+#### Scenario: Editor preview
+- **WHEN** un editor abre la vista previa de una página
+- **THEN** todos los bloques se muestran completos, sin animación
+
+#### Scenario: Observer does not respond
+- **WHEN** el navegador no entrega las intersecciones, por ejemplo con la pestaña en segundo plano
+- **THEN** pasados unos segundos todos los bloques se muestran
+
+#### Scenario: Printing
+- **WHEN** el visitante imprime la página
+- **THEN** todos los bloques se imprimen visibles

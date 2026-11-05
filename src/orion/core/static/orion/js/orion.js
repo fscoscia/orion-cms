@@ -30,6 +30,44 @@ function loadLeaflet(cssUrl, jsUrl) {
   return leafletPromise;
 }
 
+/*
+ * Blocks marked data-reveal (ORION_BLOCK_REVEAL) appear as they enter the screen. CSS
+ * hides them only when scripts run, so this must never leave one hidden: without an
+ * observer they all show, and if the observer does not answer in a few seconds (for
+ * example a tab in the background) they show too.
+ */
+(() => {
+  const items = Array.from(document.querySelectorAll("[data-reveal]"));
+  if (items.length === 0) {
+    return;
+  }
+  const show = (item) => item.classList.add("is-revealed");
+  if (!("IntersectionObserver" in window)) {
+    items.forEach(show);
+    return;
+  }
+  let hasAnswered = false;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      hasAnswered = true;
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          show(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: "0px 0px -10% 0px" },
+  );
+  items.forEach((item) => observer.observe(item));
+  window.setTimeout(() => {
+    if (!hasAnswered) {
+      observer.disconnect();
+      items.forEach(show);
+    }
+  }, 3000);
+})();
+
 document.addEventListener("alpine:init", () => {
   /* A disclosure: a button that shows and hides a panel. */
   const disclosure = () => ({
@@ -362,6 +400,89 @@ document.addEventListener("alpine:init", () => {
         event.preventDefault();
         this.previous();
       }
+    },
+  }));
+
+  /*
+   * The time left until a deadline. Pages are cached, so the browser works it out from
+   * the deadline written in the page. Without JavaScript the written date is all there
+   * is, and the clock stays hidden.
+   */
+  window.Alpine.data("countdown", () => ({
+    days: "0",
+    hours: "00",
+    minutes: "00",
+    seconds: "00",
+    timer: null,
+
+    init() {
+      const deadline = Date.parse(this.$root.dataset.deadline);
+      if (Number.isNaN(deadline)) {
+        return;
+      }
+      this.$refs.clock.hidden = false;
+      this.tick(deadline);
+      if (Date.now() < deadline) {
+        this.timer = window.setInterval(() => this.tick(deadline), 1000);
+      }
+    },
+
+    destroy() {
+      window.clearInterval(this.timer);
+    },
+
+    tick(deadline) {
+      const pad = (number) => String(number).padStart(2, "0");
+      const remaining = Math.max(0, deadline - Date.now());
+      const total = Math.floor(remaining / 1000);
+      this.days = String(Math.floor(total / 86400));
+      this.hours = pad(Math.floor((total % 86400) / 3600));
+      this.minutes = pad(Math.floor((total % 3600) / 60));
+      this.seconds = pad(total % 60);
+      if (remaining === 0) {
+        window.clearInterval(this.timer);
+        // The editor's message replaces the zeros, when there is one.
+        if (this.$refs.closed) {
+          this.$refs.clock.hidden = true;
+          this.$refs.closed.hidden = false;
+        }
+      }
+    },
+  }));
+
+  /*
+   * A marquee that is still until this runs: it starts the movement, which CSS only
+   * plays when the visitor has not asked for reduced motion, and shows the pause
+   * button. The pointer over the marquee pauses it too (see orion.css).
+   */
+  window.Alpine.data("marquee", () => ({
+    isPaused: false,
+
+    init() {
+      this.$root.classList.add("is-moving");
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+      if (!prefersReducedMotion) {
+        this.$refs.toggle.hidden = false;
+      }
+    },
+
+    get stateClass() {
+      return this.isPaused ? "is-paused" : "";
+    },
+
+    get pressed() {
+      return this.isPaused ? "true" : "false";
+    },
+
+    get label() {
+      const { labelPause, labelPlay } = this.$root.dataset;
+      return this.isPaused ? labelPlay : labelPause;
+    },
+
+    toggle() {
+      this.isPaused = !this.isPaused;
     },
   }));
 

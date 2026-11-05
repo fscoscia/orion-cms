@@ -5,9 +5,14 @@
     {% for card in value.cards %}
       <li class="flex flex-col overflow-hidden rounded-lg border border-line bg-surface">
         {% if card.image %}
-          {% responsive_image card.image "card" alt=card.image.contextual_alt_text class_name="aspect-8/5 h-auto w-full object-cover" %}
+          {% if value.image_fit == "contain" %}
+            {% responsive_image card.image "card" alt=card.image.contextual_alt_text class_name="aspect-8/5 h-auto w-full bg-surface-muted object-contain p-4" %}
+          {% else %}
+            {% responsive_image card.image "card" alt=card.image.contextual_alt_text class_name="aspect-8/5 h-auto w-full object-cover" %}
+          {% endif %}
         {% endif %}
         <div class="flex flex-1 flex-col gap-3 p-6">
+          {% if card.tag %}<p class="orion-eyebrow">{{ card.tag }}</p>{% endif %}
           <h3 class="text-xl font-semibold">{{ card.title }}</h3>
           {% if card.text %}<p class="text-ink-muted">{{ card.text }}</p>{% endif %}
           {% if card.link.is_visible %}

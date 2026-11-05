@@ -1,0 +1,16 @@
+{% load i18n orion_core %}
+{# Still by default: JavaScript starts the movement and shows the pause button. #}
+<section class="orion-block orion-marquee block-marquee--{{ value.style }}" x-data="marquee" x-bind:class="stateClass" data-speed="{{ value.speed }}" data-label-pause="{% translate 'Pause the marquee' %}" data-label-play="{% translate 'Resume the marquee' %}">
+  <div class="orion-marquee__viewport">
+    <div class="orion-marquee__track">
+      {% include "orion/blocks/includes/marquee_group.html" with is_copy=False %}
+      {% include "orion/blocks/includes/marquee_group.html" with is_copy=True %}
+    </div>
+  </div>
+  <div class="mx-auto flex max-w-6xl justify-end px-4 pb-2">
+    <button type="button" class="orion-marquee__toggle" x-ref="toggle" x-on:click="toggle" x-bind:aria-pressed="pressed" x-bind:aria-label="label" hidden>
+      <svg class="orion-marquee__icon orion-marquee__icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+      <svg class="orion-marquee__icon orion-marquee__icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+{% load i18n orion_core %}
+<section class="orion-block block-countdown--{{ value.style }} mx-auto max-w-6xl px-4 py-12">
+  {# The page is cached, so the browser works out the time left from the deadline. #}
+  <div class="orion-on-dark orion-countdown space-y-6 rounded-2xl bg-primary-900 px-6 py-12 text-center text-white md:px-12" x-data="countdown" data-deadline="{{ value.deadline|date:'c' }}">
+    {% include "orion/blocks/includes/title.html" with title=value.title %}
+    <p class="text-lg text-primary-100">{{ value.deadline|date:"DATETIME_FORMAT" }}</p>
+    {# Not announced every second: a timer is not a live region. #}
+    <div class="orion-countdown__clock" role="timer" x-ref="clock" hidden>
+      <div class="orion-countdown__unit"><strong x-text="days"></strong><span>{% translate "Days" %}</span></div>
+      <div class="orion-countdown__unit"><strong x-text="hours"></strong><span>{% translate "Hours" %}</span></div>
+      <div class="orion-countdown__unit"><strong x-text="minutes"></strong><span>{% translate "Minutes" %}</span></div>
+      <div class="orion-countdown__unit"><strong x-text="seconds"></strong><span>{% translate "Seconds" %}</span></div>
+    </div>
+    {% if value.closed_message %}<p class="orion-countdown__closed text-xl font-semibold" x-ref="closed" hidden>{{ value.closed_message }}</p>{% endif %}
+    {% include "orion/blocks/includes/buttons.html" with buttons=value.buttons class_name="justify-center" %}
+  </div>
+</section>

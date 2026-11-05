@@ -1,0 +1,9 @@
+{% load orion_core %}{# One pass of the marquee. The copy that closes the loop is hidden from screen readers. #}
+<ul class="orion-marquee__group{% if is_copy %} orion-marquee__group--copy{% endif %}"{% if is_copy %} aria-hidden="true"{% endif %}>
+  {% for phrase in value.phrases %}<li class="orion-marquee__phrase">{{ phrase }}</li>{% endfor %}
+  {% for logo in value.logos %}
+    <li class="orion-marquee__logo">
+      {% if is_copy %}{% responsive_image logo.image "logo" alt="" class_name="h-12 w-auto object-contain" is_lazy=False %}{% else %}{% responsive_image logo.image "logo" alt=logo.name class_name="h-12 w-auto object-contain" is_lazy=False %}{% endif %}
+    </li>
+  {% endfor %}
+</ul>

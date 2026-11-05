@@ -18,6 +18,7 @@ from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.html import format_html, format_html_join
 from django.utils.module_loading import import_string
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from wagtail import blocks
 from wagtail.admin.telepath import register
@@ -384,6 +385,12 @@ class CardBlock(blocks.StructBlock):
         require_destination=False,
         help_text=_("Optional. The text defaults to the page title."),
     )
+    tag = blocks.CharBlock(
+        label=_("Tag"),
+        required=False,
+        max_length=40,
+        help_text=_("Optional. A short label shown above the title."),
+    )
 
     class Meta:
         icon = "doc-full"
@@ -401,6 +408,15 @@ class CardsBlock(BaseContentBlock):
         default="3",
     )
     cards = blocks.ListBlock(CardBlock(), label=_("Cards"), min_num=1)
+    image_fit = blocks.ChoiceBlock(
+        label=_("Images"),
+        choices=[
+            ("cover", _("Cropped to fill the space")),
+            ("contain", _("Whole image, uncropped")),
+        ],
+        default="cover",
+        help_text=_("Use the whole image for illustrations and logos."),
+    )
 
     def get_preview_value(self):
         return with_sample_images(
@@ -1010,6 +1026,141 @@ class CarouselBlock(BaseContentBlock):
         }
 
 
+class StepBlock(blocks.StructBlock):
+    title = blocks.CharBlock(label=_("Title"), max_length=80)
+    text = blocks.TextBlock(label=_("Text"), required=False, max_length=300)
+    image = ImageBlock(label=_("Image"), required=False)
+
+    class Meta:
+        icon = "list-ol"
+        label = _("Step")
+
+
+class StepsBlock(BaseContentBlock):
+    style_key = "steps"
+
+    eyebrow = EyebrowBlock()
+    title = HighlightedTitleBlock(required=False)
+    steps = blocks.ListBlock(
+        StepBlock(),
+        label=_("Steps"),
+        min_num=2,
+        max_num=12,
+        help_text=_("They are numbered automatically, in this order."),
+    )
+
+    class Meta:
+        icon = "list-ol"
+        label = _("Steps")
+        description = _("Numbered steps, one after the other, such as a process.")
+        template = "orion/blocks/steps.html"
+        preview_value = {
+            "title": "<p>How it <b>works</b></p>",
+            "steps": [
+                {"title": "First step", "text": "A short description."},
+                {"title": "Second step", "text": "A short description."},
+                {"title": "Third step", "text": "A short description."},
+            ],
+        }
+
+
+class CountdownBlock(BaseContentBlock):
+    style_key = "countdown"
+
+    eyebrow = EyebrowBlock()
+    title = HighlightedTitleBlock(required=False)
+    deadline = blocks.DateTimeBlock(
+        label=_("Deadline"),
+        help_text=_("The countdown ends at this date and time."),
+    )
+    closed_message = blocks.CharBlock(
+        label=_("Message when it ends"),
+        required=False,
+        max_length=200,
+        help_text=_("Optional. Replaces the countdown once the deadline has passed."),
+    )
+    buttons = button_list(max_num=1)
+
+    class Meta:
+        icon = "time"
+        label = _("Countdown")
+        description = _("The time left until a deadline, with an optional button.")
+        template = "orion/blocks/countdown.html"
+        preview_value = {
+            "title": "<p>Applications <b>close soon</b></p>",
+            "deadline": "2099-12-31T23:59:00+00:00",
+        }
+
+
+class MarqueeLogoBlock(blocks.StructBlock):
+    image = ImageChooserBlock(label=_("Logo"))
+    name = blocks.CharBlock(
+        label=_("Name"),
+        max_length=100,
+        help_text=_("Read by screen readers and shown if the image fails to load."),
+    )
+
+    class Meta:
+        icon = "image"
+        label = _("Logo")
+
+
+class MarqueeBlock(BaseContentBlock):
+    style_key = "marquee"
+
+    phrases = blocks.ListBlock(
+        blocks.CharBlock(max_length=40),
+        label=_("Phrases"),
+        required=False,
+        default=[],
+        max_num=12,
+    )
+    logos = blocks.ListBlock(
+        MarqueeLogoBlock(),
+        label=_("Logos"),
+        required=False,
+        default=[],
+        max_num=12,
+    )
+    speed = blocks.ChoiceBlock(
+        label=_("Speed"),
+        choices=[
+            ("slow", _("Slow")),
+            ("normal", _("Normal")),
+            ("fast", _("Fast")),
+        ],
+        default="normal",
+    )
+
+    def clean(self, value):
+        value = super().clean(value)
+        if not value["phrases"] and not value["logos"]:
+            raise blocks.StructBlockValidationError(
+                non_block_errors=[
+                    ValidationError(_("Add at least one phrase or one logo."))
+                ]
+            )
+        return value
+
+    def get_preview_value(self):
+        return with_sample_images(
+            super().get_preview_value(),
+            logos=["logo-1.svg", "logo-2.svg", "logo-3.svg"],
+        )
+
+    class Meta:
+        icon = "repeat"
+        label = _("Marquee")
+        description = _(
+            "Short phrases and logos that slide in a loop, with a pause button."
+        )
+        template = "orion/blocks/marquee.html"
+        preview_value = {
+            "phrases": ["A short phrase", "Another phrase"],
+            "logos": [{"name": "Logo 1"}, {"name": "Logo 2"}, {"name": "Logo 3"}],
+        }
+
+
 class ContentStreamBlock(blocks.StreamBlock):
     """Every Orion content block, ready to use as a page body.
 
@@ -1036,6 +1187,9 @@ class ContentStreamBlock(blocks.StreamBlock):
     form = FormBlock()
     video = VideoBlock()
     carousel = CarouselBlock()
+    steps = StepsBlock()
+    countdown = CountdownBlock()
+    marquee = MarqueeBlock()
 
     def clean(self, value):
         # The hero holds the page's h1, so it can only open the body.
@@ -1070,6 +1224,7 @@ class ContentStreamBlock(blocks.StreamBlock):
             (
                 child.block_type,
                 get_anchor(child.value),
+                get_style(child.value),
                 child.block.render(
                     child.value,
                     context={
@@ -1084,13 +1239,29 @@ class ContentStreamBlock(blocks.StreamBlock):
             )
         ]
         # A block may render nothing, such as latest articles without articles.
+        rendered_children = [child for child in rendered_children if child[3].strip()]
+        # The editor's preview shows every block, so nothing waits to be revealed.
+        request = parent_context.get("request")
+        reveals = settings.ORION_BLOCK_REVEAL and not getattr(
+            request, "is_preview", False
+        )
+        # The style goes on the wrapper too, so a project can paint the block's band
+        # edge to edge. An attribute, not a class: projects already style the class.
+        # The first block is never revealed: it is what the visitor sees first.
         return format_html_join(
             "\n",
-            '<div class="block-{}"{}>{}</div>',
+            '<div class="block-{}"{}{}{}>{}</div>',
             [
-                (name, format_html(' id="{}"', anchor) if anchor else "", html)
-                for name, anchor, html in rendered_children
-                if html.strip()
+                (
+                    name,
+                    format_html(' id="{}"', anchor) if anchor else "",
+                    format_html(' data-block-style="{}"', style) if style else "",
+                    mark_safe(" data-reveal") if reveals and position > 0 else "",
+                    html,
+                )
+                for position, (name, anchor, style, html) in enumerate(
+                    rendered_children
+                )
             ],
         )
 
@@ -1124,6 +1295,12 @@ class BodyStreamField(StreamField):
 def get_anchor(value):
     """A block value's anchor; blocks without the field have none."""
     return getattr(value, "get", lambda *_args: None)("anchor")
+
+
+def get_style(value):
+    """The style a block value uses, unless it is the default one."""
+    style = getattr(value, "get", lambda *_args: None)("style")
+    return None if style in (None, DEFAULT_STYLE) else style
 
 
 def is_visible(value):

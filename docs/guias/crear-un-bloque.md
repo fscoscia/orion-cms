@@ -2,7 +2,7 @@
 
 Para quien construye un sitio sobre Orion y necesita un bloque que no está entre los
 que trae el paquete (ver "Bloques de contenido" en el README). Antes de escribir uno,
-revisar si alguno de los diecisiete bloques de Orion ya alcanza, combinado con sus estilos
+revisar si alguno de los veinte bloques de Orion ya alcanza, combinado con sus estilos
 (`ORION_BLOCK_STYLES`) o con un template propio que reemplace el suyo.
 
 ## 1. Elegir la base
@@ -128,3 +128,9 @@ campos, porque esas claves ya están guardadas en el contenido existente.
   propio.
 - Si tiene estilos en `ORION_BLOCK_STYLES`, el campo "Estilo" aparece en los ajustes
   del bloque y cambia la clase CSS que recibe el template.
+  La envoltura del bloque (`<div class="block-…">`) lleva además `data-block-style` con
+  el estilo elegido, salvo el de por defecto: sirve para pintar una banda de color de
+  borde a borde sin tocar el marcado interno del bloque.
+- Si el proyecto activa `ORION_BLOCK_REVEAL`, la envoltura de cada bloque (salvo el primero)
+  lleva `data-reveal` y aparece al entrar en pantalla; el bloque propio no necesita hacer
+  nada, y el contenido se ve completo sin JavaScript o con movimiento reducido.

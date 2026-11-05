@@ -19,13 +19,17 @@ from demo.models import DemoPage
 from orion.core.blocks import (
     BaseContentBlock,
     BodyStreamField,
+    CardsBlock,
     CarouselBlock,
     ContentStreamBlock,
+    CountdownBlock,
     HeroBlock,
     HighlightedTitleBlock,
     ImageContentBlock,
+    MarqueeBlock,
     RichTextBodyBlock,
     SiteStreamBlock,
+    StepsBlock,
     VideoBlock,
 )
 from orion.core.blocks.content import BlockStyleSelect
@@ -53,6 +57,9 @@ BLOCK_TYPES = [
     "form",
     "video",
     "carousel",
+    "steps",
+    "countdown",
+    "marquee",
 ]
 
 MP4 = b"\x00\x00\x00\x18ftypmp42" + b"\x00" * 16
@@ -397,6 +404,175 @@ class TestCardsAndLogos:
         assert 'alt="Acme"' in link
 
 
+class TestCardTagAndImageFit:
+    def test_tag_sits_above_the_title(self, render):
+        html = render(("cards", {"cards": [{"title": "Uno", "tag": "Categoría 1"}]}))
+
+        assert re.search(r'<p class="orion-eyebrow">Categoría 1</p>\s*<h3', html)
+
+    def test_card_without_a_tag_reserves_no_space(self, render):
+        html = render(("cards", {"cards": [{"title": "Uno"}]}))
+
+        assert "orion-eyebrow" not in html
+
+    def test_tag_is_short(self, image_value):
+        block = CardsBlock()
+        value = block.to_python({"cards": [{"title": "Uno", "tag": "x" * 41}]})
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(value)
+
+    def test_images_are_cropped_by_default(self, render, image_value):
+        html = render(
+            ("cards", {"cards": [{"title": "Uno", "image": image_value}]}),
+        )
+
+        assert "object-cover" in html and "object-contain" not in html
+
+    def test_whole_images_are_not_cropped(self, render, image_value):
+        html = render(
+            (
+                "cards",
+                {
+                    "image_fit": "contain",
+                    "cards": [{"title": "Uno", "image": image_value}],
+                },
+            )
+        )
+
+        assert "object-contain" in html and "object-cover" not in html
+
+    def test_tag_is_offered_for_translation(self, publish):
+        page = publish(("cards", {"cards": [{"title": "Uno", "tag": "Etiqueta uno"}]}))
+
+        texts = {
+            segment.string.data
+            for segment in extract_segments(page)
+            if hasattr(segment, "string")
+        }
+
+        assert "Etiqueta uno" in texts
+
+    def test_existing_cards_look_as_before(self, image_value):
+        # Content saved before the new fields has neither the tag nor the fit.
+        block = CardsBlock()
+        value = block.to_python(
+            {"columns": "3", "cards": [{"title": "Uno", "image": image_value["image"]}]}
+        )
+
+        assert value["image_fit"] == "cover"
+        assert not value["cards"][0]["tag"]
+
+
+class TestStyleHook:
+    def test_wrapper_exposes_a_project_style(self, render, settings):
+        settings.ORION_BLOCK_STYLES = {"text": [("dark", "Oscuro")]}
+
+        html = render(("text", {"body": "<p>x</p>", "style": "dark"}))
+
+        assert re.search(r'<div class="block-text" data-block-style="dark">', html)
+
+    def test_default_style_adds_no_attribute(self, render):
+        html = render(("text", {"body": "<p>x</p>"}))
+
+        assert "data-block-style" not in html
+        assert '<div class="block-text">' in html
+
+    def test_a_style_that_no_longer_exists_adds_no_attribute(self, render, settings):
+        settings.ORION_BLOCK_STYLES = {"text": [("dark", "Oscuro")]}
+        render(("text", {"body": "<p>x</p>", "style": "dark"}))
+        settings.ORION_BLOCK_STYLES = {}
+
+        html = self_client_html(DemoPage.objects.get(slug="demo"))
+
+        assert "data-block-style" not in html
+
+    def test_classes_and_anchor_do_not_change(self, render, settings):
+        settings.ORION_BLOCK_STYLES = {"text": [("dark", "Oscuro")]}
+
+        html = render(("text", {"body": "<p>x</p>", "style": "dark", "anchor": "uno"}))
+
+        assert re.search(
+            r'<div class="block-text" id="uno" data-block-style="dark">', html
+        )
+        assert "block-text--dark" in html
+        assert html.count("block-text--dark") == 1
+
+
+def self_client_html(page):
+    from django.test import Client
+
+    return Client().get(page.url).content.decode()
+
+
+class TestReveal:
+    def _texts(self, count=3):
+        return [("text", {"body": f"<p>Bloque {n}</p>"}) for n in range(count)]
+
+    def test_setting_is_off_by_default(self, settings):
+        assert settings.ORION_BLOCK_REVEAL is False
+
+    def test_no_block_is_marked_with_the_setting_off(self, render):
+        html = render(*self._texts())
+
+        assert "data-reveal" not in html
+
+    def test_every_block_but_the_first_is_marked_with_the_setting_on(
+        self, render, settings
+    ):
+        settings.ORION_BLOCK_REVEAL = True
+
+        html = render(*self._texts())
+
+        assert html.count("data-reveal") == 2
+        assert '<div class="block-text">' in html
+        assert html.index('<div class="block-text">') < html.index("data-reveal")
+
+    def test_the_first_block_that_renders_is_not_marked(self, render, settings):
+        settings.ORION_BLOCK_REVEAL = True
+        hidden = ("text", {"body": "<p>Oculto</p>", "is_visible": False})
+
+        html = render(hidden, *self._texts(2))
+
+        assert html.count("data-reveal") == 1
+        assert "Oculto" not in html
+
+    def test_a_single_block_is_not_marked(self, render, settings):
+        settings.ORION_BLOCK_REVEAL = True
+
+        html = render(*self._texts(1))
+
+        assert "data-reveal" not in html
+
+    def test_the_editor_preview_shows_every_block(self, settings, publish):
+        from types import SimpleNamespace
+
+        settings.ORION_BLOCK_REVEAL = True
+        page = publish(*self._texts())
+
+        html = page.body.render_as_block(
+            context={"request": SimpleNamespace(is_preview=True)}
+        )
+
+        assert "data-reveal" not in html
+
+    def test_the_marker_does_not_replace_the_style_hook_or_the_anchor(
+        self, render, settings
+    ):
+        settings.ORION_BLOCK_REVEAL = True
+        settings.ORION_BLOCK_STYLES = {"text": [("dark", "Oscuro")]}
+
+        html = render(
+            *self._texts(1),
+            ("text", {"body": "<p>x</p>", "style": "dark", "anchor": "dos"}),
+        )
+
+        assert re.search(
+            r'<div class="block-text" id="dos" data-block-style="dark" data-reveal>',
+            html,
+        )
+
+
 class TestContact:
     @pytest.fixture
     def site_settings(self):
@@ -717,7 +893,16 @@ class TestEditor:
 
     @pytest.mark.parametrize(
         "block_type",
-        ["hero", "image", "gallery", "image_text", "cards", "logos", "latest_articles"],
+        [
+            "hero",
+            "image",
+            "gallery",
+            "image_text",
+            "cards",
+            "logos",
+            "latest_articles",
+            "marquee",
+        ],
     )
     def test_previews_use_sample_content_without_touching_the_site(
         self, admin_client, block_type
@@ -790,6 +975,243 @@ class TestTranslation:
         assert 'href="/en/services/"' in html
 
 
+class TestSteps:
+    def test_steps_are_numbered_in_order(self, render):
+        html = render(
+            (
+                "steps",
+                {"steps": [{"title": "Uno"}, {"title": "Dos"}, {"title": "Tres"}]},
+            )
+        )
+
+        assert html.count("<ol") == 1
+        numbers = re.findall(r"orion-steps__number[^>]*>(\d+)<", html)
+        assert numbers == ["1", "2", "3"]
+        assert html.index("Uno") < html.index("Dos") < html.index("Tres")
+
+    def test_reordering_renumbers(self, render):
+        html = render(
+            (
+                "steps",
+                {"steps": [{"title": "Segundo"}, {"title": "Primero"}]},
+            )
+        )
+
+        assert re.search(r">1<.*?Segundo.*?>2<.*?Primero", html, re.S)
+
+    def test_step_titles_sit_under_the_block_title(self, render):
+        html = render(
+            (
+                "steps",
+                {
+                    "title": "<p>Cómo</p>",
+                    "steps": [{"title": "Uno"}, {"title": "Dos"}],
+                },
+            )
+        )
+
+        assert re.search(r"<h3[^>]*>Uno</h3>", html)
+
+    def test_step_titles_are_h2_without_a_block_title(self, render):
+        html = render(("steps", {"steps": [{"title": "Uno"}, {"title": "Dos"}]}))
+
+        assert re.search(r"<h2[^>]*>Uno</h2>", html)
+
+    def test_text_and_image_are_optional(self, render, image_value):
+        html = render(
+            (
+                "steps",
+                {
+                    "steps": [
+                        {"title": "Con todo", "text": "Detalle", "image": image_value},
+                        {"title": "Solo título"},
+                    ]
+                },
+            )
+        )
+
+        assert "Detalle" in html
+        assert html.count("<picture") == 1
+
+    def test_needs_two_steps(self):
+        block = StepsBlock()
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(block.to_python({"steps": [{"title": "Uno"}]}))
+
+    def test_allows_twelve_steps_at_most(self):
+        block = StepsBlock()
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(block.to_python({"steps": [{"title": "Paso"}] * 13}))
+
+
+DEADLINE = "2099-12-31T23:59:00+00:00"
+
+
+class TestCountdown:
+    def test_deadline_is_written_for_the_browser_and_for_people(self, render):
+        html = render(("countdown", {"title": "<p>Cierre</p>", "deadline": DEADLINE}))
+
+        assert 'x-data="countdown"' in html
+        assert f'data-deadline="{DEADLINE}"' in html
+        assert "2099" in html
+
+    def test_clock_starts_hidden_and_is_not_a_live_region(self, render):
+        html = render(("countdown", {"deadline": DEADLINE}))
+
+        assert re.search(r'class="orion-countdown__clock"[^>]*\bhidden\b', html)
+        assert 'role="timer"' in html
+        assert "aria-live" not in html
+
+    def test_closing_message_is_hidden_until_the_deadline_passes(self, render):
+        html = render(
+            ("countdown", {"deadline": DEADLINE, "closed_message": "Ya cerró"})
+        )
+
+        assert re.search(r"orion-countdown__closed[^>]*\bhidden\b[^>]*>Ya cerró<", html)
+
+    def test_without_a_message_there_is_no_closing_element(self, render):
+        html = render(("countdown", {"deadline": DEADLINE}))
+
+        assert "orion-countdown__closed" not in html
+
+    def test_button_is_optional(self, render):
+        html = render(
+            (
+                "countdown",
+                {
+                    "deadline": DEADLINE,
+                    "buttons": [{"label": "Postular", "url": "https://example.com/"}],
+                },
+            )
+        )
+
+        assert "Postular" in html
+
+    def test_needs_a_deadline(self):
+        block = CountdownBlock()
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(block.to_python({"title": "<p>Cierre</p>"}))
+
+
+class TestMarquee:
+    def test_phrases_and_logos_are_read_once(self, render, image):
+        html = render(
+            (
+                "marquee",
+                {
+                    "phrases": ["Movilidad", "Logística"],
+                    "logos": [{"image": image.pk, "name": "Socio"}],
+                },
+            )
+        )
+
+        groups = html.split("orion-marquee__group")[1:]
+        copy = html.split("orion-marquee__group--copy")[1]
+        assert 'aria-hidden="true"' in copy.split(">", 1)[0]
+        assert html.count("Movilidad") == 2 and html.count("Logística") == 2
+        assert 'alt="Socio"' in html and html.count('alt="Socio"') == 1
+        assert len(groups) >= 2
+
+    def test_is_still_until_javascript_starts_it(self, render):
+        html = render(("marquee", {"phrases": ["Una frase"]}))
+
+        assert 'x-data="marquee"' in html
+        assert "is-moving" not in html
+        assert re.search(r'class="orion-marquee__toggle"[^>]*\bhidden\b', html)
+
+    def test_speed_and_labels(self, render):
+        html = render(("marquee", {"phrases": ["Frase"], "speed": "fast"}))
+
+        assert 'data-speed="fast"' in html
+        assert "data-label-pause=" in html and "data-label-play=" in html
+
+    def test_speed_defaults_to_normal(self):
+        assert MarqueeBlock().child_blocks["speed"].get_default() == "normal"
+
+    def test_needs_a_phrase_or_a_logo(self):
+        block = MarqueeBlock()
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(block.to_python({"phrases": [], "logos": []}))
+
+    def test_a_phrase_alone_is_enough(self):
+        block = MarqueeBlock()
+
+        block.clean(block.to_python({"phrases": ["Una frase"], "logos": []}))
+
+    def test_a_phrase_is_short(self):
+        block = MarqueeBlock()
+
+        with pytest.raises(StructBlockValidationError):
+            block.clean(block.to_python({"phrases": ["x" * 41]}))
+
+
+class TestStepsCountdownMarqueeTranslation:
+    def test_labels_and_help_are_in_spanish(self):
+        from django.utils import translation
+
+        blocks = ContentStreamBlock().child_blocks
+        with translation.override("es"):
+            labels = {
+                name: str(blocks[name].label)
+                for name in ("steps", "countdown", "marquee")
+            }
+            descriptions = [
+                str(blocks[name].get_description())
+                for name in ("steps", "countdown", "marquee")
+            ]
+            speed = str(blocks["marquee"].child_blocks["speed"].label)
+
+        assert labels == {
+            "steps": "Pasos",
+            "countdown": "Cuenta regresiva",
+            "marquee": "Cinta",
+        }
+        assert all(
+            "Numbered" not in text and "slide" not in text for text in descriptions
+        )
+        assert speed == "Velocidad"
+
+    def test_their_texts_are_offered(self, publish, image):
+        page = publish(
+            (
+                "steps",
+                {
+                    "title": "<p>Cómo</p>",
+                    "steps": [
+                        {"title": "Postulá", "text": "Completá el formulario"},
+                        {"title": "Evaluación"},
+                    ],
+                },
+            ),
+            (
+                "countdown",
+                {
+                    "title": "<p>Cierre</p>",
+                    "deadline": DEADLINE,
+                    "closed_message": "Postulaciones cerradas",
+                },
+            ),
+            ("marquee", {"phrases": ["Movilidad"]}),
+        )
+
+        texts = {
+            segment.string.data
+            for segment in extract_segments(page)
+            if hasattr(segment, "string")
+        }
+
+        assert {
+            "Postulá",
+            "Completá el formulario",
+            "Postulaciones cerradas",
+            "Movilidad",
+        } <= texts
+
+
 class TestNewBlockTranslation:
     def test_video_and_carousel_texts_are_offered(self, publish, video, image_value):
         page = publish(
@@ -828,6 +1250,8 @@ TITLED_BLOCKS = {
     "form",
     "video",
     "carousel",
+    "steps",
+    "countdown",
 }
 
 
@@ -997,6 +1421,8 @@ class TestDefinitionMigrations:
         ("module", "field"),
         [
             ("orion.pages.migrations.0008_block_eyebrow_and_anchors", "body"),
+            ("orion.pages.migrations.0009_steps_countdown_marquee_blocks", "body"),
+            ("orion.pages.migrations.0010_card_tag_and_image_fit", "body"),
             ("orion.navigation.migrations.0003_link_anchors", "items"),
         ],
     )

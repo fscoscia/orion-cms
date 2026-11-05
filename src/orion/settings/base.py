@@ -488,3 +488,7 @@ LOGGING = {
 # Orion
 
 ORION_ADMIN_PATH = validate_admin_path(env_str("ORION_ADMIN_PATH", "admin/"))
+
+# Blocks fade in with a short slide as they enter the screen. Off by default: the
+# content is always shown without JavaScript, with reduced motion and in the preview.
+ORION_BLOCK_REVEAL = False

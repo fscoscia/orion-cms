@@ -220,6 +220,17 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
   Los enlaces a una página pueden apuntar a una de sus secciones, y un ítem de menú con
   ancla no se marca como actual. Un proyecto que reemplazó `hero.html` debe sumar el
   antetítulo, y uno con un campo `anchor` propio no debe repetir el `id` en su plantilla.
+- Bloques **Pasos** (2 a 12 pasos numerados), **Cuenta regresiva** (hasta una fecha límite,
+  calculada en el navegador, con mensaje opcional al terminar) y **Cinta** (frases y logos
+  que se deslizan, con pausa, quieta sin JavaScript o con movimiento reducido). Quien tiene
+  tipos de página propios sobre `BodyPage` debe ejecutar `makemigrations`: cambia la
+  definición de los bloques, no el contenido.
+- Etiqueta opcional por tarjeta y ajuste de imagen del bloque Tarjetas (recortada o
+  completa), y `data-block-style` en la envoltura de cada bloque con un estilo distinto del
+  de por defecto, para pintar bandas de borde a borde sin depender del marcado interno.
+- `ORION_BLOCK_REVEAL` (apagado por defecto): los bloques, salvo el primero, aparecen con
+  un fundido al entrar en pantalla. Sin JavaScript, con movimiento reducido, en la vista
+  previa y al imprimir se ven completos, y si el navegador no responde se muestran todos.
 
 ### Changed
 
@@ -244,6 +255,8 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 
 ### Fixed
 
+- `orion_generate_renditions` también regenera los recortes cuyo archivo se perdió del
+  almacenamiento: antes los daba por existentes y la imagen salía rota (404).
 - El aviso de publicación programada detenida salía en inglés con dos o más atrasadas:
   faltaba una forma del plural en español; una prueba revisa todos los plurales.
 - Leaflet incluido con sus imágenes y sin la referencia a un mapa de código ausente, que

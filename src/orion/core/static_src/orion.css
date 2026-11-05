@@ -306,8 +306,119 @@
 
   .orion-video__play[hidden],
   .orion-video__toggle[hidden],
-  .orion-carousel__controls[hidden] {
+  .orion-carousel__controls[hidden],
+  .orion-countdown__clock[hidden],
+  .orion-countdown__closed[hidden],
+  .orion-marquee__toggle[hidden] {
     display: none;
+  }
+
+  .orion-countdown__clock {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .orion-countdown__unit {
+    min-width: 5.5rem;
+    border-radius: 0.75rem;
+    background-color: rgb(255 255 255 / 0.1);
+    padding: 0.75rem 1rem;
+  }
+
+  .orion-countdown__unit strong {
+    display: block;
+    font-size: 2.25rem;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .orion-countdown__unit span {
+    font-size: 0.875rem;
+    color: var(--color-primary-100);
+  }
+
+  /* Still and wrapped by default; the movement is added below. */
+  .orion-marquee__viewport {
+    overflow: hidden;
+  }
+
+  .orion-marquee__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem 2.5rem;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding: 1.5rem 1rem;
+  }
+
+  .orion-marquee__group--copy {
+    display: none;
+  }
+
+  .orion-marquee__phrase {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .orion-marquee[data-speed="slow"] {
+    --marquee-duration: 70s;
+  }
+
+  .orion-marquee[data-speed="normal"] {
+    --marquee-duration: 40s;
+  }
+
+  .orion-marquee[data-speed="fast"] {
+    --marquee-duration: 22s;
+  }
+
+  .orion-marquee__toggle {
+    border-radius: 9999px;
+    background-color: rgb(0 0 0 / 0.6);
+    padding: 0.5rem;
+    color: #fff;
+  }
+
+  .orion-marquee__icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .orion-marquee__toggle[aria-pressed="true"] .orion-marquee__icon--pause,
+  .orion-marquee__toggle[aria-pressed="false"] .orion-marquee__icon--play {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .orion-marquee.is-moving .orion-marquee__track {
+      display: flex;
+      width: max-content;
+      animation: orion-marquee var(--marquee-duration, 40s) linear infinite;
+    }
+
+    .orion-marquee.is-moving .orion-marquee__group {
+      flex-shrink: 0;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      max-width: none;
+      margin-inline: 0;
+      padding-inline: 1.25rem;
+    }
+
+    .orion-marquee.is-moving .orion-marquee__group--copy {
+      display: flex;
+    }
+
+    .orion-marquee.is-moving.is-paused .orion-marquee__track,
+    .orion-marquee.is-moving .orion-marquee__viewport:hover .orion-marquee__track {
+      animation-play-state: paused;
+    }
   }
 
   .orion-carousel__track {
@@ -436,5 +547,36 @@
 
   .site-nav__submenu.is-enhanced.is-open .site-nav__submenu-list {
     display: block;
+  }
+}
+
+/*
+ * Blocks that fade in on entering the screen (ORION_BLOCK_REVEAL). They are hidden only
+ * when scripts run and the visitor accepts motion; the script then adds .is-revealed.
+ * Without either, or on paper, everything stays visible.
+ */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity 0.6s ease-out,
+      transform 0.6s ease-out;
+  }
+
+  [data-reveal]:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+}
+
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@keyframes orion-marquee {
+  to {
+    transform: translateX(-50%);
   }
 }

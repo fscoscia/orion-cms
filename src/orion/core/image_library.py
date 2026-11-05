@@ -74,8 +74,27 @@ def prepare_upload(sender, instance, **kwargs):
         reduce_original(instance)
 
 
-def generate_renditions(image):
-    """Create the renditions of every named size that the image does not have yet."""
+def _delete_lost_renditions(image):
+    """Delete the renditions whose file is gone from the storage, so they are made
+    again. Every file is checked before any row is deleted: a storage error leaves the
+    renditions as they were."""
+    lost = [
+        rendition.pk
+        for rendition in image.renditions.all()
+        if not rendition.file.storage.exists(rendition.file.name)
+    ]
+    if lost:
+        image.renditions.filter(pk__in=lost).delete()
+
+
+def generate_renditions(image, repair=False):
+    """Create the renditions of every named size that the image does not have yet.
+
+    With ``repair``, a rendition whose file is missing from the storage counts as
+    missing too. It asks the storage once per rendition, so only the command uses it.
+    """
+    if repair:
+        _delete_lost_renditions(image)
     existing = set(image.renditions.values_list("filter_spec", "focal_point_key"))
     # A new focal point needs new crops: Wagtail keys renditions by both.
     # Filters as Wagtail stores them (``preserve-svg`` resolved for the image).

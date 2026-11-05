@@ -4,6 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core.signals import request_started
@@ -147,6 +148,65 @@ class TestRenditions:
         generate_renditions(image)
 
         assert generate_renditions(image) == 0
+
+    @pytest.mark.parametrize("make_image", [_image, _svg])
+    def test_command_repairs_a_rendition_whose_file_is_lost(self, make_image):
+        image = make_image()
+        generate_renditions(image)
+        lost = image.renditions.first()
+        lost_pk, lost_name = lost.pk, lost.file.name
+        total = image.renditions.count()
+        lost.file.storage.delete(lost_name)
+        assert not lost.file.storage.exists(lost_name)
+        out = io.StringIO()
+
+        call_command("orion_generate_renditions", stdout=out)
+
+        assert "Renditions created: 1." in out.getvalue()
+        assert image.renditions.count() == total
+        assert not image.renditions.filter(pk=lost_pk).exists()
+        assert all(
+            rendition.file.storage.exists(rendition.file.name)
+            for rendition in image.renditions.all()
+        )
+
+    def test_command_leaves_complete_renditions_alone(self):
+        image = _image()
+        generate_renditions(image)
+        pks = set(image.renditions.values_list("pk", flat=True))
+        out = io.StringIO()
+
+        call_command("orion_generate_renditions", stdout=out)
+
+        assert "Renditions created: 0." in out.getvalue()
+        assert set(image.renditions.values_list("pk", flat=True)) == pks
+
+    def test_storage_failure_deletes_nothing(self, monkeypatch):
+        image = _image()
+        generate_renditions(image)
+        pks = set(image.renditions.values_list("pk", flat=True))
+
+        def broken(self, name):
+            raise OSError("storage down")
+
+        monkeypatch.setattr(FileSystemStorage, "exists", broken)
+        err = io.StringIO()
+        call_command("orion_generate_renditions", stdout=io.StringIO(), stderr=err)
+
+        assert "storage down" in err.getvalue()
+        assert set(image.renditions.values_list("pk", flat=True)) == pks
+
+    def test_upload_does_not_ask_the_storage_about_each_file(self, monkeypatch):
+        image = _image()
+        generate_renditions(image)
+        calls = []
+        monkeypatch.setattr(
+            FileSystemStorage, "exists", lambda self, name: calls.append(name) or True
+        )
+
+        generate_renditions(image)
+
+        assert calls == []
 
 
 class TestSvg:

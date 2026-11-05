@@ -1,7 +1,9 @@
+import datetime
 from pathlib import Path
 
 import pytest
 from django.core.files import File
+from django.utils import timezone
 from wagtail.documents.models import Document
 from wagtail.images.models import Image
 from wagtail.images.tests.utils import get_test_image_file
@@ -363,3 +365,265 @@ class TestSectionLinks:
             "window.innerHeight"
         )
         assert section.is_visible()
+
+
+class TestCountdown:
+    def _countdown(self, delta, **extra):
+        deadline = (timezone.now() + delta).isoformat()
+        return ("countdown", {"title": "<p>Cierre</p>", "deadline": deadline, **extra})
+
+    def test_clock_shows_the_time_left_and_ticks(self, live_server_page, home_page):
+        page = _publish_body(
+            home_page,
+            "cuenta",
+            self._countdown(datetime.timedelta(days=3, hours=2, minutes=5)),
+        )
+        errors = _record_errors(live_server_page)
+
+        live_server_page.goto(page.url)
+        clock = live_server_page.locator(".orion-countdown__clock")
+        clock.wait_for(state="visible")
+        units = live_server_page.locator(".orion-countdown__unit strong")
+        assert units.nth(0).text_content() == "3"
+        assert units.nth(1).text_content() == "02"
+        first = units.nth(3).text_content()
+        live_server_page.wait_for_function(
+            "first => document.querySelectorAll("
+            "'.orion-countdown__unit strong')[3].textContent !== first",
+            arg=first,
+        )
+        assert not [error for error in errors if "Content Security" in error]
+
+    def test_passed_deadline_shows_the_message(self, live_server_page, home_page):
+        page = _publish_body(
+            home_page,
+            "cerrada",
+            self._countdown(
+                -datetime.timedelta(days=1), closed_message="Postulaciones cerradas"
+            ),
+        )
+
+        live_server_page.goto(page.url)
+
+        closed = live_server_page.locator(".orion-countdown__closed")
+        closed.wait_for(state="visible")
+        assert not live_server_page.locator(".orion-countdown__clock").is_visible()
+
+    def test_passed_deadline_without_a_message_shows_zeros(
+        self, live_server_page, home_page
+    ):
+        page = _publish_body(
+            home_page, "ceros", self._countdown(-datetime.timedelta(days=1))
+        )
+
+        live_server_page.goto(page.url)
+
+        units = live_server_page.locator(".orion-countdown__unit strong")
+        units.first.wait_for(state="visible")
+        assert [units.nth(index).text_content() for index in range(4)] == [
+            "0",
+            "00",
+            "00",
+            "00",
+        ]
+
+    def test_without_javascript_the_date_is_shown(
+        self, browser, live_server, home_page
+    ):
+        page = _publish_body(
+            home_page, "sin-js-cuenta", self._countdown(datetime.timedelta(days=3))
+        )
+        context = browser.new_context(java_script_enabled=False)
+        visitor = context.new_page()
+
+        visitor.goto(f"{live_server.url}{page.url}")
+
+        assert not visitor.locator(".orion-countdown__clock").is_visible()
+        assert (
+            str(timezone.now().year + 0)
+            in visitor.locator(".orion-countdown").text_content()
+        )
+        context.close()
+
+
+class TestMarquee:
+    def _marquee(self):
+        return ("marquee", {"phrases": ["Movilidad", "Logística", "Economía"]})
+
+    def _animation(self, page, property_name):
+        return page.locator(".orion-marquee__track").evaluate(
+            f"track => getComputedStyle(track).{property_name}"
+        )
+
+    def test_slides_pauses_and_resumes(self, live_server_page, home_page):
+        page = _publish_body(home_page, "cinta", self._marquee())
+        errors = _record_errors(live_server_page)
+
+        live_server_page.goto(page.url)
+        toggle = live_server_page.locator(".orion-marquee__toggle")
+        toggle.wait_for(state="visible")
+        assert self._animation(live_server_page, "animationName") == "orion-marquee"
+        assert self._animation(live_server_page, "animationPlayState") == "running"
+
+        toggle.click()
+        live_server_page.mouse.move(0, 0)
+        assert toggle.get_attribute("aria-pressed") == "true"
+        assert self._animation(live_server_page, "animationPlayState") == "paused"
+
+        toggle.click()
+        live_server_page.mouse.move(0, 0)
+        assert toggle.get_attribute("aria-pressed") == "false"
+        assert self._animation(live_server_page, "animationPlayState") == "running"
+        assert not [error for error in errors if "Content Security" in error]
+
+    def test_the_pointer_over_the_marquee_pauses_it(self, live_server_page, home_page):
+        page = _publish_body(home_page, "cinta-puntero", self._marquee())
+
+        live_server_page.goto(page.url)
+        live_server_page.locator(".orion-marquee__toggle").wait_for(state="visible")
+        live_server_page.locator(".orion-marquee__viewport").hover()
+
+        assert self._animation(live_server_page, "animationPlayState") == "paused"
+
+    def test_reduced_motion_keeps_it_still_without_a_button(
+        self, live_server_page, home_page
+    ):
+        page = _publish_body(home_page, "cinta-quieta", self._marquee())
+        live_server_page.emulate_media(reduced_motion="reduce")
+
+        live_server_page.goto(page.url)
+        live_server_page.wait_for_timeout(300)
+
+        assert self._animation(live_server_page, "animationName") == "none"
+        assert not live_server_page.locator(".orion-marquee__toggle").is_visible()
+        copy = live_server_page.locator(".orion-marquee__group--copy")
+        assert not copy.is_visible()
+        assert live_server_page.get_by_text("Economía").first.is_visible()
+
+    def test_without_javascript_it_is_still(self, browser, live_server, home_page):
+        page = _publish_body(home_page, "cinta-sin-js", self._marquee())
+        context = browser.new_context(java_script_enabled=False)
+        visitor = context.new_page()
+
+        visitor.goto(f"{live_server.url}{page.url}")
+
+        assert not visitor.locator(".orion-marquee__toggle").is_visible()
+        assert not visitor.locator(".orion-marquee__group--copy").is_visible()
+        assert visitor.get_by_text("Movilidad").first.is_visible()
+        context.close()
+
+
+class TestReveal:
+    """Blocks that appear as they enter the screen (ORION_BLOCK_REVEAL)."""
+
+    def _tall_page(self, home_page, slug):
+        # Enough height that the later blocks start well below the first screen.
+        tall = "<p>" + "Texto largo. " * 400 + "</p>"
+        blocks = [("text", {"body": tall}) for _ in range(4)]
+        return _publish_body(home_page, slug, *blocks)
+
+    def _is_hidden(self, page, index):
+        return (
+            page.locator("[data-reveal]")
+            .nth(index)
+            .evaluate("block => getComputedStyle(block).opacity === '0'")
+        )
+
+    def _wait_until_visible(self, page, index):
+        # The fade takes a moment: opacity is still 0 when the class is added.
+        page.wait_for_function(
+            "index => getComputedStyle("
+            "document.querySelectorAll('[data-reveal]')[index]).opacity === '1'",
+            arg=index,
+        )
+
+    def test_blocks_below_the_fold_wait_and_then_appear(
+        self, live_server_page, home_page, settings
+    ):
+        settings.ORION_BLOCK_REVEAL = True
+        page = self._tall_page(home_page, "revelar")
+        errors = _record_errors(live_server_page)
+        # Revealing moves blocks with transform only: no layout shift.
+        live_server_page.add_init_script(
+            "window.__shift = 0;"
+            "new PerformanceObserver((list) => {"
+            " for (const entry of list.getEntries()) {"
+            "  if (!entry.hadRecentInput) window.__shift += entry.value; } })"
+            ".observe({ type: 'layout-shift', buffered: true });"
+        )
+
+        live_server_page.goto(page.url)
+        live_server_page.wait_for_timeout(300)
+        assert self._is_hidden(live_server_page, 2)
+        # The first block is never marked: it is there from the start.
+        assert live_server_page.locator(".block-text").first.evaluate(
+            "block => getComputedStyle(block).opacity === '1'"
+        )
+
+        live_server_page.locator("[data-reveal]").nth(2).scroll_into_view_if_needed()
+        live_server_page.wait_for_function(
+            "() => document.querySelectorAll('[data-reveal]')[2]"
+            ".classList.contains('is-revealed')"
+        )
+        self._wait_until_visible(live_server_page, 2)
+        assert live_server_page.evaluate("window.__shift") < 0.01
+        assert not [error for error in errors if "Content Security" in error]
+
+    def test_nothing_is_hidden_with_reduced_motion(
+        self, live_server_page, home_page, settings
+    ):
+        settings.ORION_BLOCK_REVEAL = True
+        page = self._tall_page(home_page, "revelar-quieto")
+        live_server_page.emulate_media(reduced_motion="reduce")
+
+        live_server_page.goto(page.url)
+        live_server_page.wait_for_timeout(300)
+
+        assert not self._is_hidden(live_server_page, 2)
+        assert not self._is_hidden(live_server_page, 1)
+
+    def test_nothing_is_hidden_without_javascript(
+        self, browser, live_server, home_page, settings
+    ):
+        settings.ORION_BLOCK_REVEAL = True
+        page = self._tall_page(home_page, "revelar-sin-js")
+        context = browser.new_context(java_script_enabled=False)
+        visitor = context.new_page()
+
+        visitor.goto(f"{live_server.url}{page.url}")
+
+        for index in range(3):
+            assert (
+                visitor.locator("[data-reveal]")
+                .nth(index)
+                .evaluate("block => getComputedStyle(block).opacity === '1'")
+            )
+        context.close()
+
+    def test_everything_shows_if_the_observer_never_answers(
+        self, live_server_page, home_page, settings
+    ):
+        settings.ORION_BLOCK_REVEAL = True
+        page = self._tall_page(home_page, "revelar-sin-observador")
+        live_server_page.add_init_script(
+            "window.IntersectionObserver = class {"
+            " observe() {} unobserve() {} disconnect() {} };"
+        )
+
+        live_server_page.goto(page.url)
+        live_server_page.wait_for_timeout(300)
+        assert self._is_hidden(live_server_page, 2)
+
+        live_server_page.wait_for_function(
+            "() => document.querySelectorAll('[data-reveal]:not(.is-revealed)')"
+            ".length === 0",
+            timeout=6000,
+        )
+        self._wait_until_visible(live_server_page, 2)
+
+    def test_setting_off_changes_nothing(self, live_server_page, home_page):
+        page = self._tall_page(home_page, "sin-revelar")
+
+        live_server_page.goto(page.url)
+
+        assert live_server_page.locator("[data-reveal]").count() == 0

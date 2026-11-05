@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Orion\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-04 20:10+0000\n"
+"POT-Creation-Date: 2026-11-05 18:39+0000\n"
 "PO-Revision-Date: 2026-10-30 21:00+0000\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -49,8 +49,8 @@ msgstr "Antetítulo"
 msgid "A short text above the title."
 msgstr "Un texto breve sobre el título."
 
-#: blocks/content.py:207 blocks/content.py:380 blocks/content.py:467
-#: blocks/content.py:960
+#: blocks/content.py:207 blocks/content.py:380 blocks/content.py:482
+#: blocks/content.py:975 blocks/content.py:1029
 msgid "Title"
 msgstr "Título"
 
@@ -63,8 +63,8 @@ msgid "A title must be a single paragraph."
 msgstr "Un título tiene que ser un solo párrafo."
 
 #: blocks/content.py:222 blocks/content.py:288 blocks/content.py:381
-#: blocks/content.py:437 blocks/content.py:543 blocks/content.py:609
-#: blocks/content.py:961 blocks/links.py:123
+#: blocks/content.py:452 blocks/content.py:558 blocks/content.py:624
+#: blocks/content.py:976 blocks/content.py:1030 blocks/links.py:123
 msgid "Text"
 msgstr "Texto"
 
@@ -84,7 +84,7 @@ msgstr "Secundario"
 msgid "Button"
 msgstr "Botón"
 
-#: blocks/content.py:243 blocks/content.py:669
+#: blocks/content.py:243 blocks/content.py:684
 msgid "Buttons"
 msgstr "Botones"
 
@@ -94,7 +94,7 @@ msgstr "Texto de apoyo"
 
 #: blocks/content.py:258 blocks/content.py:301 blocks/content.py:309
 #: blocks/content.py:316 blocks/content.py:321 blocks/content.py:352
-#: blocks/content.py:379 blocks/content.py:954
+#: blocks/content.py:379 blocks/content.py:969 blocks/content.py:1031
 msgid "Image"
 msgstr "Imagen"
 
@@ -118,7 +118,7 @@ msgstr ""
 msgid "Paragraphs with bold, italics, links, lists and subtitles."
 msgstr "Párrafos con negrita, itálica, enlaces, listas y subtítulos."
 
-#: blocks/content.py:302 blocks/content.py:317 blocks/content.py:940
+#: blocks/content.py:302 blocks/content.py:317 blocks/content.py:955
 msgid "Caption"
 msgstr "Epígrafe"
 
@@ -126,7 +126,7 @@ msgstr "Epígrafe"
 msgid "A photo with an optional caption."
 msgstr "Una foto con epígrafe opcional."
 
-#: blocks/content.py:330
+#: blocks/content.py:330 blocks/content.py:411
 msgid "Images"
 msgstr "Imágenes"
 
@@ -142,11 +142,11 @@ msgstr "Una grilla de fotos con epígrafes opcionales."
 msgid "Image position"
 msgstr "Lado de la imagen"
 
-#: blocks/content.py:359 blocks/content.py:663
+#: blocks/content.py:359 blocks/content.py:678
 msgid "Left"
 msgstr "Izquierda"
 
-#: blocks/content.py:359 blocks/content.py:663
+#: blocks/content.py:359 blocks/content.py:678
 msgid "Right"
 msgstr "Derecha"
 
@@ -158,160 +158,181 @@ msgstr "Imagen y texto"
 msgid "A photo next to a title, a text and buttons."
 msgstr "Una foto al lado de un título, un texto y botones."
 
-#: blocks/content.py:383 blocks/content.py:963 blocks/links.py:191
+#: blocks/content.py:383 blocks/content.py:978 blocks/links.py:191
 msgid "Link"
 msgstr "Enlace"
 
-#: blocks/content.py:385 blocks/content.py:965
+#: blocks/content.py:385 blocks/content.py:980
 msgid "Optional. The text defaults to the page title."
 msgstr "Opcional. Si no se escribe un texto, se usa el título de la página."
 
-#: blocks/content.py:390
+#: blocks/content.py:388
+msgid "Tag"
+msgstr "Etiqueta"
+
+#: blocks/content.py:391
+msgid "Optional. A short label shown above the title."
+msgstr "Opcional. Una etiqueta corta que se muestra sobre el título."
+
+#: blocks/content.py:396
 msgid "Card"
 msgstr "Tarjeta"
 
-#: blocks/content.py:399
+#: blocks/content.py:405
 msgid "Columns"
 msgstr "Columnas"
 
-#: blocks/content.py:403 blocks/content.py:413
+#: blocks/content.py:409 blocks/content.py:428
 msgid "Cards"
 msgstr "Tarjetas"
 
-#: blocks/content.py:415
+#: blocks/content.py:413
+msgid "Cropped to fill the space"
+msgstr "Recortadas para llenar el espacio"
+
+#: blocks/content.py:414
+msgid "Whole image, uncropped"
+msgstr "Imagen completa, sin recortes"
+
+#: blocks/content.py:417
+msgid "Use the whole image for illustrations and logos."
+msgstr "Usá la imagen completa para ilustraciones y logos."
+
+#: blocks/content.py:430
 msgid "A grid of cards, each with an optional image, a text and a link."
 msgstr ""
 "Una grilla de tarjetas, cada una con imagen opcional, un texto y un enlace."
 
-#: blocks/content.py:430
+#: blocks/content.py:445
 msgid "Number"
 msgstr "Número"
 
-#: blocks/content.py:432
+#: blocks/content.py:447
 msgid "Before the number"
 msgstr "Antes del número"
 
-#: blocks/content.py:435
+#: blocks/content.py:450
 msgid "After the number"
 msgstr "Después del número"
 
-#: blocks/content.py:441
+#: blocks/content.py:456
 msgid "Figure"
 msgstr "Cifra"
 
-#: blocks/content.py:449 blocks/content.py:453
+#: blocks/content.py:464 blocks/content.py:468
 msgid "Figures"
 msgstr "Cifras"
 
-#: blocks/content.py:454
+#: blocks/content.py:469
 msgid "Large numbers that count up when they appear on screen."
 msgstr "Números grandes que se cuentan al aparecer en pantalla."
 
-#: blocks/content.py:474
+#: blocks/content.py:489
 msgid "Tab"
 msgstr "Pestaña"
 
-#: blocks/content.py:478 blocks/content.py:483
+#: blocks/content.py:493 blocks/content.py:498
 msgid "Question"
 msgstr "Pregunta"
 
-#: blocks/content.py:479
+#: blocks/content.py:494
 msgid "Answer"
 msgstr "Respuesta"
 
-#: blocks/content.py:498 blocks/content.py:506
+#: blocks/content.py:513 blocks/content.py:521
 msgid "Tabs"
 msgstr "Pestañas"
 
-#: blocks/content.py:507
+#: blocks/content.py:522
 msgid "Content split into tabs; only one tab is shown at a time."
 msgstr "Contenido dividido en pestañas; se muestra una pestaña a la vez."
 
-#: blocks/content.py:522
+#: blocks/content.py:537
 msgid "Questions"
 msgstr "Preguntas"
 
-#: blocks/content.py:526
+#: blocks/content.py:541
 msgid "Accordion"
 msgstr "Acordeón"
 
-#: blocks/content.py:527
+#: blocks/content.py:542
 msgid "Questions that open to show their answer, such as an FAQ."
 msgstr ""
 "Preguntas que se abren para mostrar su respuesta, como unas preguntas "
 "frecuentes."
 
-#: blocks/content.py:548
+#: blocks/content.py:563
 msgid "Call to action"
 msgstr "Llamada a la acción"
 
-#: blocks/content.py:550
+#: blocks/content.py:565
 msgid "A highlighted box that invites visitors to take the next step."
 msgstr "Un recuadro destacado que invita a dar el siguiente paso."
 
-#: blocks/content.py:561 blocks/content.py:571
+#: blocks/content.py:576 blocks/content.py:586 blocks/content.py:1095
+#: blocks/content.py:1104
 msgid "Logo"
 msgstr "Logo"
 
-#: blocks/content.py:563 blocks/content.py:817
+#: blocks/content.py:578 blocks/content.py:832 blocks/content.py:1097
 msgid "Name"
 msgstr "Nombre"
 
-#: blocks/content.py:565
+#: blocks/content.py:580 blocks/content.py:1099
 msgid "Read by screen readers and shown if the image fails to load."
 msgstr "Lo leen los lectores de pantalla y se muestra si la imagen no carga."
 
-#: blocks/content.py:567
+#: blocks/content.py:582
 msgid "Website"
 msgstr "Sitio web"
 
-#: blocks/content.py:579 blocks/content.py:589
+#: blocks/content.py:594 blocks/content.py:604 blocks/content.py:1119
 msgid "Logos"
 msgstr "Logos"
 
-#: blocks/content.py:591
+#: blocks/content.py:606
 msgid "A row of logos, such as partners or clients, with optional links."
 msgstr "Una fila de logos, como convenios o clientes, con enlaces opcionales."
 
-#: blocks/content.py:607
+#: blocks/content.py:622
 msgid "Label"
 msgstr "Etiqueta"
 
-#: blocks/content.py:607
+#: blocks/content.py:622
 msgid "Opening hours"
 msgstr "Horario"
 
-#: blocks/content.py:613
+#: blocks/content.py:628
 msgid "Extra item"
 msgstr "Dato extra"
 
-#: blocks/content.py:621 blocks/links.py:135
+#: blocks/content.py:636 blocks/links.py:135
 #: templates/orion/includes/contact_details.html:8
 msgid "Phone"
 msgstr "Teléfono"
 
-#: blocks/content.py:623
+#: blocks/content.py:638
 msgid "WhatsApp"
 msgstr "WhatsApp"
 
-#: blocks/content.py:625 blocks/links.py:134
+#: blocks/content.py:640 blocks/links.py:134
 #: templates/orion/includes/contact_details.html:8
 msgid "Email"
 msgstr "Email"
 
-#: blocks/content.py:626 templates/orion/includes/contact_details.html:8
+#: blocks/content.py:641 templates/orion/includes/contact_details.html:8
 msgid "Address"
 msgstr "Dirección"
 
-#: blocks/content.py:628
+#: blocks/content.py:643
 msgid "Extra items"
 msgstr "Datos extra"
 
-#: blocks/content.py:643
+#: blocks/content.py:658
 msgid "Contact details"
 msgstr "Datos de contacto"
 
-#: blocks/content.py:645
+#: blocks/content.py:660
 msgid ""
 "The site's phone, WhatsApp, email and address from Site data, plus extra "
 "items such as opening hours."
@@ -319,92 +340,92 @@ msgstr ""
 "El teléfono, el WhatsApp, el email y la dirección de Datos del sitio, más "
 "datos extra como el horario."
 
-#: blocks/content.py:662
+#: blocks/content.py:677
 msgid "Alignment"
 msgstr "Alineación"
 
-#: blocks/content.py:663
+#: blocks/content.py:678
 msgid "Center"
 msgstr "Centro"
 
-#: blocks/content.py:670
+#: blocks/content.py:685
 msgid "One to three buttons in a row."
 msgstr "De uno a tres botones en fila."
 
-#: blocks/content.py:707
+#: blocks/content.py:722
 msgid "How many"
 msgstr "Cantidad"
 
-#: blocks/content.py:711
+#: blocks/content.py:726
 msgid "Listing"
 msgstr "Listado"
 
-#: blocks/content.py:713
+#: blocks/content.py:728
 msgid "Optional. Without a listing, shows articles from all of them."
 msgstr "Opcional. Sin un listado, muestra artículos de todos."
 
-#: blocks/content.py:742
+#: blocks/content.py:757
 msgid "Latest articles"
 msgstr "Últimas novedades"
 
-#: blocks/content.py:743
+#: blocks/content.py:758
 msgid "The most recent articles, from every listing or from one."
 msgstr "Los artículos más recientes, de todos los listados o de uno."
 
-#: blocks/content.py:754 blocks/content.py:785
+#: blocks/content.py:769 blocks/content.py:800
 msgid "Form"
 msgstr "Formulario"
 
-#: blocks/content.py:755
+#: blocks/content.py:770
 msgid "Submissions arrive at the form's page, as if sent from there."
 msgstr ""
 "Los envíos llegan a la página del formulario, como si se enviaran desde ahí."
 
-#: blocks/content.py:786
+#: blocks/content.py:801
 msgid "A form created in Pages, to fill in from this page."
 msgstr "Un formulario creado en Páginas, para completarlo desde esta página."
 
-#: blocks/content.py:816
+#: blocks/content.py:831
 msgid "Location"
 msgstr "Ubicación"
 
-#: blocks/content.py:819
+#: blocks/content.py:834
 msgid "Description"
 msgstr "Descripción"
 
-#: blocks/content.py:822
+#: blocks/content.py:837
 msgid "For example, the address or the opening hours."
 msgstr "Por ejemplo, la dirección o el horario."
 
-#: blocks/content.py:827
+#: blocks/content.py:842
 msgid "Point"
 msgstr "Punto"
 
-#: blocks/content.py:836
+#: blocks/content.py:851
 msgid "Include the site location"
 msgstr "Incluir la ubicación del sitio"
 
-#: blocks/content.py:839
+#: blocks/content.py:854
 msgid "The location set in Site data."
 msgstr "La ubicación cargada en Datos del sitio."
 
-#: blocks/content.py:841
+#: blocks/content.py:856
 msgid "Points"
 msgstr "Puntos"
 
-#: blocks/content.py:843
+#: blocks/content.py:858
 msgid "Zoom"
 msgstr "Zoom"
 
-#: blocks/content.py:847
+#: blocks/content.py:862
 msgid "Used with a single point; several points are all shown."
 msgstr "Se usa con un solo punto; con varios, se muestran todos."
 
-#: blocks/content.py:881 templates/orion/includes/map.html:11
+#: blocks/content.py:896 templates/orion/includes/map.html:11
 msgid "Map"
 msgstr "Mapa"
 
-#: blocks/content.py:883
+#: blocks/content.py:898
 msgid ""
 "A map with the site location and other points, loaded when the visitor asks "
 "for it."
@@ -412,97 +433,170 @@ msgstr ""
 "Un mapa con la ubicación del sitio y otros puntos, que se carga cuando el "
 "visitante lo pide."
 
-#: blocks/content.py:905
+#: blocks/content.py:920
 msgid "Choose an MP4 or WebM video."
 msgstr "Elegir un video MP4 o WebM."
 
-#: blocks/content.py:915 blocks/content.py:947 blocks/content.py:956
+#: blocks/content.py:930 blocks/content.py:962 blocks/content.py:971
 msgid "Video"
 msgstr "Video"
 
-#: blocks/content.py:917
+#: blocks/content.py:932
 msgid "An MP4 or WebM from the document library, in a public collection."
 msgstr ""
 "Un MP4 o WebM de la biblioteca de documentos, en una colección pública."
 
-#: blocks/content.py:921
+#: blocks/content.py:936
 msgid "Cover image"
 msgstr "Imagen de portada"
 
-#: blocks/content.py:922
+#: blocks/content.py:937
 msgid "Shown until the video plays."
 msgstr "Se muestra hasta que el video se reproduce."
 
-#: blocks/content.py:925
+#: blocks/content.py:940
 msgid "Playback"
 msgstr "Reproducción"
 
-#: blocks/content.py:927
+#: blocks/content.py:942
 msgid "With controls: the visitor starts it, with sound"
 msgstr "Con controles: lo inicia el visitante, con sonido"
 
-#: blocks/content.py:928
+#: blocks/content.py:943
 msgid "Ambient: muted and looping while on screen"
 msgstr "Ambiente: sin sonido y en bucle mientras está en pantalla"
 
-#: blocks/content.py:933
+#: blocks/content.py:948
 msgid "Format"
 msgstr "Formato"
 
-#: blocks/content.py:935
+#: blocks/content.py:950
 msgid "Landscape (16:9)"
 msgstr "Horizontal (16:9)"
 
-#: blocks/content.py:936
+#: blocks/content.py:951
 msgid "Vertical (9:16)"
 msgstr "Vertical (9:16)"
 
-#: blocks/content.py:948
+#: blocks/content.py:963
 msgid "A video from the library, with a cover image."
 msgstr "Un video de la biblioteca, con imagen de portada."
 
-#: blocks/content.py:958
+#: blocks/content.py:973
 msgid "Optional. Plays muted and looping; the image is its cover."
 msgstr "Opcional. Se reproduce sin sonido y en bucle; la imagen es su portada."
 
-#: blocks/content.py:970
+#: blocks/content.py:985
 msgid "Slide"
 msgstr "Diapositiva"
 
-#: blocks/content.py:979
+#: blocks/content.py:994
 msgid "Arrangement"
 msgstr "Disposición"
 
-#: blocks/content.py:981
+#: blocks/content.py:996
 msgid "One slide across the full width"
 msgstr "Una diapositiva a todo el ancho"
 
-#: blocks/content.py:982
+#: blocks/content.py:997
 msgid "Several cards at a time"
 msgstr "Varias tarjetas a la vez"
 
-#: blocks/content.py:987 templates/orion/blocks/carousel.html:3
+#: blocks/content.py:1002 templates/orion/blocks/carousel.html:3
 #: templates/orion/blocks/carousel.html:5
 msgid "Slides"
 msgstr "Diapositivas"
 
-#: blocks/content.py:998
+#: blocks/content.py:1013
 msgid "Carousel"
 msgstr "Carrusel"
 
-#: blocks/content.py:1000
+#: blocks/content.py:1015
 msgid "Slides that the visitor moves through, one or several at a time."
 msgstr "Diapositivas que el visitante recorre, de a una o de a varias."
 
-#: blocks/content.py:1044
+#: blocks/content.py:1035
+msgid "Step"
+msgstr "Paso"
+
+#: blocks/content.py:1045 blocks/content.py:1053
+msgid "Steps"
+msgstr "Pasos"
+
+#: blocks/content.py:1048
+msgid "They are numbered automatically, in this order."
+msgstr "Se numeran automáticamente, en este orden."
+
+#: blocks/content.py:1054
+msgid "Numbered steps, one after the other, such as a process."
+msgstr "Pasos numerados, uno tras otro, como un proceso."
+
+#: blocks/content.py:1072
+msgid "Deadline"
+msgstr "Fecha límite"
+
+#: blocks/content.py:1073
+msgid "The countdown ends at this date and time."
+msgstr "La cuenta regresiva termina en esta fecha y hora."
+
+#: blocks/content.py:1076
+msgid "Message when it ends"
+msgstr "Mensaje al terminar"
+
+#: blocks/content.py:1079
+msgid "Optional. Replaces the countdown once the deadline has passed."
+msgstr ""
+"Opcional. Reemplaza la cuenta regresiva cuando la fecha límite ya pasó."
+
+#: blocks/content.py:1085
+msgid "Countdown"
+msgstr "Cuenta regresiva"
+
+#: blocks/content.py:1086
+msgid "The time left until a deadline, with an optional button."
+msgstr "El tiempo que falta hasta una fecha límite, con un botón opcional."
+
+#: blocks/content.py:1112
+msgid "Phrases"
+msgstr "Frases"
+
+#: blocks/content.py:1125
+msgid "Speed"
+msgstr "Velocidad"
+
+#: blocks/content.py:1127
+msgid "Slow"
+msgstr "Lenta"
+
+#: blocks/content.py:1128
+msgid "Normal"
+msgstr "Normal"
+
+#: blocks/content.py:1129
+msgid "Fast"
+msgstr "Rápida"
+
+#: blocks/content.py:1139
+msgid "Add at least one phrase or one logo."
+msgstr "Agregá al menos una frase o un logo."
+
+#: blocks/content.py:1152
+msgid "Marquee"
+msgstr "Cinta"
+
+#: blocks/content.py:1154
+msgid "Short phrases and logos that slide in a loop, with a pause button."
+msgstr "Frases cortas y logos que se deslizan en bucle, con un botón de pausa."
+
+#: blocks/content.py:1197
 msgid "The hero must be the first block."
 msgstr "El Hero tiene que ser el primer bloque."
 
-#: blocks/content.py:1056
+#: blocks/content.py:1209
 msgid "This anchor is reserved by the site. Choose another one."
 msgstr "El sitio usa esta ancla. Elegir otra."
 
-#: blocks/content.py:1060
+#: blocks/content.py:1213
 msgid "Another block of this page already uses this anchor."
 msgstr "Otro bloque de esta página ya usa esta ancla."
 
@@ -610,6 +704,22 @@ msgstr "Ir a la diapositiva %(number)s"
 msgid "Next slide"
 msgstr "Diapositiva siguiente"
 
+#: templates/orion/blocks/countdown.html:9
+msgid "Days"
+msgstr "Días"
+
+#: templates/orion/blocks/countdown.html:10
+msgid "Hours"
+msgstr "Horas"
+
+#: templates/orion/blocks/countdown.html:11
+msgid "Minutes"
+msgstr "Minutos"
+
+#: templates/orion/blocks/countdown.html:12
+msgid "Seconds"
+msgstr "Segundos"
+
 #: templates/orion/blocks/includes/video.html:9
 msgid "Play video"
 msgstr "Reproducir el video"
@@ -621,6 +731,14 @@ msgstr "Pausar el video"
 #: templates/orion/blocks/latest_articles.html:11
 msgid "See all articles"
 msgstr "Ver todas las novedades"
+
+#: templates/orion/blocks/marquee.html:3
+msgid "Pause the marquee"
+msgstr "Pausar la cinta"
+
+#: templates/orion/blocks/marquee.html:3
+msgid "Resume the marquee"
+msgstr "Reanudar la cinta"
 
 #: templates/orion/includes/footer.html:25
 msgid "Social networks"
