@@ -231,8 +231,19 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 - `ORION_BLOCK_REVEAL` (apagado por defecto): los bloques, salvo el primero, aparecen con
   un fundido al entrar en pantalla. Sin JavaScript, con movimiento reducido, en la vista
   previa y al imprimir se ven completos, y si el navegador no responde se muestran todos.
+- `orion-start` entrega a cada proyecto un `AGENTS.md` y un `CLAUDE.md` con las reglas para
+  construir el sitio con un asistente de IA (con el nombre del proyecto), y la guía
+  `docs/guias/trabajar-con-ia.md`: criterio de bloques de Orion o propios, skills por fase,
+  qué revisar a mano y problemas típicos de los bloques propios.
+- Guías `docs/guias/empezar.md` (de la máquina preparada al sitio funcionando, con el
+  asistente de IA cargado con las reglas del proyecto) y `docs/guias/estilos-y-diseno.md`
+  (CSS propio, estilos de bloque, tamaños de imagen y templates sobrescritos).
 
 ### Changed
+
+- El `Pipfile` que genera `orion-start` apunta a `https://github.com/fscoscia/orion-cms.git`
+  en lugar del marcador `<organization>`, y el `AGENTS.md` enlaza las guías. El README
+  corrige las URLs de instalación.
 
 - **Atención:** con django-axes, `client.login()` no funciona en las pruebas de los
   proyectos; usar `client.force_login()`.

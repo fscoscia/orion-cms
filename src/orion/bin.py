@@ -15,6 +15,10 @@ TEMPLATE_DIR = Path(__file__).resolve().parent / "project_template"
 STATIC_SRC_DIR = Path(__file__).resolve().parent / "core" / "static_src"
 VERSION_PLACEHOLDER = "__ORION_VERSION__"
 STATIC_SRC_PLACEHOLDER = "__ORION_STATIC_SRC__"
+PROJECT_NAME_PLACEHOLDER = "__PROJECT_NAME__"
+# Files of the template that name the project, written as plain text (Django would
+# render them as templates and choke on the template tags they document).
+PROJECT_NAME_FILES = ("AGENTS.md", "CLAUDE.md")
 
 
 def main():
@@ -40,6 +44,13 @@ def main():
         pipfile.write_text(
             pipfile.read_text().replace(VERSION_PLACEHOLDER, orion.__version__)
         )
+
+    for filename in PROJECT_NAME_FILES:
+        instructions = destination / filename
+        if instructions.exists():
+            instructions.write_text(
+                instructions.read_text().replace(PROJECT_NAME_PLACEHOLDER, project_name)
+            )
 
     project_css = destination / "static_src" / "project.css"
     if project_css.exists():

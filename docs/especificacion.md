@@ -307,7 +307,7 @@ sin copiar código a mano entre proyectos.
 | Tests | Unitarios, de integración y de punta a punta con Playwright para el admin y el sitio; la suite corre en PostgreSQL y en MySQL | Hecho | v1 |
 | Chequeo de convenciones | Comando que detecta textos fijos en templates, imágenes sin alt y traducciones faltantes | Hecho | v1 |
 | Linters | Ruff para Python y formato automático; hooks de git | Hecho en la Fase 0 | v1 |
-| Documentación para desarrolladores y agentes | Guías por tarea (crear bloque, tipo de página, formulario) y un `AGENTS.md`, preparando el MCP | Hecho | v1 |
+| Documentación para desarrolladores y agentes | Guía de arranque, guías por tarea (crear bloque, tipo de página, formulario, estilos y diseño, trabajar con IA) y un `AGENTS.md` y un `CLAUDE.md` que `orion-start` entrega a cada proyecto, preparando el MCP | Hecho | v1 |
 | Integración continua | Tests y presupuesto de rendimiento en cada cambio | GitHub Actions u otro | A futuro |
 | Monitoreo de errores | Alertas de errores en producción | Sentry u otro | A futuro |
 | Deploy en plataformas gestionadas | Railway, Render, Fly.io | Servicio externo | A futuro |

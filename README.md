@@ -84,15 +84,24 @@ pipenv run orion-start mi_sitio
 
 Genera `mi_sitio/` con `manage.py`, los ajustes conectados a Orion, las rutas, una app
 `home` vacía para el diseño propio, `templates/` para sobrescribir las de Orion,
-`.env.example` y un `Pipfile` que fija la versión de Orion instalada (confirmarla, junto
-con `<organization>` en la URL del repositorio, contra la etiqueta publicada antes de
-instalar). El resto de esta sección explica cada una de esas piezas por si se arman a
+`.env.example` y un `Pipfile` que fija la versión de Orion instalada (confirmarla contra
+la etiqueta publicada en <https://github.com/fscoscia/orion-cms/tags> antes de instalar). El
+resto de esta sección explica cada una de esas piezas por si se arman a
 mano o se ajustan después.
+
+El proyecto trae también un `AGENTS.md` (y un `CLAUDE.md` que remite a él) con las reglas para
+quien lo construye con un asistente de IA: qué se toca y qué no, cuándo usar un bloque de
+Orion o uno propio, cómo cuidar el contenido existente, cómo actualizar Orion y cómo verificar
+una tarea. Para quien lo hace con un asistente de IA, [empezar](docs/guias/empezar.md) lleva
+de la máquina preparada al sitio funcionando, y [estilos y diseño](docs/guias/estilos-y-diseno.md)
+explica el CSS, los estilos de bloque y las imágenes. Las guías por tarea están en
+`docs/guias/`: crear un bloque, un tipo de página, un formulario y [trabajar con
+IA](docs/guias/trabajar-con-ia.md).
 
 Instalar desde GitHub fijando una etiqueta de versión y el driver de la base:
 
 ```bash
-pipenv install "orion[postgres] @ git+https://github.com/<organizacion>/orion.git@v0.1.0"
+pipenv install "orion[postgres] @ git+https://github.com/fscoscia/orion-cms.git@v0.1.0"
 ```
 
 En los ajustes del proyecto, importar la base y agregar lo propio:
@@ -1105,7 +1114,7 @@ Con **Setup Python App** del panel (Python 3.12) y una base MySQL ya creada:
 4. Desde la terminal de la app (activa su entorno virtual sola):
 
    ```bash
-   pip install "orion[mysql] @ git+https://github.com/<organizacion>/orion.git@v0.1.0"
+   pip install "orion[mysql] @ git+https://github.com/fscoscia/orion-cms.git@v0.1.0"
    pip install "django-tailwind-cli==4.8.1"
    python manage.py orion_install
    python manage.py collectstatic

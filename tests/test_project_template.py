@@ -61,6 +61,8 @@ class TestOrionStart:
             ("private/forms/1/abc/cv.pdf", True),
             ("home/static/home/css/site.css", False),
             ("assets/project/css/project.css", False),
+            ("AGENTS.md", False),
+            ("CLAUDE.md", False),
         ],
     )
     def test_gitignore(self, tmp_path, monkeypatch, path, is_ignored):
@@ -149,6 +151,62 @@ class TestOrionStart:
         pipfile_content = (destination / "Pipfile").read_text()
         assert "__ORION_VERSION__" not in pipfile_content
         assert f'ref = "v{orion_version}"' in pipfile_content
+
+    def test_pipfile_points_to_orions_repository(self, tmp_path, monkeypatch):
+        destination = tmp_path / "mysite"
+        destination.mkdir()
+
+        _run_orion_start(monkeypatch, "mysite", str(destination))
+
+        pipfile_content = (destination / "Pipfile").read_text()
+        assert "<organization>" not in pipfile_content
+        assert "https://github.com/fscoscia/orion-cms.git" in pipfile_content
+
+    def test_agents_file_links_the_guides(self, tmp_path, monkeypatch):
+        destination = tmp_path / "mysite"
+        destination.mkdir()
+
+        _run_orion_start(monkeypatch, "mysite", str(destination))
+
+        content = (destination / "AGENTS.md").read_text()
+        for guide in ("empezar", "estilos-y-diseno", "trabajar-con-ia"):
+            assert (
+                f"https://github.com/fscoscia/orion-cms/blob/main/docs/guias/{guide}.md"
+                in content
+            )
+
+    def test_delivers_instructions_for_ai_assistants(self, tmp_path, monkeypatch):
+        destination = tmp_path / "mysite"
+        destination.mkdir()
+
+        _run_orion_start(monkeypatch, "mysite", str(destination))
+
+        for filename in ("AGENTS.md", "CLAUDE.md"):
+            content = (destination / filename).read_text()
+            assert "# mysite" in content
+            assert "__PROJECT_NAME__" not in content
+        assert "AGENTS.md" in (destination / "CLAUDE.md").read_text()
+
+    def test_agents_file_states_the_working_rules(self, tmp_path, monkeypatch):
+        destination = tmp_path / "mysite"
+        destination.mkdir()
+
+        _run_orion_start(monkeypatch, "mysite", str(destination))
+
+        content = (destination / "AGENTS.md").read_text()
+        # The project installs no pytest, so its test command is Django's.
+        assert "pipenv run manage test" in content
+        assert "pytest" not in content
+        assert "mysite/settings.py" in content
+        for heading in (
+            "## Bloques de Orion o bloques propios",
+            "## Contenido existente: cuidado",
+            "## Actualizar Orion",
+            "## Al terminar una tarea",
+        ):
+            assert heading in content
+        # Template tags documented in the file are kept as written.
+        assert "{% trans %}" in content
 
     def test_refuses_to_overwrite_an_existing_project(self, tmp_path, monkeypatch):
         destination = tmp_path / "mysite"
