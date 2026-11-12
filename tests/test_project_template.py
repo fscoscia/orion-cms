@@ -169,7 +169,14 @@ class TestOrionStart:
         _run_orion_start(monkeypatch, "mysite", str(destination))
 
         content = (destination / "AGENTS.md").read_text()
-        for guide in ("empezar", "estilos-y-diseno", "trabajar-con-ia"):
+        for guide in (
+            "empezar",
+            "estilos-y-diseno",
+            "identidad-y-seo",
+            "trabajar-con-ia",
+            "usar-el-mcp",
+            "mcp-en-produccion",
+        ):
             assert (
                 f"https://github.com/fscoscia/orion-cms/blob/main/docs/guias/{guide}.md"
                 in content

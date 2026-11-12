@@ -15,6 +15,7 @@ from PIL import Image as PillowImage
 from PIL import ImageOps
 from wagtail.images import get_image_model
 from wagtail.images.models import Filter
+from wagtail.models import ReferenceIndex
 
 from orion.core.images import all_filter_specs
 from orion.core.svg import clean_svg
@@ -156,3 +157,15 @@ def connect():
     request_finished.connect(
         _mark_request_finished, dispatch_uid="orion_request_finished"
     )
+
+
+def find_unused_images():
+    """Return the images that no page, snippet or setting uses, oldest first.
+
+    It relies on Wagtail's reference index; rebuild it first if it may be out of date.
+    """
+    return [
+        image
+        for image in get_image_model().objects.order_by("created_at")
+        if not ReferenceIndex.get_references_to(image).exists()
+    ]

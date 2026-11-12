@@ -52,6 +52,7 @@ ORION_APPS = [
     "orion.snippets",
     "orion.integrations",
     "orion.editor",
+    "orion.mcp",
 ]
 
 WAGTAIL_APPS = [
@@ -200,6 +201,21 @@ AXES_LOCKOUT_TEMPLATE = "orion/editor/account_locked.html"
 # How many proxies of its own the site sits behind (1 behind Nginx, 0 on cPanel's
 # Passenger): the visitor's address is then read from X-Forwarded-For.
 ORION_TRUSTED_PROXIES = env_int("ORION_TRUSTED_PROXIES", 0)
+
+# The MCP endpoint (POST /_mcp/) answers 404 until the project turns it on. A remote
+# client uses it with an API key made in the admin. Browsers send an Origin header and
+# API clients do not, so an Origin is refused unless it is listed here.
+ORION_MCP_ENDPOINT = env_bool("ORION_MCP_ENDPOINT", False)
+ORION_MCP_ALLOWED_ORIGINS = env_list("ORION_MCP_ALLOWED_ORIGINS")
+# Largest request body, in bytes, and most requests per minute of each key.
+ORION_MCP_MAX_BODY = env_int("ORION_MCP_MAX_BODY", 1_000_000)
+ORION_MCP_RATE_LIMIT = env_int("ORION_MCP_RATE_LIMIT", 120)
+for _name, _value in (
+    ("ORION_MCP_MAX_BODY", ORION_MCP_MAX_BODY),
+    ("ORION_MCP_RATE_LIMIT", ORION_MCP_RATE_LIMIT),
+):
+    if _value < 1:
+        raise ImproperlyConfigured(f"{_name} must be at least 1; got {_value}.")
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -476,12 +492,20 @@ LOGGING = {
             "level": "WARNING",
             "formatter": "plain",
         },
+        # One line per call of the MCP endpoint; to the error output, never the standard
+        # one, which the MCP server over stdio keeps for its messages.
+        "mcp": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            "formatter": "plain",
+        },
     },
     "root": {"handlers": ["console"], "level": "WARNING"},
     "loggers": {
         "django": {"handlers": [], "level": "INFO"},
         "django.request": {"level": "ERROR"},
         "django.security": {"level": "CRITICAL"},
+        "orion.mcp": {"handlers": ["mcp"], "level": "INFO", "propagate": False},
     },
 }
 

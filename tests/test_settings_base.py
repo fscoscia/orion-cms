@@ -228,3 +228,40 @@ class TestAdminPath:
 
     def test_nested_admin_path_is_accepted(self):
         assert validate_admin_path("equipo/panel-2/") == "equipo/panel-2/"
+
+
+class TestMcpEndpoint:
+    def test_the_endpoint_is_off_by_default(self, load_settings):
+        settings = load_settings(DEBUG="true")
+
+        assert settings.ORION_MCP_ENDPOINT is False
+        assert settings.ORION_MCP_ALLOWED_ORIGINS == []
+        assert settings.ORION_MCP_MAX_BODY == 1_000_000
+        assert settings.ORION_MCP_RATE_LIMIT == 120
+
+    def test_it_can_be_turned_on_and_tuned(self, load_settings):
+        settings = load_settings(
+            DEBUG="true",
+            ORION_MCP_ENDPOINT="true",
+            ORION_MCP_ALLOWED_ORIGINS="https://a.example, https://b.example",
+            ORION_MCP_MAX_BODY="2048",
+            ORION_MCP_RATE_LIMIT="30",
+        )
+
+        assert settings.ORION_MCP_ENDPOINT is True
+        assert settings.ORION_MCP_ALLOWED_ORIGINS == [
+            "https://a.example",
+            "https://b.example",
+        ]
+        assert settings.ORION_MCP_MAX_BODY == 2048
+        assert settings.ORION_MCP_RATE_LIMIT == 30
+
+    @pytest.mark.parametrize("name", ["ORION_MCP_MAX_BODY", "ORION_MCP_RATE_LIMIT"])
+    @pytest.mark.parametrize("value", ["0", "-5", "many"])
+    def test_a_limit_must_be_a_positive_number(self, load_settings, name, value):
+        with pytest.raises(ImproperlyConfigured, match=name):
+            load_settings(DEBUG="true", **{name: value})
+
+    def test_a_flag_that_is_not_a_boolean_is_refused(self, load_settings):
+        with pytest.raises(ImproperlyConfigured, match="ORION_MCP_ENDPOINT"):
+            load_settings(DEBUG="true", ORION_MCP_ENDPOINT="maybe")

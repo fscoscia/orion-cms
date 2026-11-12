@@ -1,0 +1,235 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Orion\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-10 18:03+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Spanish\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: admin.py:33
+msgid ""
+"The key acts as this account and has its permissions at most. Choose a "
+"dedicated Editor, never a superuser."
+msgstr ""
+"La clave actúa como esta cuenta y tiene, como máximo, sus permisos. Conviene"
+" una cuenta de Editor dedicada, nunca un superusuario."
+
+#: admin.py:37
+msgid ""
+"Read only never changes anything; drafts also saves drafts; full also changes "
+"redirects and site data at once, and only a superuser can create it."
+msgstr ""
+"Solo lectura nunca cambia nada; borradores también guarda borradores; completo "
+"también cambia redirecciones y datos del sitio al instante, y solo un "
+"superusuario puede crearlo."
+
+#: admin.py:40
+msgid "Recommended: a key that expires limits the harm of a leak."
+msgstr "Recomendado: una clave que vence limita el daño de una filtración."
+
+#: admin.py:100
+#, python-format
+msgid "The key “%(name)s” was revoked."
+msgstr "La clave «%(name)s» fue revocada."
+
+#: apps.py:8
+msgid "Orion MCP server"
+msgstr "Servidor MCP de Orion"
+
+#: models.py:21
+msgid "Read only"
+msgstr "Solo lectura"
+
+#: models.py:22
+msgid "Read and save drafts"
+msgstr "Lectura y borradores"
+
+msgid "Read, save drafts and change redirects and site data"
+msgstr "Lectura, borradores y cambios en redirecciones y datos del sitio"
+
+#: models.py:32
+msgid "name"
+msgstr "nombre"
+
+#: models.py:34
+msgid "key"
+msgstr "clave"
+
+#: models.py:35
+msgid "scope"
+msgstr "alcance"
+
+#: models.py:38
+msgid "acts as"
+msgstr "actúa como"
+
+#: models.py:42
+msgid "expires"
+msgstr "vence"
+
+#: models.py:45
+msgid "created by"
+msgstr "creada por"
+
+#: models.py:50
+msgid "created"
+msgstr "creada"
+
+#: models.py:51
+msgid "last used"
+msgstr "último uso"
+
+#: models.py:52
+msgid "revoked"
+msgstr "revocada"
+
+#: models.py:55
+msgid "API key"
+msgstr "Clave de API"
+
+#: models.py:56 templates/orion/mcp/keys.html:3
+#: templates/orion/mcp/keys.html:5 wagtail_hooks.py:31
+msgid "API keys"
+msgstr "Claves de API"
+
+#: models.py:66
+msgid "The user is not active."
+msgstr "El usuario no está activo."
+
+#: models.py:69
+msgid "A key cannot act as a superuser: it would skip every permission."
+msgstr ""
+"Una clave no puede actuar como superusuario: se saltaría todos los permisos."
+
+#: templates/orion/mcp/key_created.html:3
+#: templates/orion/mcp/key_created.html:5
+msgid "Key created"
+msgstr "Clave creada"
+
+#: templates/orion/mcp/key_created.html:10
+msgid ""
+"Copy the key now. It is shown only once: afterwards only its first "
+"characters are kept, and if it is lost the key must be revoked and a new one"
+" made."
+msgstr ""
+"Copiar la clave ahora. Se muestra una sola vez: después solo se guardan sus "
+"primeros caracteres, y si se pierde hay que revocarla y crear otra."
+
+#: templates/orion/mcp/key_created.html:12
+#, python-format
+msgid "acts as %(user)s, %(scope)s"
+msgstr "actúa como %(user)s, %(scope)s"
+
+#: templates/orion/mcp/key_created.html:14
+msgid "The assistant sends it in the header"
+msgstr "El asistente la envía en la cabecera"
+
+#: templates/orion/mcp/key_created.html:14
+msgid "to"
+msgstr "a"
+
+#: templates/orion/mcp/key_created.html:15
+msgid "Done"
+msgstr "Listo"
+
+#: templates/orion/mcp/key_form.html:3 templates/orion/mcp/key_form.html:5
+#: templates/orion/mcp/keys.html:19
+msgid "Create a key"
+msgstr "Crear una clave"
+
+#: templates/orion/mcp/key_form.html:18
+msgid "Create key"
+msgstr "Crear clave"
+
+#: templates/orion/mcp/key_form.html:19
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: templates/orion/mcp/keys.html:8
+msgid ""
+"A key lets an AI assistant outside this server read the site, and optionally"
+" save drafts, through the MCP endpoint. The key acts as one account and "
+"never publishes or deletes anything."
+msgstr ""
+"Una clave permite que un asistente de IA fuera de este servidor lea el "
+"sitio, y opcionalmente guarde borradores, por el endpoint MCP. La clave "
+"actúa como una cuenta y nunca publica ni borra nada."
+
+#: templates/orion/mcp/keys.html:13
+msgid ""
+"The endpoint is off: no key works until whoever manages the server sets "
+"ORION_MCP_ENDPOINT=true and restarts the site."
+msgstr ""
+"El endpoint está apagado: ninguna clave funciona hasta que quien administra "
+"el servidor ponga ORION_MCP_ENDPOINT=true y reinicie el sitio."
+
+#: templates/orion/mcp/keys.html:16
+msgid "Endpoint:"
+msgstr "Endpoint:"
+
+#: templates/orion/mcp/keys.html:25
+msgid "Name"
+msgstr "Nombre"
+
+#: templates/orion/mcp/keys.html:26
+msgid "Key"
+msgstr "Clave"
+
+#: templates/orion/mcp/keys.html:27
+msgid "Acts as"
+msgstr "Actúa como"
+
+#: templates/orion/mcp/keys.html:28
+msgid "Scope"
+msgstr "Alcance"
+
+#: templates/orion/mcp/keys.html:29
+msgid "Expires"
+msgstr "Vence"
+
+#: templates/orion/mcp/keys.html:30
+msgid "Last used"
+msgstr "Último uso"
+
+#: templates/orion/mcp/keys.html:31
+msgid "Status"
+msgstr "Estado"
+
+#: templates/orion/mcp/keys.html:42 templates/orion/mcp/keys.html:43
+msgid "Never"
+msgstr "Nunca"
+
+#: templates/orion/mcp/keys.html:45
+msgctxt "key status"
+msgid "Active"
+msgstr "Activa"
+
+#: templates/orion/mcp/keys.html:46
+msgctxt "key status"
+msgid "Expired"
+msgstr "Vencida"
+
+#: templates/orion/mcp/keys.html:47
+msgctxt "key status"
+msgid "Revoked"
+msgstr "Revocada"
+
+#: templates/orion/mcp/keys.html:53
+msgid "Revoke"
+msgstr "Revocar"
+
+#: templates/orion/mcp/keys.html:62
+msgid "There are no keys yet."
+msgstr "Todavía no hay claves."

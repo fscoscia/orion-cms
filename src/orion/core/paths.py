@@ -8,6 +8,7 @@ Under a URL prefix (``SCRIPT_NAME``), ``request.path`` carries it and
 from django.conf import settings
 
 SHARED_PREVIEW_PATH = "/_preview/"
+MCP_PATH = "/_mcp/"
 
 
 def is_admin_request(request):
@@ -20,10 +21,10 @@ def is_asset_request(request):
 
 
 def is_internal_request(request):
-    """Whether it is for the admin, for files or for a shared preview: none of them
-    are public pages."""
+    """Whether it is for the admin, for files, for a shared preview or for the MCP
+    endpoint: none of them are public pages."""
     return (
         is_admin_request(request)
         or is_asset_request(request)
-        or request.path_info.startswith(SHARED_PREVIEW_PATH)
+        or request.path_info.startswith((SHARED_PREVIEW_PATH, MCP_PATH))
     )

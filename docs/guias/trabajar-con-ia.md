@@ -7,7 +7,9 @@ cómo repartir el trabajo, qué skills usar en cada fase y qué revisar siempre 
 Un proyecto generado con `orion-start` trae un `AGENTS.md` con las reglas esenciales. Esta
 guía las explica y suma lo que no cabe allí. Para instalar Orion, crear el proyecto y
 comprobar que el asistente cargó esas reglas, empezar por [Empezar](empezar.md); para el CSS,
-los estilos de bloque y las imágenes, ver [Estilos y diseño](estilos-y-diseno.md).
+los estilos de bloque y las imágenes, ver [Estilos y diseño](estilos-y-diseno.md); para el
+favicon, la imagen para redes y los buscadores, [Identidad y SEO](identidad-y-seo.md); para
+que el asistente consulte el sitio, [Usar el MCP](usar-el-mcp.md).
 
 ## 1. Qué le toca a cada uno
 
@@ -19,6 +21,28 @@ los estilos de bloque y las imágenes, ver [Estilos y diseño](estilos-y-diseno.
 
 La IA empieza leyendo el `AGENTS.md` del proyecto. Si el agente no lo carga solo, hay que
 indicárselo.
+
+### Formularios
+
+Los formularios no se programan: se crean desde el admin como una página de tipo
+**Formulario**, con sus campos, su texto de agradecimiento y el aviso por email, y Orion ya
+agrega el consentimiento y el campo trampa para bots. El paso a paso está en [Crear un
+formulario](crear-un-formulario.md). El reparto:
+
+- **El asistente** propone los campos, los textos y a qué email avisa cada formulario, a partir
+  del diseño y del contenido. No se le pide escribir esos datos en la base.
+- **Una persona** los carga en el admin y elige la página de política de privacidad (una sola
+  vez, en Datos del sitio).
+
+```text
+Con el diseño [enlace de Figma] y docs/contenido.md, lista los formularios del sitio:
+campos, tipo, si es requerido, texto de agradecimiento y a qué email avisa. Una tabla por
+formulario, para cargarla en el admin. No escribas código.
+```
+
+Un formulario se da por listo cuando se envió uno real como visitante: queda en la bandeja de
+**Envíos** y el aviso llega a una casilla fuera de spam. Si no hay SMTP configurado, el aviso
+no sale (el panel de integraciones del admin lo muestra) aunque el envío quede guardado.
 
 ## 2. Bloques de Orion o propios
 
@@ -46,13 +70,18 @@ cambian por su cuenta, así que conviene revisarlas antes de apoyarse en ellas.
 
 | Fase | Skill | Para qué |
 |---|---|---|
+| Estructura | Ninguna | Mapear el contenido a bloques de Orion tal cual, con el `AGENTS.md` y las guías |
 | Dirección | **Impeccable** (`init`, `concept-seed`, `overdrive`) o **taste** (`deal`) | Impeccable: producto, usuario y dirección visual a fondo; `overdrive` propone cuán lejos ir y espera una elección. Taste: paleta y tipografía rápido. Se elige **una** de las dos para decidir la dirección; la otra solo verifica |
 | Construcción | La IA con Orion | Bloques de Orion, más CSS y bloques propios según la sección 2 |
 | Refinado | **Impeccable** (`critique`, `typeset`, `layout`, `polish`) | De una sección por vez |
 | Movimiento | **Emil Kowalski** (`animate`, `find-animation-opportunities`) | Dónde animar, con qué curva y duración, y qué no animar. Va al final |
 | Verificación | `impeccable detect`, `perf` de taste y la revisión manual | Ver la sección 5 |
 
-Una skill por fase: cargar varias a la vez hace que el agente mezcle sus reglas.
+Una skill por fase: cargar varias a la vez hace que el agente mezcle sus reglas. La
+estructura y la construcción no necesitan skill. Con un diseño ya definido (Figma), la
+dirección tampoco: ya está decidida. Cuando solo hay referencias o ningún diseño, la skill de
+dirección **propone** y **una persona aprueba** antes de aplicar nada; ver [Estilos y
+diseño](estilos-y-diseno.md#si-todavía-no-hay-diseño).
 
 ### Qué se probó y qué no
 
@@ -62,6 +91,9 @@ Una skill por fase: cargar varias a la vez hace que el agente mezcle sus reglas.
   con reglas propias de taste (altura de las secciones, `.wrap`, tarjetas distintas entre sí,
   copy) que no encajan con el marcado de Orion. Usarlo como informe y filtrar. No dejar que
   decida la estructura de la página.
+- **Taste en un proyecto real (Bolt Emprende):** se usó solo para la dirección de arte, no
+  para armar la página. `deal` repartió la paleta y la tipografía, y `css` generó los tokens
+  de color y de fuente. No se encargó de la estructura.
 - **Impeccable** (4.8.0, motor 0.1.18): `init`, `concept-seed`, `overdrive` y `detect`
   funcionaron. `detect` encontró un error de JavaScript que el HTML no mostraba. Su `critique`
   pide subagentes aislados; sin ellos es una crítica en un solo contexto (degradada). No se
@@ -119,6 +151,9 @@ trae sus propios comandos; los de impeccable que se probaron están en la secci�
   de estadísticas de Orion muestra el número sin separador de miles; un bloque propio con
   texto sí puede.
 - **Textos de relleno:** enlaces a `example.com`, teléfonos y correos de prueba.
+- **Formularios:** un envío real de cada uno, en la bandeja y en el email.
+- **Identidad y SEO:** favicon, imagen para redes, título y descripción de cada página; ver
+  [Identidad y SEO](identidad-y-seo.md).
 
 ## 6. Problemas típicos de los bloques propios con IA
 

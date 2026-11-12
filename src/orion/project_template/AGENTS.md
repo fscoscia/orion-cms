@@ -54,6 +54,13 @@ enlace):
   un formulario.
 - [`estilos-y-diseno.md`](https://github.com/fscoscia/orion-cms/blob/main/docs/guias/estilos-y-diseno.md):
   CSS propio, estilos de bloque, imágenes y templates sobrescritos.
+- [`identidad-y-seo.md`](https://github.com/fscoscia/orion-cms/blob/main/docs/guias/identidad-y-seo.md):
+  favicon, imagen para redes, buscadores y `robots.txt`.
+- [`usar-el-mcp.md`](https://github.com/fscoscia/orion-cms/blob/main/docs/guias/usar-el-mcp.md):
+  consultar el sitio con un asistente por el servidor MCP local (solo lectura por defecto;
+  con `--allow-writes` guarda borradores como la cuenta `orion-agent`).
+- [`mcp-en-produccion.md`](https://github.com/fscoscia/orion-cms/blob/main/docs/guias/mcp-en-produccion.md):
+  el endpoint MCP del sitio publicado, con claves de API (apagado por defecto).
 - [`trabajar-con-ia.md`](https://github.com/fscoscia/orion-cms/blob/main/docs/guias/trabajar-con-ia.md):
   cómo trabajar con un asistente de IA en un sitio de Orion.
 

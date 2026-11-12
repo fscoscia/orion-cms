@@ -79,13 +79,20 @@ El comando `orion-start` (se instala junto con el paquete) crea un proyecto nuev
 todo esto ya armado:
 
 ```bash
-pipenv run orion-start mi_sitio
+mkdir orion-tools && cd orion-tools
+pipenv --python 3.12 install git+https://github.com/fscoscia/orion-cms.git@<versión>
+mkdir ../mi_sitio
+pipenv run orion-start mi_sitio ../mi_sitio
 ```
+
+`<versión>` es una etiqueta de <https://github.com/fscoscia/orion-cms/tags> o, si todavía no
+hay ninguna, el hash de un commit. `orion-start` se ejecuta siempre desde `orion-tools`:
+`pipenv run` usa el entorno de la carpeta actual.
 
 Genera `mi_sitio/` con `manage.py`, los ajustes conectados a Orion, las rutas, una app
 `home` vacía para el diseño propio, `templates/` para sobrescribir las de Orion,
-`.env.example` y un `Pipfile` que fija la versión de Orion instalada (confirmarla contra
-la etiqueta publicada en <https://github.com/fscoscia/orion-cms/tags> antes de instalar). El
+`.env.example` y un `Pipfile` que pide la versión `v` más la del paquete (confirmarla contra
+la etiqueta publicada antes de instalar; si no existe, poner en `ref` un hash de commit). El
 resto de esta sección explica cada una de esas piezas por si se arman a
 mano o se ajustan después.
 
@@ -93,16 +100,23 @@ El proyecto trae también un `AGENTS.md` (y un `CLAUDE.md` que remite a él) con
 quien lo construye con un asistente de IA: qué se toca y qué no, cuándo usar un bloque de
 Orion o uno propio, cómo cuidar el contenido existente, cómo actualizar Orion y cómo verificar
 una tarea. Para quien lo hace con un asistente de IA, [empezar](docs/guias/empezar.md) lleva
-de la máquina preparada al sitio funcionando, y [estilos y diseño](docs/guias/estilos-y-diseno.md)
-explica el CSS, los estilos de bloque y las imágenes. Las guías por tarea están en
-`docs/guias/`: crear un bloque, un tipo de página, un formulario y [trabajar con
-IA](docs/guias/trabajar-con-ia.md).
+de la máquina preparada al sitio funcionando, [estilos y diseño](docs/guias/estilos-y-diseno.md)
+explica el CSS, los estilos de bloque y las imágenes, e [identidad y
+SEO](docs/guias/identidad-y-seo.md) el favicon, la imagen para redes y los buscadores. Las
+guías por tarea están en `docs/guias/`: crear un bloque, un tipo de página, un formulario y
+[trabajar con IA](docs/guias/trabajar-con-ia.md) y [usar el MCP](docs/guias/usar-el-mcp.md)
+(`pipenv run manage orion_mcp`, un servidor MCP local de solo lectura). No viajan con el
+paquete: se leen en el repositorio.
 
-Instalar desde GitHub fijando una etiqueta de versión y el driver de la base:
+Para instalar Orion en un `Pipfile` a mano, fijando una versión (etiqueta o hash) y el
+driver de la base:
 
-```bash
-pipenv install "orion[postgres] @ git+https://github.com/fscoscia/orion-cms.git@v0.1.0"
+```toml
+orion = {git = "https://github.com/fscoscia/orion-cms.git", ref = "<versión>", extras = ["postgres"]}
 ```
+
+La forma `pipenv install "orion[postgres] @ git+…"` no sirve con pipenv, que la toma por una
+ruta.
 
 En los ajustes del proyecto, importar la base y agregar lo propio:
 
@@ -869,6 +883,12 @@ usan cuando hay `EMAIL_HOST`; no guarda destinatarios ni contenido. Un proyecto 
 su propio `EMAIL_BACKEND` pierde ese registro. Si los emails no salen (sin SMTP en
 producción, el último envío falló o hay avisos de formularios pendientes), el panel de
 inicio avisa a los administradores.
+
+El **endpoint MCP** (`POST /_mcp/`) viene apagado: se activa con `ORION_MCP_ENDPOINT=true` y
+lo usa un asistente de IA con una **clave de API** que los Administradores crean y revocan en
+**Propiedades → Claves de API**. Cada clave actúa como un usuario de Wagtail, con alcance de
+solo lectura o de lectura y borradores; nunca publica ni borra. Ver
+[el MCP en producción](docs/guias/mcp-en-produccion.md).
 
 Para dar de alta un cliente nuevo (cuentas, invitación a la agencia, variables de entorno,
 DNS del email y tareas programadas) está el

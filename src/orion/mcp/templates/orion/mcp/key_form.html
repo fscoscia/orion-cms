@@ -1,0 +1,22 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Create a key" %}{% endblock %}
+{% block content %}
+  {% translate "Create a key" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="key" %}
+  <div class="nice-padding">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <ul class="fields">
+        {% for field in form %}
+          <li>{% formattedfield field %}</li>
+        {% endfor %}
+      </ul>
+      {% if form.non_field_errors %}
+        <div class="help-block help-critical">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <button type="submit" class="button">{% translate "Create key" %}</button>
+      <a class="button button-secondary" href="{% url 'orion_mcp_keys' %}">{% translate "Cancel" %}</a>
+    </form>
+  </div>
+{% endblock %}

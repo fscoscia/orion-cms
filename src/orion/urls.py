@@ -37,6 +37,10 @@ urlpatterns = [
     path("documents/", include(wagtaildocs_urls)),
     # Before the pages, which match any path; the underscore keeps it off real slugs.
     path("_preview/<str:token>/", shared_preview, name="orion_shared_preview"),
+    # Paused for now: the remote MCP endpoint (answers 404 unless ORION_MCP_ENDPOINT is
+    # true). To turn it on again, uncomment this line and add
+    # `from orion.mcp.views import mcp_endpoint` to the imports.
+    # path("_mcp/", mcp_endpoint, name="orion_mcp_endpoint"),
     path("robots.txt", robots_txt, name="orion_robots_txt"),
     path("favicon.ico", favicon, name="orion_favicon"),
     path(

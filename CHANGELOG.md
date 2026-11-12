@@ -8,6 +8,28 @@ Todos los cambios relevantes de Orion se registran en este archivo. El formato s
 
 ### Added
 
+- Alcance de clave MCP `full` (solo lo crea un superusuario): además de leer y guardar
+  borradores, cambia redirecciones y los datos y textos del sitio, con los permisos de su usuario.
+  Cada escritura guarda los valores previos y `settings_revert` los restaura si nadie los cambió
+  después; no deshace redirecciones creadas ni publica ni borra.
+- Endpoint MCP dentro del sitio (`POST /_mcp/`, apagado por defecto con `ORION_MCP_ENDPOINT`) con
+  claves de API que se crean y revocan en el admin: se guardan solo con hash, actúan como un
+  usuario de Wagtail y tienen alcance de solo lectura o de lectura y borradores. Recibos de
+  operación para reintentos seguros, límites de uso, un registro por llamada sin secretos y la
+  guía `mcp-en-produccion`. Las herramientas del registro pasan a niveles de acceso.
+- Escritura opt-in en el servidor MCP local (`orion_mcp --allow-writes`): crear y actualizar
+  borradores de páginas, redirecciones y los datos y textos del sitio, siempre como la cuenta
+  técnica `orion-agent` (se crea con `orion_create_agent_user`), con sus permisos, sin publicar
+  ni borrar. Capa `orion.operations` con permisos, validación y revisiones, y `page_get`
+  devuelve `latest_revision_id`.
+- Servidor MCP local de solo lectura (`manage.py orion_mcp`, app `orion.mcp`) con herramientas
+  para consultar el sitio: resumen, esquema de páginas y bloques, árbol de páginas, ajustes,
+  redirecciones, 404, formularios (sin envíos), convenciones, imágenes sin uso y salud. Guía
+  `usar-el-mcp`.
+- Guía `identidad-y-seo`: favicon, imagen para redes, descripción, `robots.txt` y Search Console, con el
+  reparto entre el admin y el asistente; la guía de arranque y el README usan `pipenv` con la
+  carpeta temporal `orion-tools`; `estilos-y-diseno` cubre el sitio sin diseño y `trabajar-con-ia`
+  los formularios.
 - Paquete `orion` instalable desde GitHub, con extras `postgres` y `mysql`.
 - Ajustes base configurables por variables de entorno, con validación al arrancar (clave
   secreta obligatoria fuera de debug, booleanos inválidos, ruta del admin) y valores

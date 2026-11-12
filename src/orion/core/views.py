@@ -8,12 +8,10 @@ from django.views.decorators.http import require_safe
 logger = logging.getLogger(__name__)
 
 
-@never_cache
-@require_safe
-def health_check(request):
-    """Report whether the application can reach its database.
+def database_is_reachable():
+    """Whether the application can run a query on its database.
 
-    The response never includes error details, so the endpoint can be public.
+    Failures are logged, never returned, so no caller can leak their details.
     """
     try:
         with connection.cursor() as cursor:
@@ -21,5 +19,17 @@ def health_check(request):
             cursor.fetchone()
     except DatabaseError:
         logger.exception("Health check failed: the database is not reachable.")
+        return False
+    return True
+
+
+@never_cache
+@require_safe
+def health_check(request):
+    """Report whether the application can reach its database.
+
+    The response never includes error details, so the endpoint can be public.
+    """
+    if not database_is_reachable():
         return JsonResponse({"status": "error"}, status=503)
     return JsonResponse({"status": "ok"})

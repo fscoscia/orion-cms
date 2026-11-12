@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.template.defaultfilters import filesizeformat
-from wagtail.images import get_image_model
-from wagtail.models import ReferenceIndex
+
+from orion.core.image_library import find_unused_images
 
 
 class Command(BaseCommand):
@@ -11,11 +11,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        unused = [
-            image
-            for image in get_image_model().objects.order_by("created_at")
-            if not ReferenceIndex.get_references_to(image).exists()
-        ]
+        unused = find_unused_images()
         sizes = {image.pk: image.get_file_size() or 0 for image in unused}
         for image in unused:
             self.stdout.write(

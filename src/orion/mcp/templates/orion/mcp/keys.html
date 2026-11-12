@@ -1,0 +1,65 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "API keys" %}{% endblock %}
+{% block content %}
+  {% translate "API keys" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="key" %}
+  <div class="nice-padding">
+    <p>{% translate "A key lets an AI assistant outside this server read the site, and optionally save drafts, through the MCP endpoint. The key acts as one account and never publishes or deletes anything." %}</p>
+
+    {% if not endpoint_enabled %}
+      <div class="help-block help-warning" role="status">
+        {% icon name="warning" %}
+        <p>{% translate "The endpoint is off: no key works until whoever manages the server sets ORION_MCP_ENDPOINT=true and restarts the site." %}</p>
+      </div>
+    {% else %}
+      <p>{% translate "Endpoint:" %} <code>{{ endpoint_url }}</code></p>
+    {% endif %}
+
+    <p><a class="button bicolor button--icon" href="{% url 'orion_mcp_key_new' %}">{% icon name="plus" wrapped=1 %}{% translate "Create a key" %}</a></p>
+
+    {% if keys %}
+      <table class="listing">
+        <thead>
+          <tr>
+            <th>{% translate "Name" %}</th>
+            <th>{% translate "Key" %}</th>
+            <th>{% translate "Acts as" %}</th>
+            <th>{% translate "Scope" %}</th>
+            <th>{% translate "Expires" %}</th>
+            <th>{% translate "Last used" %}</th>
+            <th>{% translate "Status" %}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key in keys %}
+            <tr>
+              <td>{{ key.name }}</td>
+              <td><code>{{ key.prefix }}…</code></td>
+              <td>{{ key.user }}</td>
+              <td>{{ key.get_scope_display }}</td>
+              <td>{% if key.expires_at %}{{ key.expires_at|date:"SHORT_DATETIME_FORMAT" }}{% else %}{% translate "Never" %}{% endif %}</td>
+              <td>{% if key.last_used_at %}{{ key.last_used_at|date:"SHORT_DATETIME_FORMAT" }}{% else %}{% translate "Never" %}{% endif %}</td>
+              <td>
+                {% if key.status == "active" %}{% translate "Active" context "key status" %}
+                {% elif key.status == "expired" %}{% translate "Expired" context "key status" %}
+                {% else %}{% translate "Revoked" context "key status" %}{% endif %}
+              </td>
+              <td>
+                {% if key.status == "active" %}
+                  <form method="post" action="{% url 'orion_mcp_key_revoke' key.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="button button-small button-secondary no">{% translate "Revoke" %}</button>
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>{% translate "There are no keys yet." %}</p>
+    {% endif %}
+  </div>
+{% endblock %}

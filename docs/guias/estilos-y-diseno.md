@@ -6,6 +6,31 @@ explica dónde y cómo se cambia el aspecto. Para crear un bloque propio, ver
 [Crear un bloque](crear-un-bloque.md); para decidir si hace falta, [Trabajar con
 IA](trabajar-con-ia.md).
 
+## Si todavía no hay diseño
+
+Con el contenido definido y sin diseño, no se espera al diseño para avanzar: el orden se
+invierte.
+
+1. **Estructura.** Armar las páginas y cargar el contenido con los bloques de Orion tal
+   cual. Con el aspecto por defecto ya se puede revisar el orden de la información. Un
+   pedido para empezar:
+
+   ```text
+   Lee el AGENTS.md y docs/contenido.md. Haz un inventario: por cada página, qué bloque de
+   Orion cubre cada parte del contenido y qué parte no tiene equivalente. No escribas
+   código ni toques estilos.
+   ```
+
+2. **Dirección visual mínima.** Reunir lo que ya existe: logo, colores de marca, tipografía
+   si la hay, dos o tres sitios de referencia que le gusten al cliente y alguno que no, y el
+   tono (sobrio, cálido, técnico…). Con eso una skill de dirección (ver [Trabajar con
+   IA](trabajar-con-ia.md)) puede proponer una paleta, tipografías y espaciado.
+3. **Aprobación.** La dirección propuesta la aprueba una persona, idealmente el cliente,
+   antes de aplicarla. La skill propone; no decide.
+4. **Tokens y estilos de bloque.** Recién entonces la paleta y las tipografías pasan a las
+   variables CSS (sección 2) y las secciones que necesiten otro aspecto usan un estilo de
+   bloque (sección 4).
+
 ## 1. Dónde vive el CSS del proyecto
 
 | Archivo | Qué es | ¿Se edita? | ¿Se versiona? |

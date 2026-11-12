@@ -1,0 +1,17 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n wagtailadmin_tags %}
+{% block titletag %}{% translate "Key created" %}{% endblock %}
+{% block content %}
+  {% translate "Key created" as title %}
+  {% include "wagtailadmin/shared/header.html" with title=title icon="key" %}
+  <div class="nice-padding">
+    <div class="help-block help-warning" role="alert">
+      {% icon name="warning" %}
+      <p>{% translate "Copy the key now. It is shown only once: afterwards only its first characters are kept, and if it is lost the key must be revoked and a new one made." %}</p>
+    </div>
+    <p><strong>{{ key.name }}</strong> · {% blocktranslate with user=key.user scope=key.get_scope_display %}acts as {{ user }}, {{ scope }}{% endblocktranslate %}</p>
+    <p><code id="orion-mcp-token" class="orion-mcp-token">{{ token }}</code></p>
+    <p>{% translate "The assistant sends it in the header" %} <code>Authorization: Bearer …</code> {% translate "to" %} <code>{{ endpoint_url }}</code>.</p>
+    <p><a class="button" href="{% url 'orion_mcp_keys' %}">{% translate "Done" %}</a></p>
+  </div>
+{% endblock %}

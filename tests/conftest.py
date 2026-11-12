@@ -91,3 +91,25 @@ def _page_cache_off(settings, request, tmp_path):
     static_root = tmp_path / "static"
     static_root.mkdir()
     settings.STATIC_ROOT = static_root
+
+
+def pytest_configure(config):
+    config.addinivalue_line(
+        "markers", "mcp_endpoint: needs the /_mcp/ route, which is paused for now"
+    )
+
+
+def pytest_collection_modifyitems(items):
+    """Skip the tests that call the remote MCP endpoint while its route is commented
+    out in `orion.urls`; they run again as soon as the route is back."""
+    from django.urls import NoReverseMatch, reverse
+
+    try:
+        reverse("orion_mcp_endpoint")
+        return
+    except NoReverseMatch:
+        pass
+    paused = pytest.mark.skip(reason="The remote MCP endpoint is paused (orion.urls).")
+    for item in items:
+        if item.get_closest_marker("mcp_endpoint"):
+            item.add_marker(paused)

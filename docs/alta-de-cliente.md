@@ -48,6 +48,11 @@ solos:
 - [ ] Si el hosting obliga a mandar desde `localhost`: `EMAIL_HOST=localhost`, sin
   usuario ni contraseña y con la seguridad que indique el hosting.
 
+- [ ] Solo si el cliente va a usar un asistente de IA desde fuera del servidor:
+  `ORION_MCP_ENDPOINT=true` (viene apagado), con HTTPS y, detrás de Nginx,
+  `ORION_TRUSTED_PROXIES=1`. Las claves se crean después, en el admin. Ver
+  [el MCP en producción](guias/mcp-en-produccion.md).
+
 ## 5. DNS del email
 
 - [ ] Si el DNS del dominio no está en el hosting, cargar los registros **SPF** y
@@ -80,3 +85,6 @@ En cPanel (**Tareas Cron**), con el Python del entorno de "Setup Python App", po
 - [ ] Un envío real de cada formulario llega a sus destinatarios y aparece en su bandeja.
 - [ ] El panel de inicio no muestra avisos de email ni de publicación programada.
 - [ ] Cada usuario del cliente entró y activó la verificación en dos pasos.
+- [ ] Si se activó el MCP: una clave de prueba con vencimiento responde (`initialize` y
+  `tools/list` con `curl`), el alcance es el mínimo necesario y las claves que no se usan
+  están revocadas.

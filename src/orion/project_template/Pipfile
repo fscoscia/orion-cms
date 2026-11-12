@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 # Confirm the tag below matches a published release before installing.
-orion = {git = "https://github.com/fscoscia/orion-cms.git", ref = "v__ORION_VERSION__", extras = ["postgres"]}
+orion = {git = "https://github.com/fscoscia/orion-cms.git", extras = ["postgres"]}
 django-tailwind-cli = "==4.8.1"
 
 [dev-packages]
